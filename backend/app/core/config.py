@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     app_name: str = "USCP API"
     api_v1_prefix: str = "/api/v1"
     cors_origins: list[str] = Field(
-        default_factory=lambda: ["http://localhost:3000", "http://localhost"],
+        default_factory=lambda: ["http://localhost:3000", "http://localhost:3800", "http://localhost"],
         alias="CORS_ORIGINS",
     )
 

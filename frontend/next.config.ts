@@ -15,13 +15,13 @@ const nextConfig: NextConfig = {
     ],
   },
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost/api',
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3810/api',
   },
   async rewrites() {
     return [
       {
         source: '/api/v1/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost/api'}/v1/:path*`,
+        destination: `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3810/api'}/v1/:path*`,
       },
     ];
   },

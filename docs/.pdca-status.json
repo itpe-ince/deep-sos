@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-04-12T09:10:20.807Z",
+  "lastUpdated": "2026-04-12T11:19:46.776Z",
   "activeFeatures": [
     "uscp-v1",
     "sos-lab",
@@ -191,7 +191,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-09T05:17:50.472Z",
-        "lastUpdated": "2026-04-12T08:40:11.935Z"
+        "lastUpdated": "2026-04-12T10:52:34.173Z"
       },
       "lastFile": "/Users/sangincha/dev/deep-sos/backend/scripts/seed_e2e.py"
     },
@@ -230,9 +230,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T09:54:20.319Z",
-        "lastUpdated": "2026-04-12T02:51:44.609Z"
+        "lastUpdated": "2026-04-12T11:12:37.846Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/backend/app/core/storage.py"
+      "lastFile": "/Users/sangincha/dev/deep-sos/backend/app/core/config.py"
     },
     "alembic": {
       "phase": "do",
@@ -256,9 +256,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T09:56:56.340Z",
-        "lastUpdated": "2026-04-12T03:09:27.799Z"
+        "lastUpdated": "2026-04-12T10:51:07.327Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/backend/alembic/versions/0006_sprint5_notifications.py"
+      "lastFile": "/Users/sangincha/dev/deep-sos/backend/alembic/versions/0001_initial.py"
     },
     "schemas": {
       "phase": "do",
@@ -347,9 +347,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T09:59:57.240Z",
-        "lastUpdated": "2026-04-12T09:10:07.320Z"
+        "lastUpdated": "2026-04-12T11:19:46.776Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/playwright.config.ts"
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/lib/use-auth.ts"
     },
     "layout": {
       "phase": "do",
@@ -425,7 +425,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T11:07:55.545Z",
-        "lastUpdated": "2026-04-11T13:25:10.559Z"
+        "lastUpdated": "2026-04-12T11:19:40.223Z"
       },
       "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/(public)/login/page.tsx"
     },
@@ -828,7 +828,7 @@
   "session": {
     "startedAt": "2026-04-07T07:44:19.225Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-04-12T09:10:20.807Z"
+    "lastActivity": "2026-04-12T11:19:46.776Z"
   },
   "history": [
     {
@@ -2724,6 +2724,60 @@
     {
       "timestamp": "2026-04-12T09:10:20.807Z",
       "feature": "e2e",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:50:58.791Z",
+      "feature": "versions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:51:07.327Z",
+      "feature": "versions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T10:52:34.173Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T11:01:36.554Z",
+      "feature": "login",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T11:12:37.846Z",
+      "feature": "core",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T11:17:44.006Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T11:19:28.311Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T11:19:40.223Z",
+      "feature": "login",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T11:19:46.776Z",
+      "feature": "frontend",
       "phase": "do",
       "action": "updated"
     }

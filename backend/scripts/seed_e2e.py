@@ -27,7 +27,10 @@ E2E_USER_NAME = "박학생"
 
 
 async def seed() -> None:
-    db_url = os.environ["DATABASE_URL"]
+    db_url = os.environ.get(
+        "DATABASE_URL",
+        "postgresql+asyncpg://uscp:uscp-dev-password@localhost:5432/uscp",
+    )
     engine = create_async_engine(db_url, echo=False)
 
     async with AsyncSession(engine) as session:

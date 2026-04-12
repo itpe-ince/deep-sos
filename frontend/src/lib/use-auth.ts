@@ -56,6 +56,20 @@ export function useAuth() {
 
   useEffect(() => {
     refresh();
+
+    // 같은 탭에서 localStorage 변경 시에도 감지 (login/logout)
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === 'access_token') refresh();
+    };
+    // 커스텀 이벤트: 같은 탭 내 토큰 변경 감지
+    const onAuthChange = () => refresh();
+
+    window.addEventListener('storage', onStorage);
+    window.addEventListener('auth-change', onAuthChange);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('auth-change', onAuthChange);
+    };
   }, [refresh]);
 
   const logout = useCallback(async () => {
@@ -66,6 +80,7 @@ export function useAuth() {
     }
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
+    window.dispatchEvent(new Event('auth-change'));
     setState({ user: null, loading: false, error: null });
   }, []);
 

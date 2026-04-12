@@ -23,7 +23,14 @@ depends_on: str | Sequence[str] | None = None
 def upgrade() -> None:
     # ── Extensions ─────────────────────────────
     op.execute('CREATE EXTENSION IF NOT EXISTS "pgcrypto"')
-    op.execute('CREATE EXTENSION IF NOT EXISTS "postgis"')
+    # postgis — PostGIS 이미지에서만 사용, 일반 postgres에서는 skip
+    op.execute("""
+        DO $$ BEGIN
+            CREATE EXTENSION IF NOT EXISTS "postgis";
+        EXCEPTION WHEN OTHERS THEN
+            RAISE NOTICE 'postgis not available, skipping';
+        END $$;
+    """)
 
     # ── campuses ───────────────────────────────
     op.create_table(

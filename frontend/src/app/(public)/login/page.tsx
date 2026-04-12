@@ -24,8 +24,8 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('test@univ.ac.kr');
+  const [password, setPassword] = useState('test12345');
   const [name, setName] = useState('');
   const [role, setRole] = useState<'student' | 'professor' | 'citizen' | 'enterprise'>('citizen');
   const [campusCode, setCampusCode] = useState<'DJ' | 'GJ' | 'YS' | 'SJ' | ''>('');
@@ -53,6 +53,7 @@ export default function LoginPage() {
       const tokens = await api.post<TokenResponse>('/auth/login', { email, password });
       localStorage.setItem('access_token', tokens.access_token);
       localStorage.setItem('refresh_token', tokens.refresh_token);
+      window.dispatchEvent(new Event('auth-change'));
       router.push('/');
       router.refresh();
     } catch (err) {
