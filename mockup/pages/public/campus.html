@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>캠퍼스별 리빙랩 - SOS랩</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    .campus-hero {
+      background: var(--color-surface);
+      padding: var(--space-12) 0 var(--space-8);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .campus-list {
+      padding: var(--space-12) 0;
+    }
+    .campus-detail {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      margin-bottom: var(--space-8);
+      display: grid;
+      grid-template-columns: 320px 1fr;
+    }
+    .campus-detail__left {
+      padding: var(--space-8);
+      background: var(--campus-bg, #dbeafe);
+      color: var(--campus-text, #1e3a8a);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 340px;
+    }
+    .campus-detail__code {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+    .campus-detail__name {
+      font-size: var(--text-3xl);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin-top: var(--space-2);
+    }
+    .campus-detail__type {
+      font-size: var(--text-md);
+      font-weight: 600;
+      margin-top: var(--space-2);
+      opacity: 0.85;
+    }
+    .campus-detail__stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+      margin-top: var(--space-6);
+    }
+    .campus-detail__stat {
+      background: rgba(255, 255, 255, 0.5);
+      padding: var(--space-4);
+      border-radius: var(--radius-md);
+      backdrop-filter: blur(4px);
+    }
+    .campus-detail__stat-label {
+      font-size: var(--text-xs);
+      opacity: 0.75;
+    }
+    .campus-detail__stat-value {
+      font-size: var(--text-xl);
+      font-weight: 800;
+      margin-top: var(--space-1);
+    }
+    .campus-detail__right {
+      padding: var(--space-8);
+    }
+    .campus-detail__desc-title {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      color: var(--color-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--space-2);
+    }
+    .campus-detail__desc-heading {
+      font-size: var(--text-xl);
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: var(--space-4);
+    }
+    .campus-detail__desc {
+      font-size: var(--text-base);
+      line-height: 1.7;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-6);
+    }
+    .campus-detail__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-bottom: var(--space-6);
+    }
+
+    @media (max-width: 1024px) {
+      .campus-detail {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body data-nav="about">
+  <div data-slot="header"></div>
+
+  <main class="page">
+    <section class="campus-hero">
+      <div class="container">
+        <nav class="breadcrumb">
+          <a href="/mockup/pages/index.html">홈</a>
+          <span>/</span>
+          <a href="/mockup/pages/public/about.html">플랫폼 소개</a>
+          <span>/</span>
+          <span>캠퍼스별 리빙랩</span>
+        </nav>
+        <h1 class="page-header__title">캠퍼스별 특화 리빙랩</h1>
+        <p class="page-header__subtitle">
+          대전·공주·예산·세종 4개 캠퍼스가 지역 특성에 맞춘 리빙랩을 운영합니다
+        </p>
+      </div>
+    </section>
+
+    <section class="campus-list">
+      <div class="container">
+        <!-- 대전캠퍼스 -->
+        <article class="campus-detail" style="--campus-bg: #dbeafe; --campus-text: #1e3a8a;">
+          <div class="campus-detail__left">
+            <div>
+              <div class="campus-detail__code">DAEJEON CAMPUS</div>
+              <h2 class="campus-detail__name">대전캠퍼스</h2>
+              <p class="campus-detail__type">청년정착 리빙랩</p>
+            </div>
+            <div class="campus-detail__stats">
+              <div class="campus-detail__stat">
+                <div class="campus-detail__stat-label">진행 프로젝트</div>
+                <div class="campus-detail__stat-value">4건</div>
+              </div>
+              <div class="campus-detail__stat">
+                <div class="campus-detail__stat-label">참여 인원</div>
+                <div class="campus-detail__stat-value">35명</div>
+              </div>
+            </div>
+          </div>
+          <div class="campus-detail__right">
+            <div class="campus-detail__desc-title">LIVING LAB</div>
+            <h3 class="campus-detail__desc-heading">ICT 기반 청년일자리 실험 및 농촌형 주거·일·경험 플랫폼</h3>
+            <p class="campus-detail__desc">
+              대전의 청년 인구 유출 문제를 해결하기 위해, ICT 기술을 활용한 청년 일자리 실험과
+              농촌형 주거·일·경험을 결합한 청년정착 플랫폼을 운영합니다.
+              대전·충남도·한국수자원공사 등과 협력하여 지역 재난대응, 기후변화, 산업수학 분야의 융합연구를 진행합니다.
+            </p>
+            <div class="campus-detail__tags">
+              <span class="badge badge--info">ICT</span>
+              <span class="badge badge--info">청년일자리</span>
+              <span class="badge badge--info">농촌형 주거</span>
+              <span class="badge badge--info">재난대응</span>
+              <span class="badge badge--info">기후변화</span>
+            </div>
+            <a href="/mockup/pages/public/projects.html" class="btn btn--primary">
+              진행 중인 프로젝트 보기
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- 공주캠퍼스 -->
+        <article class="campus-detail" style="--campus-bg: #d1fae5; --campus-text: #064e3b;">
+          <div class="campus-detail__left">
+            <div>
+              <div class="campus-detail__code">GONGJU CAMPUS</div>
+              <h2 class="campus-detail__name">공주캠퍼스</h2>
+              <p class="campus-detail__type">교육·역사·문화재생 리빙랩</p>
+            </div>
+            <div class="campus-detail__stats">
+              <div class="campus-detail__stat">
+                <div class="campus-detail__stat-label">진행 프로젝트</div>
+                <div class="campus-detail__stat-value">3건</div>
+              </div>
+              <div class="campus-detail__stat">
+                <div class="campus-detail__stat-label">참여 인원</div>
+                <div class="campus-detail__stat-value">28명</div>
+              </div>
+            </div>
+          </div>
+          <div class="campus-detail__right">
+            <div class="campus-detail__desc-title">LIVING LAB</div>
+            <h3 class="campus-detail__desc-heading">백제문화권 청년문화기획 및 도시유휴공간 활용 창업랩</h3>
+            <p class="campus-detail__desc">
+              공주의 역사·문화 자원을 활용한 청년 문화기획자 양성 프로그램을 운영합니다.
+              유휴공간을 활용한 문화 창업 인큐베이팅, 다문화 가정 및 소외계층을 위한 디지털 교육격차 해소 프로그램을 통해
+              지역의 문화적 가치를 높이고 청년 창업 생태계를 조성합니다.
+            </p>
+            <div class="campus-detail__tags">
+              <span class="badge badge--success">문화재생</span>
+              <span class="badge badge--success">청년창업</span>
+              <span class="badge badge--success">디지털격차 해소</span>
+              <span class="badge badge--success">다문화</span>
+            </div>
+            <a href="/mockup/pages/public/projects.html" class="btn btn--primary">
+              진행 중인 프로젝트 보기
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- 예산캠퍼스 -->
+        <article class="campus-detail" style="--campus-bg: #ede9fe; --campus-text: #4c1d95;">
+          <div class="campus-detail__left">
+            <div>
+              <div class="campus-detail__code">YESAN CAMPUS</div>
+              <h2 class="campus-detail__name">예산캠퍼스</h2>
+              <p class="campus-detail__type">고령자돌봄테크 리빙랩</p>
+            </div>
+            <div class="campus-detail__stats">
+              <div class="campus-detail__stat">
+                <div class="campus-detail__stat-label">진행 프로젝트</div>
+                <div class="campus-detail__stat-value">3건</div>
+              </div>
+              <div class="campus-detail__stat">
+                <div class="campus-detail__stat-label">참여 인원</div>
+                <div class="campus-detail__stat-value">42명</div>
+              </div>
+            </div>
+          </div>
+          <div class="campus-detail__right">
+            <div class="campus-detail__desc-title">LIVING LAB</div>
+            <h3 class="campus-detail__desc-heading">원격진료 부스, 건강 모니터링, 첨단 디지털 역량강화 플랫폼</h3>
+            <p class="campus-detail__desc">
+              예산의 고령화 문제에 대응하여, 원격진료 부스와 건강 모니터링 시스템, 디지털 역량강화 플랫폼을 운영합니다.
+              의료 취약 계층을 위한 테크 기반 돌봄 솔루션을 개발하고,
+              고령자가 디지털 사회에 참여할 수 있도록 지원합니다.
+            </p>
+            <div class="campus-detail__tags">
+              <span class="badge badge--purple">고령자돌봄</span>
+              <span class="badge badge--purple">원격진료</span>
+              <span class="badge badge--purple">헬스케어</span>
+              <span class="badge badge--purple">디지털 역량</span>
+            </div>
+            <a href="/mockup/pages/public/projects.html" class="btn btn--primary">
+              진행 중인 프로젝트 보기
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- 세종캠퍼스 -->
+        <article class="campus-detail" style="--campus-bg: #ffedd5; --campus-text: #7c2d12;">
+          <div class="campus-detail__left">
+            <div>
+              <div class="campus-detail__code">SEJONG CAMPUS</div>
+              <h2 class="campus-detail__name">세종캠퍼스</h2>
+              <p class="campus-detail__type">모빌리티 리빙랩</p>
+            </div>
+            <div class="campus-detail__stats">
+              <div class="campus-detail__stat">
+                <div class="campus-detail__stat-label">진행 프로젝트</div>
+                <div class="campus-detail__stat-value">2건</div>
+              </div>
+              <div class="campus-detail__stat">
+                <div class="campus-detail__stat-label">참여 인원</div>
+                <div class="campus-detail__stat-value">20명</div>
+              </div>
+            </div>
+          </div>
+          <div class="campus-detail__right">
+            <div class="campus-detail__desc-title">LIVING LAB</div>
+            <h3 class="campus-detail__desc-heading">자율주행, 차량공유서비스, 교통문제 해결 플랫폼</h3>
+            <p class="campus-detail__desc">
+              세종시의 스마트시티 특성을 활용하여 자율주행 실증, 차량공유 서비스, 통합 모빌리티 플랫폼을 운영합니다.
+              미래 교통 문제 해결을 위한 실증 공간으로서, 대학과 기업·지자체가 협력하여
+              차세대 모빌리티 서비스를 개발합니다.
+            </p>
+            <div class="campus-detail__tags">
+              <span class="badge" style="background: #ffedd5; color: #ea580c;">자율주행</span>
+              <span class="badge" style="background: #ffedd5; color: #ea580c;">차량공유</span>
+              <span class="badge" style="background: #ffedd5; color: #ea580c;">스마트시티</span>
+              <span class="badge" style="background: #ffedd5; color: #ea580c;">모빌리티</span>
+            </div>
+            <a href="/mockup/pages/public/projects.html" class="btn btn--primary">
+              진행 중인 프로젝트 보기
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div data-slot="footer"></div>
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

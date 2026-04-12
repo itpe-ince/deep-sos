@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>이슈 처리 - SOS랩 관리자</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: var(--space-5);
+    }
+    .detail-main-card {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+    }
+    .detail-title {
+      font-size: var(--text-xl);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.4;
+      margin: var(--space-3) 0 var(--space-4);
+    }
+    .detail-meta {
+      display: flex;
+      gap: var(--space-4);
+      padding-bottom: var(--space-4);
+      border-bottom: 1px solid var(--color-border);
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+    }
+    .detail-section {
+      margin-top: var(--space-5);
+    }
+    .detail-section__label {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-2);
+    }
+    .detail-section__content {
+      font-size: var(--text-sm);
+      line-height: 1.8;
+      color: var(--color-text);
+    }
+    .detail-photos {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-2);
+    }
+    .detail-photo {
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #93c5fd, #60a5fa);
+      border-radius: var(--radius-md);
+    }
+    .map-placeholder {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, #e0f2fe, #f0fdf4);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-muted);
+      font-size: var(--text-xs);
+    }
+
+    /* Sidebar Actions */
+    .side-action-card {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      margin-bottom: var(--space-4);
+    }
+    .side-action-card__title {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-3);
+    }
+
+    .status-select-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .status-select {
+      padding: var(--space-3);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: var(--text-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .status-select:hover {
+      border-color: var(--color-primary);
+    }
+    .status-select.is-current {
+      border-color: var(--color-primary);
+      background: var(--color-primary-light);
+      font-weight: 600;
+    }
+
+    .assignee-dropdown {
+      padding: var(--space-3);
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      cursor: pointer;
+      font-size: var(--text-sm);
+      margin-bottom: var(--space-3);
+    }
+
+    /* History */
+    .history-item {
+      padding: var(--space-3) 0;
+      border-bottom: 1px solid var(--color-border);
+      font-size: var(--text-xs);
+    }
+    .history-item:last-child {
+      border-bottom: none;
+    }
+    .history-item__time {
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-1);
+    }
+    .history-item__event {
+      font-weight: 600;
+    }
+
+    .big-cta {
+      padding: var(--space-4);
+      background: linear-gradient(135deg, var(--color-primary), #1d4ed8);
+      color: white;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+    .big-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+    .big-cta__desc {
+      font-size: var(--text-xs);
+      opacity: 0.85;
+      font-weight: 500;
+    }
+
+    @media (max-width: 1200px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body data-admin-nav="issues">
+  <div class="admin-layout">
+    <div data-slot="admin-side"></div>
+    <div class="admin-main">
+      <div data-slot="admin-top"></div>
+
+      <main class="admin-content">
+        <div class="admin-page-header">
+          <div class="admin-page-header__breadcrumb">
+            <a href="#">관리자</a>
+            <span>/</span>
+            <a href="/mockup/pages/admin/issues.html">지역 문제</a>
+            <span>/</span>
+            <span>#180</span>
+          </div>
+          <div class="admin-page-header__flex">
+            <div>
+              <h1 class="admin-page-header__title">이슈 처리 · #180</h1>
+              <p class="admin-page-header__subtitle">상태 변경, 담당자 배정, 프로젝트 전환 등을 관리합니다</p>
+            </div>
+            <div style="display: flex; gap: var(--space-2);">
+              <button class="btn btn--secondary btn--sm">이전 →</button>
+              <button class="btn btn--secondary btn--sm">다음 →</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-grid">
+          <!-- Main -->
+          <div class="detail-main-card">
+            <div style="display: flex; gap: var(--space-2);">
+              <span class="badge badge--outline">안전</span>
+              <span class="badge badge--status-progress">처리중</span>
+              <span class="badge badge--campus-gj">공주</span>
+              <span class="badge badge--warning">우선순위 높음</span>
+            </div>
+            <h1 class="detail-title">공주캠퍼스 앞 횡단보도 신호 대기 시간이 너무 깁니다</h1>
+            <div class="detail-meta">
+              <div style="display: flex; align-items: center; gap: var(--space-2);">
+                <div class="cell-user__avatar">김</div>
+                <div>
+                  <div style="font-weight: 600; color: var(--color-text);">김시민</div>
+                  <div style="font-size: 11px; color: var(--color-text-muted);">일반 시민</div>
+                </div>
+              </div>
+              <span>·</span>
+              <span>2026.04.02 09:30 제보</span>
+              <span>·</span>
+              <span>👁 856</span>
+              <span>·</span>
+              <span>💬 23</span>
+              <span style="margin-left: auto; display: flex; align-items: center; gap: 4px; color: var(--color-primary); font-weight: 700;">
+                👍 142 공감
+              </span>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-section__label">상세 내용</div>
+              <div class="detail-section__content">
+                <p>아침 통학 시간에 공주캠퍼스 정문 앞 횡단보도의 신호 대기 시간이 매우 길어 학생들의 안전이 우려되는 상황입니다. 특히 다음과 같은 문제가 반복되고 있습니다:</p>
+                <p>1. 신호 대기 시간 과다: 보행 신호가 길어 학생들이 2~3분 이상 대기하는 경우가 빈번합니다.<br>
+                2. 우천 시 안전 문제: 비 오는 날에는 우산을 쓴 채 오래 대기하다가 차량 접촉 사고 위험이 있습니다.<br>
+                3. 차량 속도: 해당 구간은 제한속도 50km/h인데, 실제 차량 속도는 60km/h를 넘는 경우가 많습니다.</p>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-section__label">위치</div>
+              <div style="font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space-2);">충청남도 공주시 신관동 공주캠퍼스 정문 앞</div>
+              <div class="map-placeholder">📍 지도 영역 (Kakao/Naver Map)</div>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-section__label">첨부 사진 (3)</div>
+              <div class="detail-photos">
+                <div class="detail-photo"></div>
+                <div class="detail-photo" style="background: linear-gradient(135deg, #86efac, #4ade80);"></div>
+                <div class="detail-photo" style="background: linear-gradient(135deg, #fcd34d, #f59e0b);"></div>
+                <div class="detail-photo" style="background: var(--color-bg); border: 2px dashed var(--color-border); display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); font-size: 10px;">+ 추가</div>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-section__label">관리자 내부 메모</div>
+              <textarea class="form-textarea" rows="3" placeholder="담당자 간 공유할 내부 메모를 입력하세요 (사용자에게 공개되지 않음)"></textarea>
+            </div>
+          </div>
+
+          <!-- Sidebar -->
+          <aside>
+            <!-- Status Change -->
+            <div class="side-action-card">
+              <h3 class="side-action-card__title">🎯 상태 변경</h3>
+              <div class="status-select-group">
+                <div class="status-select">
+                  <span class="badge badge--status-submitted">●</span>
+                  접수됨
+                </div>
+                <div class="status-select">
+                  <span class="badge badge--status-reviewing">●</span>
+                  검토중
+                </div>
+                <div class="status-select">
+                  <span class="badge badge--status-assigned">●</span>
+                  담당 배정
+                </div>
+                <div class="status-select is-current">
+                  <span class="badge badge--status-progress">●</span>
+                  처리중 (현재)
+                </div>
+                <div class="status-select">
+                  <span class="badge badge--status-resolved">●</span>
+                  해결됨
+                </div>
+              </div>
+              <div style="margin-top: var(--space-3);">
+                <label class="form-label" style="font-size: var(--text-xs);">변경 메모</label>
+                <textarea class="form-textarea" rows="2" placeholder="상태 변경 사유 (선택)"></textarea>
+              </div>
+            </div>
+
+            <!-- Assignee -->
+            <div class="side-action-card">
+              <h3 class="side-action-card__title">👤 담당자 배정</h3>
+              <div class="assignee-dropdown">
+                <div class="cell-user__avatar" style="background: #dbeafe; color: #2563eb;">이</div>
+                <div style="flex: 1;">
+                  <div style="font-weight: 600;">이담당</div>
+                  <div style="font-size: 10px; color: var(--color-text-muted);">지역사회특화센터</div>
+                </div>
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+              </div>
+              <button class="btn btn--ghost btn--sm btn--block" style="margin-top: var(--space-2);">다른 담당자로 변경</button>
+            </div>
+
+            <!-- Convert to Project -->
+            <div class="side-action-card">
+              <h3 class="side-action-card__title">🚀 프로젝트 전환</h3>
+              <p style="font-size: var(--text-xs); color: var(--color-text-muted); margin-bottom: var(--space-3); line-height: 1.5;">
+                이 이슈가 리빙랩 프로젝트로 발전할 가치가 있다면 프로젝트로 전환할 수 있습니다.
+              </p>
+              <div class="big-cta">
+                <div>리빙랩 프로젝트로 전환</div>
+                <div class="big-cta__desc">문제 발굴 → 탐색 단계 자동 시작</div>
+              </div>
+            </div>
+
+            <!-- History -->
+            <div class="side-action-card">
+              <h3 class="side-action-card__title">📋 처리 이력</h3>
+              <div class="history-item">
+                <div class="history-item__time">2026.04.05 10:15 · 이담당</div>
+                <div class="history-item__event">
+                  <span class="badge badge--status-progress">처리중</span> 으로 변경
+                </div>
+              </div>
+              <div class="history-item">
+                <div class="history-item__time">2026.04.04 14:22 · 관리자</div>
+                <div class="history-item__event">
+                  이담당에게 담당 배정
+                </div>
+              </div>
+              <div class="history-item">
+                <div class="history-item__time">2026.04.03 09:30 · 관리자</div>
+                <div class="history-item__event">
+                  <span class="badge badge--status-reviewing">검토중</span> 으로 변경
+                </div>
+              </div>
+              <div class="history-item">
+                <div class="history-item__time">2026.04.02 09:30 · 자동</div>
+                <div class="history-item__event">
+                  이슈 접수 (김시민)
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

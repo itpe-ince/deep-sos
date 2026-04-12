@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOS랩이란? - SOS랩</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    .about-hero {
+      padding: var(--space-16) 0;
+      background: linear-gradient(180deg, var(--color-primary-light) 0%, var(--color-bg) 100%);
+      text-align: center;
+    }
+    .about-hero__title {
+      font-size: var(--text-3xl);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-4);
+    }
+    .about-hero__subtitle {
+      font-size: var(--text-lg);
+      color: var(--color-text-secondary);
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .about-section {
+      padding: var(--space-12) 0;
+    }
+    .about-section__grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: var(--space-12);
+      align-items: start;
+    }
+    .about-section__label {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      color: var(--color-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--space-2);
+    }
+    .about-section__title {
+      font-size: var(--text-2xl);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+    }
+    .about-section__text {
+      font-size: var(--text-base);
+      line-height: 1.8;
+      color: var(--color-text-secondary);
+    }
+    .about-section__text p {
+      margin-bottom: var(--space-4);
+    }
+    .about-section__text strong {
+      color: var(--color-text);
+      font-weight: 700;
+    }
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--space-3);
+      margin: var(--space-8) 0;
+      position: relative;
+    }
+    .process-step {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      text-align: center;
+      position: relative;
+    }
+    .process-step::after {
+      content: '→';
+      position: absolute;
+      right: calc(-1 * var(--space-3));
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--color-text-muted);
+      font-size: var(--text-lg);
+      z-index: 2;
+    }
+    .process-step:last-child::after {
+      display: none;
+    }
+    .process-step__num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: var(--color-primary);
+      color: white;
+      font-weight: 800;
+      border-radius: 50%;
+      margin-bottom: var(--space-3);
+    }
+    .process-step__name {
+      font-size: var(--text-base);
+      font-weight: 700;
+      margin-bottom: var(--space-1);
+    }
+    .process-step__desc {
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+    }
+    .org-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-5);
+      margin-top: var(--space-6);
+    }
+    .org-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+    }
+    .org-card__icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-lg);
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--space-4);
+    }
+    .org-card__name {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      margin-bottom: var(--space-2);
+    }
+    .org-card__roles {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .org-card__roles li {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      padding: var(--space-1) 0;
+      padding-left: var(--space-4);
+      position: relative;
+    }
+    .org-card__roles li::before {
+      content: '·';
+      position: absolute;
+      left: var(--space-2);
+      color: var(--color-primary);
+      font-weight: 700;
+    }
+
+    @media (max-width: 1024px) {
+      .about-section__grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+      }
+      .process-steps {
+        grid-template-columns: 1fr;
+      }
+      .process-step::after {
+        content: '↓';
+        right: 50%;
+        top: auto;
+        bottom: calc(-1 * var(--space-3));
+        transform: translateX(50%);
+      }
+      .org-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body data-nav="about">
+  <div data-slot="header"></div>
+
+  <main class="page">
+    <section class="about-hero">
+      <div class="container">
+        <nav class="breadcrumb" style="justify-content: center;">
+          <a href="/mockup/pages/index.html">홈</a>
+          <span>/</span>
+          <span>플랫폼 소개</span>
+        </nav>
+        <h1 class="about-hero__title">SOS랩이란?</h1>
+        <p class="about-hero__subtitle">
+          대학과 지역사회가 함께 문제를 발굴하고 해결하는<br>
+          온라인 사회공헌 플랫폼입니다.
+        </p>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <div class="container">
+        <div class="about-section__grid">
+          <div>
+            <div class="about-section__label">What We Do</div>
+            <h2 class="about-section__title">지역의 문제를 함께 해결합니다</h2>
+          </div>
+          <div class="about-section__text">
+            <p>
+              <strong>SOS랩 (USCP, Union Social Contribution Platform)</strong>은 2025 글로컬대학 본지정 사업의 핵심 플랫폼으로,
+              대학의 역량을 지역사회 문제 해결에 연결하는 디지털 인프라입니다.
+            </p>
+            <p>
+              대전·공주·예산·세종 4개 캠퍼스를 기반으로, 교수와 학생, 시민, 지자체, 지역기업이 함께 모여
+              지역의 현안을 발굴하고, 리빙랩 방식으로 해결하며, 그 성과를 다시 지역에 환원합니다.
+            </p>
+            <p>
+              봉사활동은 <strong>사회복지자원봉사인증관리(VMS) 및 1365 자원봉사포털과 자동 연계</strong>되며,
+              활동 성과는 UN-SDGs 프레임으로 측정·보고됩니다.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="about-section" style="background: var(--color-surface); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);">
+      <div class="container">
+        <div style="text-align: center; margin-bottom: var(--space-8);">
+          <div class="about-section__label">How It Works</div>
+          <h2 class="about-section__title">리빙랩 5단계 프로세스</h2>
+          <p style="color: var(--color-text-secondary); margin-top: var(--space-3);">
+            문제 정의부터 성과 확산까지, 체계적인 5단계로 진행됩니다.
+          </p>
+        </div>
+        <div class="process-steps">
+          <div class="process-step">
+            <div class="process-step__num">1</div>
+            <div class="process-step__name">탐색</div>
+            <div class="process-step__desc">지역문제 정의<br>수집 및 제공</div>
+          </div>
+          <div class="process-step">
+            <div class="process-step__num">2</div>
+            <div class="process-step__name">실행</div>
+            <div class="process-step__desc">리빙랩 프로젝트<br>기획 및 수행</div>
+          </div>
+          <div class="process-step">
+            <div class="process-step__num">3</div>
+            <div class="process-step__name">개발</div>
+            <div class="process-step__desc">시제품 등<br>설계·개발</div>
+          </div>
+          <div class="process-step">
+            <div class="process-step__num">4</div>
+            <div class="process-step__name">검증</div>
+            <div class="process-step__desc">유용성 시험<br>피드백 평가</div>
+          </div>
+          <div class="process-step">
+            <div class="process-step__num">5</div>
+            <div class="process-step__name">활용</div>
+            <div class="process-step__desc">성과 확산<br>정책 연계</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <div class="container">
+        <div style="text-align: center; margin-bottom: var(--space-8);">
+          <div class="about-section__label">Who We Are</div>
+          <h2 class="about-section__title">운영 기관</h2>
+          <p style="color: var(--color-text-secondary); margin-top: var(--space-3);">
+            3개 전문 센터가 유기적으로 협력하여 운영합니다.
+          </p>
+        </div>
+        <div class="org-grid">
+          <div class="org-card">
+            <div class="org-card__icon">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <h3 class="org-card__name">지역사회특화센터</h3>
+            <ul class="org-card__roles">
+              <li>지역사회문제 리빙랩 운영</li>
+              <li>교육·연구 연계 기획·조정</li>
+              <li>K-SDGs 협력 프로그램</li>
+              <li>메이커 운동 결합</li>
+            </ul>
+          </div>
+          <div class="org-card">
+            <div class="org-card__icon" style="background: var(--color-secondary-light); color: var(--color-secondary);">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+              </svg>
+            </div>
+            <h3 class="org-card__name">ESG센터</h3>
+            <ul class="org-card__roles">
+              <li>통합대학 ESG 활동</li>
+              <li>기후위기 대응 시민역량</li>
+              <li>탄소중립 시범 캠퍼스</li>
+              <li>UN-SDGs 지역맞춤 프로그램</li>
+            </ul>
+          </div>
+          <div class="org-card">
+            <div class="org-card__icon" style="background: #ede9fe; color: #7c3aed;">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="2" y1="12" x2="22" y2="12"/>
+                <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+              </svg>
+            </div>
+            <h3 class="org-card__name">국제협력센터</h3>
+            <ul class="org-card__roles">
+              <li>ODA 기반 국제협력</li>
+              <li>개발도상국 맞춤 국제연수</li>
+              <li>한국형 리빙랩 글로벌 확산</li>
+              <li>KOICA·UNDP 연계</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="about-section" style="background: var(--color-surface); border-top: 1px solid var(--color-border);">
+      <div class="container">
+        <div class="about-section__grid">
+          <div>
+            <div class="about-section__label">Our Goal</div>
+            <h2 class="about-section__title">2026년까지 달성할 목표</h2>
+          </div>
+          <div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5);">
+              <div class="stat-card">
+                <div class="stat-card__label">리빙랩 지원</div>
+                <div class="stat-card__value">4<span style="font-size: var(--text-md); color: var(--color-text-muted); font-weight: 500;">건</span></div>
+                <div class="stat-card__meta">2026년 누적 목표</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card__label">ESG 프로그램</div>
+                <div class="stat-card__value">12<span style="font-size: var(--text-md); color: var(--color-text-muted); font-weight: 500;">건</span></div>
+                <div class="stat-card__meta">2026년 누적 목표</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card__label">국제연수 교육</div>
+                <div class="stat-card__value">100<span style="font-size: var(--text-md); color: var(--color-text-muted); font-weight: 500;">명</span></div>
+                <div class="stat-card__meta">2026년 목표</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-slot="footer"></div>
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

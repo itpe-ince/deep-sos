@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>성공 사례 관리 - SOS랩 관리자</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    .case-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+      margin-bottom: var(--space-5);
+    }
+
+    .cases-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
+    }
+    .admin-case-card {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 160px 1fr;
+    }
+    .admin-case-card__cover {
+      background: linear-gradient(135deg, var(--cover-a, #dbeafe), var(--cover-b, #bfdbfe));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    .admin-case-card__body {
+      padding: var(--space-4);
+    }
+    .admin-case-card__top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--space-2);
+    }
+    .admin-case-card__title {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      line-height: 1.4;
+      flex: 1;
+    }
+    .admin-case-card__status {
+      font-size: 10px;
+      padding: 2px var(--space-2);
+      border-radius: var(--radius-full);
+      font-weight: 700;
+    }
+    .admin-case-card__meta {
+      display: flex;
+      gap: var(--space-3);
+      font-size: 11px;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-3);
+    }
+    .admin-case-card__flags {
+      display: flex;
+      gap: 4px;
+      margin-bottom: var(--space-3);
+      flex-wrap: wrap;
+    }
+    .admin-case-card__actions {
+      display: flex;
+      gap: var(--space-2);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .story-preview {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-1);
+      margin-bottom: var(--space-3);
+    }
+    .story-phase {
+      padding: var(--space-2);
+      background: var(--color-bg);
+      border-radius: var(--radius-sm);
+      text-align: center;
+    }
+    .story-phase__label {
+      font-size: 9px;
+      color: var(--color-text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .story-phase__icon {
+      font-size: var(--text-sm);
+      margin-top: 2px;
+    }
+
+    @media (max-width: 1200px) {
+      .cases-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body data-admin-nav="success-cases">
+  <div class="admin-layout">
+    <div data-slot="admin-side"></div>
+    <div class="admin-main">
+      <div data-slot="admin-top"></div>
+
+      <main class="admin-content">
+        <div class="admin-page-header">
+          <div class="admin-page-header__breadcrumb">
+            <a href="#">관리자</a><span>/</span>
+            <span>성공 사례</span>
+          </div>
+          <div class="admin-page-header__flex">
+            <div>
+              <h1 class="admin-page-header__title">성공 사례 관리</h1>
+              <p class="admin-page-header__subtitle">완료된 리빙랩 프로젝트를 성공 사례로 등록하여 대외 공개·정책 연계합니다</p>
+            </div>
+            <button class="btn btn--primary btn--sm">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              새 사례 등록
+            </button>
+          </div>
+        </div>
+
+        <section class="case-stats">
+          <div class="mini-stat">
+            <div class="mini-stat__icon" style="background: #dbeafe; color: #2563eb;">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+              </svg>
+            </div>
+            <div>
+              <div class="mini-stat__value">24</div>
+              <div class="mini-stat__label">등록 사례</div>
+            </div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat__icon" style="background: #d1fae5; color: #059669;">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </div>
+            <div>
+              <div class="mini-stat__value">18</div>
+              <div class="mini-stat__label">공개중</div>
+            </div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat__icon" style="background: #fef3c7; color: #d97706;">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+              </svg>
+            </div>
+            <div>
+              <div class="mini-stat__value">9</div>
+              <div class="mini-stat__label">정책 연계</div>
+            </div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat__icon" style="background: #ede9fe; color: #7c3aed;">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+                <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="mini-stat__value">3</div>
+              <div class="mini-stat__label">글로벌 전환</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Filter -->
+        <div class="filter-bar" style="margin-bottom: var(--space-4);">
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">상태</span>
+            <select class="filter-bar__select">
+              <option>전체</option><option>공개중</option><option>비공개</option><option>임시저장</option>
+            </select>
+          </div>
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">캠퍼스</span>
+            <select class="filter-bar__select">
+              <option>전체</option><option>대전</option><option>공주</option><option>예산</option><option>세종</option>
+            </select>
+          </div>
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">특징</span>
+            <select class="filter-bar__select">
+              <option>전체</option><option>정책 연계</option><option>글로벌 전환</option><option>사업화</option>
+            </select>
+          </div>
+          <div class="filter-bar__spacer"></div>
+          <input type="text" placeholder="사례 검색..." style="padding: var(--space-2) var(--space-3); font-size: var(--text-sm); border: 1px solid var(--color-border); border-radius: var(--radius-md); width: 220px;">
+        </div>
+
+        <!-- Cases Grid -->
+        <div class="cases-grid">
+          <div class="admin-case-card">
+            <div class="admin-case-card__cover" style="--cover-a: #dbeafe; --cover-b: #93c5fd;">💧</div>
+            <div class="admin-case-card__body">
+              <div class="admin-case-card__top">
+                <div class="admin-case-card__title">지역 스마트 빗물 관리 시스템</div>
+                <span class="admin-case-card__status" style="background: #d1fae5; color: #059669;">공개</span>
+              </div>
+              <div class="admin-case-card__meta">
+                <span class="badge badge--campus-dj">대전</span>
+                <span>2026.08</span>
+                <span>👁 2,345</span>
+              </div>
+              <div class="story-preview">
+                <div class="story-phase">
+                  <div class="story-phase__label">문제</div>
+                  <div class="story-phase__icon">✓</div>
+                </div>
+                <div class="story-phase">
+                  <div class="story-phase__label">과정</div>
+                  <div class="story-phase__icon">✓</div>
+                </div>
+                <div class="story-phase">
+                  <div class="story-phase__label">결과</div>
+                  <div class="story-phase__icon">✓</div>
+                </div>
+                <div class="story-phase">
+                  <div class="story-phase__label">임팩트</div>
+                  <div class="story-phase__icon">✓</div>
+                </div>
+              </div>
+              <div class="admin-case-card__flags">
+                <span class="badge badge--warning">🏆 정책 연계</span>
+                <span class="badge badge--primary">SDG 13</span>
+                <span class="badge badge--primary">SDG 11</span>
+              </div>
+              <div class="admin-case-card__actions">
+                <button class="btn btn--secondary btn--sm">편집</button>
+                <button class="btn btn--ghost btn--sm">미리보기</button>
+                <button class="btn btn--ghost btn--sm" style="margin-left: auto;">비공개</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-case-card">
+            <div class="admin-case-card__cover" style="--cover-a: #ede9fe; --cover-b: #c4b5fd;">👵</div>
+            <div class="admin-case-card__body">
+              <div class="admin-case-card__top">
+                <div class="admin-case-card__title">예산 고령자 디지털 교육 프로그램</div>
+                <span class="admin-case-card__status" style="background: #d1fae5; color: #059669;">공개</span>
+              </div>
+              <div class="admin-case-card__meta">
+                <span class="badge badge--campus-ys">예산</span>
+                <span>2026.03</span>
+                <span>👁 4,182</span>
+              </div>
+              <div class="story-preview">
+                <div class="story-phase"><div class="story-phase__label">문제</div><div class="story-phase__icon">✓</div></div>
+                <div class="story-phase"><div class="story-phase__label">과정</div><div class="story-phase__icon">✓</div></div>
+                <div class="story-phase"><div class="story-phase__label">결과</div><div class="story-phase__icon">✓</div></div>
+                <div class="story-phase"><div class="story-phase__label">임팩트</div><div class="story-phase__icon">✓</div></div>
+              </div>
+              <div class="admin-case-card__flags">
+                <span class="badge badge--warning">🏆 정책 연계</span>
+                <span class="badge badge--info">🌏 글로벌 전환</span>
+                <span class="badge badge--primary">SDG 4</span>
+              </div>
+              <div class="admin-case-card__actions">
+                <button class="btn btn--secondary btn--sm">편집</button>
+                <button class="btn btn--ghost btn--sm">미리보기</button>
+                <button class="btn btn--ghost btn--sm" style="margin-left: auto;">비공개</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-case-card">
+            <div class="admin-case-card__cover" style="--cover-a: #d1fae5; --cover-b: #6ee7b7;">🏪</div>
+            <div class="admin-case-card__body">
+              <div class="admin-case-card__top">
+                <div class="admin-case-card__title">공주 전통시장 디지털화</div>
+                <span class="admin-case-card__status" style="background: #d1fae5; color: #059669;">공개</span>
+              </div>
+              <div class="admin-case-card__meta">
+                <span class="badge badge--campus-gj">공주</span>
+                <span>2026.06</span>
+                <span>👁 1,892</span>
+              </div>
+              <div class="story-preview">
+                <div class="story-phase"><div class="story-phase__label">문제</div><div class="story-phase__icon">✓</div></div>
+                <div class="story-phase"><div class="story-phase__label">과정</div><div class="story-phase__icon">✓</div></div>
+                <div class="story-phase"><div class="story-phase__label">결과</div><div class="story-phase__icon">✓</div></div>
+                <div class="story-phase"><div class="story-phase__label">임팩트</div><div class="story-phase__icon">✓</div></div>
+              </div>
+              <div class="admin-case-card__flags">
+                <span class="badge badge--success">💼 사업화</span>
+                <span class="badge badge--primary">SDG 8</span>
+                <span class="badge badge--primary">SDG 11</span>
+              </div>
+              <div class="admin-case-card__actions">
+                <button class="btn btn--secondary btn--sm">편집</button>
+                <button class="btn btn--ghost btn--sm">미리보기</button>
+                <button class="btn btn--ghost btn--sm" style="margin-left: auto;">비공개</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-case-card">
+            <div class="admin-case-card__cover" style="--cover-a: #ffedd5; --cover-b: #fdba74;">🚌</div>
+            <div class="admin-case-card__body">
+              <div class="admin-case-card__top">
+                <div class="admin-case-card__title">세종시 대중교통 실시간 알림</div>
+                <span class="admin-case-card__status" style="background: #fef3c7; color: #d97706;">임시저장</span>
+              </div>
+              <div class="admin-case-card__meta">
+                <span class="badge badge--campus-sj">세종</span>
+                <span>2026.02</span>
+                <span>👁 -</span>
+              </div>
+              <div class="story-preview">
+                <div class="story-phase"><div class="story-phase__label">문제</div><div class="story-phase__icon">✓</div></div>
+                <div class="story-phase"><div class="story-phase__label">과정</div><div class="story-phase__icon">✓</div></div>
+                <div class="story-phase"><div class="story-phase__label">결과</div><div class="story-phase__icon">◐</div></div>
+                <div class="story-phase"><div class="story-phase__label">임팩트</div><div class="story-phase__icon">—</div></div>
+              </div>
+              <div class="admin-case-card__flags">
+                <span class="badge badge--info">🌏 글로벌 전환 후보</span>
+                <span class="badge badge--primary">SDG 9</span>
+                <span class="badge badge--primary">SDG 11</span>
+              </div>
+              <div class="admin-case-card__actions">
+                <button class="btn btn--primary btn--sm">이어쓰기</button>
+                <button class="btn btn--ghost btn--sm">미리보기</button>
+                <button class="btn btn--ghost btn--sm" style="margin-left: auto;">삭제</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <nav class="pagination">
+          <button>‹</button>
+          <a href="#" class="is-active">1</a>
+          <a href="#">2</a>
+          <a href="#">3</a>
+          <button>›</button>
+        </nav>
+      </main>
+    </div>
+  </div>
+
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

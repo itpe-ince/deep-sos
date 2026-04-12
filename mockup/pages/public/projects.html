@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>리빙랩 프로젝트 - SOS랩</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    .project-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      transition: all var(--transition-base);
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+    .project-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--color-primary);
+      color: inherit;
+    }
+    .project-card__cover {
+      aspect-ratio: 16 / 9;
+      background: linear-gradient(135deg, var(--cover-start, #dbeafe), var(--cover-end, #d1fae5));
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      padding: var(--space-5);
+    }
+    .project-card__cover::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.15), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(255,255,255,0.15), transparent 40%);
+    }
+    .project-card__badges {
+      display: flex;
+      gap: var(--space-2);
+      position: relative;
+      z-index: 1;
+    }
+    .project-card__phase-overlay {
+      position: absolute;
+      top: var(--space-5);
+      right: var(--space-5);
+      z-index: 1;
+      padding: var(--space-2) var(--space-3);
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: var(--radius-md);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      color: var(--color-text);
+      backdrop-filter: blur(4px);
+    }
+    .project-card__body {
+      padding: var(--space-5);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .project-card__title {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: var(--space-3);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .project-card__desc {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+      flex: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: var(--space-4);
+    }
+    .project-card__progress {
+      margin-bottom: var(--space-4);
+    }
+    .project-card__progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--text-xs);
+      margin-bottom: var(--space-2);
+    }
+    .project-card__progress-bar {
+      height: 6px;
+      background: var(--color-surface-hover);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    .project-card__progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-primary), #60a5fa);
+      border-radius: var(--radius-full);
+    }
+    .project-card__meta {
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      gap: var(--space-4);
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+    .project-card__sdgs {
+      display: flex;
+      gap: 4px;
+      margin-top: var(--space-3);
+    }
+    .sdg-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: var(--radius-sm);
+      font-size: 10px;
+      font-weight: 800;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body data-nav="projects">
+  <div data-slot="header"></div>
+
+  <main class="page">
+    <section class="page-header">
+      <div class="container">
+        <nav class="breadcrumb">
+          <a href="/mockup/pages/index.html">홈</a>
+          <span>/</span>
+          <span>리빙랩 프로젝트</span>
+        </nav>
+        <h1 class="page-header__title">리빙랩 프로젝트</h1>
+        <p class="page-header__subtitle">
+          대학-지역-시민이 함께 진행하는 문제 해결 프로젝트
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="filter-bar">
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">단계</span>
+            <select class="filter-bar__select">
+              <option>전체</option>
+              <option>1. 탐색</option>
+              <option>2. 실행</option>
+              <option>3. 개발</option>
+              <option>4. 검증</option>
+              <option>5. 활용</option>
+            </select>
+          </div>
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">캠퍼스</span>
+            <select class="filter-bar__select">
+              <option>전체</option>
+              <option>대전 (청년정착)</option>
+              <option>공주 (문화재생)</option>
+              <option>예산 (고령자돌봄)</option>
+              <option>세종 (모빌리티)</option>
+            </select>
+          </div>
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">SDGs</span>
+            <select class="filter-bar__select">
+              <option>전체</option>
+              <option>SDG 4 양질의 교육</option>
+              <option>SDG 11 지속가능 도시</option>
+              <option>SDG 13 기후변화 대응</option>
+            </select>
+          </div>
+          <div class="filter-bar__spacer"></div>
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">정렬</span>
+            <select class="filter-bar__select">
+              <option>최신순</option>
+              <option>진행률 높은순</option>
+              <option>참여자 많은순</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid--3">
+          <a href="/mockup/pages/public/project-detail.html" class="project-card" data-component="ProjectCard">
+            <div class="project-card__cover" style="--cover-start: #dbeafe; --cover-end: #bfdbfe;">
+              <div class="project-card__phase-overlay">● 실행 단계 (2/5)</div>
+              <div class="project-card__badges">
+                <span class="badge badge--campus-dj">대전</span>
+                <span class="badge badge--info">청년정착</span>
+              </div>
+            </div>
+            <div class="project-card__body">
+              <h3 class="project-card__title">청년 일자리 경험 플랫폼 '대전잡스'</h3>
+              <p class="project-card__desc">
+                ICT 기반 청년 일자리 실험 및 농촌형 주거·일·경험 플랫폼 개발. 지역 청년들이 다양한 일 경험을 통해 진로를 탐색할 수 있도록 지원합니다.
+              </p>
+              <div class="project-card__progress">
+                <div class="project-card__progress-label">
+                  <span style="color: var(--color-text-secondary);">진행률</span>
+                  <span style="color: var(--color-primary); font-weight: 700;">35%</span>
+                </div>
+                <div class="project-card__progress-bar">
+                  <div class="project-card__progress-fill" style="width: 35%;"></div>
+                </div>
+              </div>
+              <div class="project-card__sdgs">
+                <div class="sdg-dot" style="background: #c5192d;" title="SDG 4 양질의 교육">4</div>
+                <div class="sdg-dot" style="background: #a21942;" title="SDG 8 양질의 일자리">8</div>
+                <div class="sdg-dot" style="background: #fd9d24;" title="SDG 11 지속가능한 도시">11</div>
+              </div>
+              <div class="project-card__meta">
+                <span>👥 12명</span>
+                <span>🏢 4기관</span>
+                <span style="margin-left: auto;">~2026.12</span>
+              </div>
+            </div>
+          </a>
+
+          <a href="/mockup/pages/public/project-detail.html" class="project-card">
+            <div class="project-card__cover" style="--cover-start: #d1fae5; --cover-end: #a7f3d0;">
+              <div class="project-card__phase-overlay">● 개발 단계 (3/5)</div>
+              <div class="project-card__badges">
+                <span class="badge badge--campus-gj">공주</span>
+                <span class="badge badge--success">문화재생</span>
+              </div>
+            </div>
+            <div class="project-card__body">
+              <h3 class="project-card__title">백제문화권 청년 문화기획자 양성</h3>
+              <p class="project-card__desc">
+                공주의 백제문화 자원을 활용한 청년 문화기획자 양성 프로그램. 유휴공간을 활용한 문화 창업 랩 운영.
+              </p>
+              <div class="project-card__progress">
+                <div class="project-card__progress-label">
+                  <span style="color: var(--color-text-secondary);">진행률</span>
+                  <span style="color: var(--color-secondary); font-weight: 700;">60%</span>
+                </div>
+                <div class="project-card__progress-bar">
+                  <div class="project-card__progress-fill" style="width: 60%; background: linear-gradient(90deg, var(--color-secondary), #34d399);"></div>
+                </div>
+              </div>
+              <div class="project-card__sdgs">
+                <div class="sdg-dot" style="background: #c5192d;">4</div>
+                <div class="sdg-dot" style="background: #a21942;">8</div>
+                <div class="sdg-dot" style="background: #fd9d24;">11</div>
+              </div>
+              <div class="project-card__meta">
+                <span>👥 8명</span>
+                <span>🏢 3기관</span>
+                <span style="margin-left: auto;">~2026.11</span>
+              </div>
+            </div>
+          </a>
+
+          <a href="/mockup/pages/public/project-detail.html" class="project-card">
+            <div class="project-card__cover" style="--cover-start: #ede9fe; --cover-end: #ddd6fe;">
+              <div class="project-card__phase-overlay">● 검증 단계 (4/5)</div>
+              <div class="project-card__badges">
+                <span class="badge badge--campus-ys">예산</span>
+                <span class="badge badge--purple">고령자돌봄</span>
+              </div>
+            </div>
+            <div class="project-card__body">
+              <h3 class="project-card__title">예산 고령자 돌봄테크 리빙랩</h3>
+              <p class="project-card__desc">
+                원격진료 부스, 건강 모니터링, 디지털 역량 강화 플랫폼을 통한 고령자 돌봄 서비스 구축.
+              </p>
+              <div class="project-card__progress">
+                <div class="project-card__progress-label">
+                  <span style="color: var(--color-text-secondary);">진행률</span>
+                  <span style="color: #7c3aed; font-weight: 700;">80%</span>
+                </div>
+                <div class="project-card__progress-bar">
+                  <div class="project-card__progress-fill" style="width: 80%; background: linear-gradient(90deg, #7c3aed, #a78bfa);"></div>
+                </div>
+              </div>
+              <div class="project-card__sdgs">
+                <div class="sdg-dot" style="background: #4c9f38;">3</div>
+                <div class="sdg-dot" style="background: #fd6925;">9</div>
+                <div class="sdg-dot" style="background: #dd1367;">10</div>
+              </div>
+              <div class="project-card__meta">
+                <span>👥 15명</span>
+                <span>🏢 6기관</span>
+                <span style="margin-left: auto;">~2026.10</span>
+              </div>
+            </div>
+          </a>
+
+          <a href="/mockup/pages/public/project-detail.html" class="project-card">
+            <div class="project-card__cover" style="--cover-start: #ffedd5; --cover-end: #fed7aa;">
+              <div class="project-card__phase-overlay">● 탐색 단계 (1/5)</div>
+              <div class="project-card__badges">
+                <span class="badge badge--campus-sj">세종</span>
+                <span class="badge" style="background: #ffedd5; color: #ea580c;">모빌리티</span>
+              </div>
+            </div>
+            <div class="project-card__body">
+              <h3 class="project-card__title">세종 자율주행 모빌리티 실증</h3>
+              <p class="project-card__desc">
+                자율주행 차량 공유 서비스를 통한 세종시 교통 문제 해결. 스마트 모빌리티 플랫폼 구축 및 실증.
+              </p>
+              <div class="project-card__progress">
+                <div class="project-card__progress-label">
+                  <span style="color: var(--color-text-secondary);">진행률</span>
+                  <span style="color: #ea580c; font-weight: 700;">15%</span>
+                </div>
+                <div class="project-card__progress-bar">
+                  <div class="project-card__progress-fill" style="width: 15%; background: linear-gradient(90deg, #ea580c, #fb923c);"></div>
+                </div>
+              </div>
+              <div class="project-card__sdgs">
+                <div class="sdg-dot" style="background: #fd6925;">9</div>
+                <div class="sdg-dot" style="background: #fd9d24;">11</div>
+                <div class="sdg-dot" style="background: #3f7e44;">13</div>
+              </div>
+              <div class="project-card__meta">
+                <span>👥 20명</span>
+                <span>🏢 8기관</span>
+                <span style="margin-left: auto;">~2027.03</span>
+              </div>
+            </div>
+          </a>
+
+          <a href="/mockup/pages/public/project-detail.html" class="project-card">
+            <div class="project-card__cover" style="--cover-start: #dbeafe; --cover-end: #bfdbfe;">
+              <div class="project-card__phase-overlay" style="background: rgba(16, 185, 129, 0.95); color: white;">✓ 활용 단계 (5/5)</div>
+              <div class="project-card__badges">
+                <span class="badge badge--campus-dj">대전</span>
+                <span class="badge badge--success">완료</span>
+              </div>
+            </div>
+            <div class="project-card__body">
+              <h3 class="project-card__title">지역 스마트 빗물 관리 시스템</h3>
+              <p class="project-card__desc">
+                한국수자원공사와 협력하여 지역 맞춤형 스마트 빗물 관리 시스템을 구축합니다. 기후변화 대응 재난안전 연구와 연계.
+              </p>
+              <div class="project-card__progress">
+                <div class="project-card__progress-label">
+                  <span style="color: var(--color-text-secondary);">진행률</span>
+                  <span style="color: var(--color-secondary); font-weight: 700;">100%</span>
+                </div>
+                <div class="project-card__progress-bar">
+                  <div class="project-card__progress-fill" style="width: 100%; background: var(--color-secondary);"></div>
+                </div>
+              </div>
+              <div class="project-card__sdgs">
+                <div class="sdg-dot" style="background: #26bde2;">6</div>
+                <div class="sdg-dot" style="background: #fd9d24;">11</div>
+                <div class="sdg-dot" style="background: #3f7e44;">13</div>
+              </div>
+              <div class="project-card__meta">
+                <span>👥 10명</span>
+                <span>🏢 5기관</span>
+                <span style="margin-left: auto;">2026.08 완료</span>
+              </div>
+            </div>
+          </a>
+
+          <a href="/mockup/pages/public/project-detail.html" class="project-card">
+            <div class="project-card__cover" style="--cover-start: #d1fae5; --cover-end: #a7f3d0;">
+              <div class="project-card__phase-overlay">● 실행 단계 (2/5)</div>
+              <div class="project-card__badges">
+                <span class="badge badge--campus-gj">공주</span>
+                <span class="badge badge--success">문화재생</span>
+              </div>
+            </div>
+            <div class="project-card__body">
+              <h3 class="project-card__title">다문화 가정 디지털 교육격차 해소</h3>
+              <p class="project-card__desc">
+                공주 지역 다문화 가정 및 소외계층 대상 디지털 교육 프로그램. 지역특화 SDGs 실현.
+              </p>
+              <div class="project-card__progress">
+                <div class="project-card__progress-label">
+                  <span style="color: var(--color-text-secondary);">진행률</span>
+                  <span style="color: var(--color-secondary); font-weight: 700;">40%</span>
+                </div>
+                <div class="project-card__progress-bar">
+                  <div class="project-card__progress-fill" style="width: 40%; background: linear-gradient(90deg, var(--color-secondary), #34d399);"></div>
+                </div>
+              </div>
+              <div class="project-card__sdgs">
+                <div class="sdg-dot" style="background: #c5192d;">4</div>
+                <div class="sdg-dot" style="background: #ff3a21;">5</div>
+                <div class="sdg-dot" style="background: #dd1367;">10</div>
+              </div>
+              <div class="project-card__meta">
+                <span>👥 11명</span>
+                <span>🏢 4기관</span>
+                <span style="margin-left: auto;">~2026.12</span>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <nav class="pagination">
+          <button>‹</button>
+          <a href="#" class="is-active">1</a>
+          <a href="#">2</a>
+          <button>›</button>
+        </nav>
+      </div>
+    </section>
+  </main>
+
+  <div data-slot="footer"></div>
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

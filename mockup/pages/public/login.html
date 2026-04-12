@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>로그인 - SOS랩</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    .auth-page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .auth-visual {
+      background:
+        radial-gradient(circle at 20% 20%, #2563eb 0%, transparent 40%),
+        radial-gradient(circle at 80% 80%, #7c3aed 0%, transparent 40%),
+        linear-gradient(135deg, #1e3a8a 0%, #4c1d95 100%);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: var(--space-12);
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-visual::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .auth-visual__brand {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      font-size: var(--text-lg);
+      font-weight: 800;
+    }
+    .auth-visual__brand a {
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .auth-visual__brand-logo {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+    .auth-visual__content {
+      position: relative;
+      z-index: 1;
+    }
+    .auth-visual__eyebrow {
+      display: inline-block;
+      padding: var(--space-2) var(--space-4);
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      margin-bottom: var(--space-6);
+    }
+    .auth-visual__title {
+      font-size: var(--text-4xl);
+      font-weight: 900;
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+      margin-bottom: var(--space-5);
+    }
+    .auth-visual__desc {
+      font-size: var(--text-md);
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.75);
+      max-width: 480px;
+    }
+    .auth-visual__features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+      margin-top: var(--space-8);
+    }
+    .auth-visual__feature {
+      padding: var(--space-4);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-lg);
+    }
+    .auth-visual__feature-label {
+      font-size: var(--text-xs);
+      opacity: 0.7;
+      margin-bottom: var(--space-1);
+    }
+    .auth-visual__feature-value {
+      font-size: var(--text-lg);
+      font-weight: 800;
+    }
+    .auth-visual__footer {
+      position: relative;
+      z-index: 1;
+      font-size: var(--text-xs);
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .auth-form-area {
+      padding: var(--space-12);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: var(--color-surface);
+      overflow-y: auto;
+    }
+    .auth-form {
+      max-width: 400px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .auth-form__title {
+      font-size: var(--text-2xl);
+      font-weight: 800;
+      margin-bottom: var(--space-2);
+      letter-spacing: -0.02em;
+    }
+    .auth-form__subtitle {
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-8);
+    }
+
+    .auth-tabs {
+      display: flex;
+      gap: 2px;
+      background: var(--color-surface-hover);
+      padding: var(--space-1);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-6);
+    }
+    .auth-tabs button {
+      flex: 1;
+      padding: var(--space-3);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-fast);
+    }
+    .auth-tabs button.is-active {
+      background: var(--color-surface);
+      color: var(--color-primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      margin: var(--space-6) 0;
+      color: var(--color-text-muted);
+      font-size: var(--text-xs);
+    }
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--color-border);
+    }
+
+    .auth-social {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-3);
+    }
+    .auth-social__btn {
+      padding: var(--space-3);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+    }
+    .auth-social__btn:hover {
+      border-color: var(--color-text-muted);
+      background: var(--color-surface-hover);
+    }
+    .auth-social__icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .auth-social__btn--kakao .auth-social__icon { background: #fee500; color: #000; }
+    .auth-social__btn--naver .auth-social__icon { background: #03c75a; color: white; }
+    .auth-social__btn--google .auth-social__icon { background: white; color: #4285f4; border: 1px solid #dadce0; }
+
+    .auth-form__footer {
+      text-align: center;
+      margin-top: var(--space-6);
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+    }
+
+    .auth-form__checkbox {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      margin: var(--space-3) 0;
+    }
+    .auth-form__forgot {
+      font-size: var(--text-sm);
+      color: var(--color-primary);
+    }
+
+    /* Signup role selector */
+    .role-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+    }
+    .role-option {
+      padding: var(--space-4);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-align: center;
+    }
+    .role-option:hover {
+      border-color: var(--color-primary);
+    }
+    .role-option--selected {
+      border-color: var(--color-primary);
+      background: var(--color-primary-light);
+    }
+    .role-option__icon {
+      font-size: 24px;
+      margin-bottom: var(--space-2);
+    }
+    .role-option__label {
+      font-size: var(--text-sm);
+      font-weight: 600;
+    }
+    .role-option__desc {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-top: var(--space-1);
+    }
+
+    @media (max-width: 1024px) {
+      .auth-page {
+        grid-template-columns: 1fr;
+      }
+      .auth-visual {
+        display: none;
+      }
+      .auth-form-area {
+        padding: var(--space-8) var(--space-5);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-page">
+    <!-- Visual Side -->
+    <aside class="auth-visual">
+      <div class="auth-visual__brand">
+        <a href="/mockup/pages/index.html">
+          <div class="auth-visual__brand-logo">SOS</div>
+          SOS랩
+        </a>
+      </div>
+      <div class="auth-visual__content">
+        <div class="auth-visual__eyebrow">
+          ⭐ 2025 글로컬대학 본지정 사업
+        </div>
+        <h1 class="auth-visual__title">
+          지역의 문제를<br>함께 해결하는 곳.
+        </h1>
+        <p class="auth-visual__desc">
+          대학의 역량과 시민의 참여로 만들어가는 사회공헌 플랫폼에 함께해주세요.
+          여러분의 목소리가 지역을 바꾸는 첫걸음이 됩니다.
+        </p>
+        <div class="auth-visual__features">
+          <div class="auth-visual__feature">
+            <div class="auth-visual__feature-label">해결된 문제</div>
+            <div class="auth-visual__feature-value">127건</div>
+          </div>
+          <div class="auth-visual__feature">
+            <div class="auth-visual__feature-label">진행 프로젝트</div>
+            <div class="auth-visual__feature-value">12개</div>
+          </div>
+          <div class="auth-visual__feature">
+            <div class="auth-visual__feature-label">누적 봉사시간</div>
+            <div class="auth-visual__feature-value">2,845시간</div>
+          </div>
+          <div class="auth-visual__feature">
+            <div class="auth-visual__feature-label">참여 시민</div>
+            <div class="auth-visual__feature-value">1,438명</div>
+          </div>
+        </div>
+      </div>
+      <div class="auth-visual__footer">
+        © 2026 SOS랩 (USCP) · 지역사회특화센터 · ESG센터 · 국제협력센터
+      </div>
+    </aside>
+
+    <!-- Form Side -->
+    <div class="auth-form-area">
+      <div class="auth-form">
+        <h2 class="auth-form__title">환영합니다</h2>
+        <p class="auth-form__subtitle">로그인하고 우리 지역을 함께 만들어가요</p>
+
+        <div class="auth-tabs">
+          <button class="is-active" data-auth-tab="login">로그인</button>
+          <button data-auth-tab="signup">회원가입</button>
+        </div>
+
+        <!-- Login Form -->
+        <form data-auth-content="login">
+          <div class="form-group">
+            <label class="form-label">이메일</label>
+            <input type="email" class="form-input" placeholder="your@email.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">비밀번호</label>
+            <input type="password" class="form-input" placeholder="비밀번호를 입력하세요">
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label class="auth-form__checkbox">
+              <input type="checkbox"> 로그인 상태 유지
+            </label>
+            <a href="#" class="auth-form__forgot">비밀번호 찾기</a>
+          </div>
+          <button type="submit" class="btn btn--primary btn--block btn--lg" style="margin-top: var(--space-5);">
+            로그인
+          </button>
+
+          <div class="auth-divider">또는 간편 로그인</div>
+
+          <div class="auth-social">
+            <button type="button" class="auth-social__btn auth-social__btn--kakao">
+              <div class="auth-social__icon">K</div>
+              카카오
+            </button>
+            <button type="button" class="auth-social__btn auth-social__btn--naver">
+              <div class="auth-social__icon">N</div>
+              네이버
+            </button>
+            <button type="button" class="auth-social__btn auth-social__btn--google">
+              <div class="auth-social__icon">G</div>
+              구글
+            </button>
+          </div>
+
+          <p class="auth-form__footer">
+            아직 회원이 아니신가요?
+            <a href="#" data-switch-tab="signup" style="font-weight: 600;">회원가입</a>
+          </p>
+        </form>
+
+        <!-- Signup Form -->
+        <form data-auth-content="signup" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">가입 유형 <span class="required">*</span></label>
+            <div class="role-selector">
+              <div class="role-option role-option--selected">
+                <div class="role-option__icon">👨‍🎓</div>
+                <div class="role-option__label">학생</div>
+                <div class="role-option__desc">재학생</div>
+              </div>
+              <div class="role-option">
+                <div class="role-option__icon">👨‍🏫</div>
+                <div class="role-option__label">교수·직원</div>
+                <div class="role-option__desc">대학 구성원</div>
+              </div>
+              <div class="role-option">
+                <div class="role-option__icon">👤</div>
+                <div class="role-option__label">시민</div>
+                <div class="role-option__desc">일반 시민</div>
+              </div>
+              <div class="role-option">
+                <div class="role-option__icon">🏢</div>
+                <div class="role-option__label">기관</div>
+                <div class="role-option__desc">지자체·기업</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">이름 <span class="required">*</span></label>
+            <input type="text" class="form-input" placeholder="홍길동">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">이메일 <span class="required">*</span></label>
+            <input type="email" class="form-input" placeholder="your@email.com">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">비밀번호 <span class="required">*</span></label>
+            <input type="password" class="form-input" placeholder="8자 이상, 영문+숫자+특수문자">
+            <p class="form-help">8자 이상, 영문·숫자·특수문자 조합</p>
+          </div>
+
+          <label class="auth-form__checkbox">
+            <input type="checkbox">
+            <span><a href="#" style="color: var(--color-primary);">이용약관</a> 및 <a href="#" style="color: var(--color-primary);">개인정보 처리방침</a>에 동의합니다</span>
+          </label>
+
+          <button type="submit" class="btn btn--primary btn--block btn--lg" style="margin-top: var(--space-5);">
+            회원가입
+          </button>
+
+          <div class="auth-divider">또는 간편 가입</div>
+
+          <div class="auth-social">
+            <button type="button" class="auth-social__btn auth-social__btn--kakao">
+              <div class="auth-social__icon">K</div>
+              카카오
+            </button>
+            <button type="button" class="auth-social__btn auth-social__btn--naver">
+              <div class="auth-social__icon">N</div>
+              네이버
+            </button>
+            <button type="button" class="auth-social__btn auth-social__btn--google">
+              <div class="auth-social__icon">G</div>
+              구글
+            </button>
+          </div>
+
+          <p class="auth-form__footer">
+            이미 회원이신가요?
+            <a href="#" data-switch-tab="login" style="font-weight: 600;">로그인</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('[data-auth-tab]').forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const target = tab.dataset.authTab;
+        document.querySelectorAll('[data-auth-tab]').forEach((t) => t.classList.remove('is-active'));
+        tab.classList.add('is-active');
+        document.querySelectorAll('[data-auth-content]').forEach((c) => {
+          c.style.display = c.dataset.authContent === target ? '' : 'none';
+        });
+      });
+    });
+    document.querySelectorAll('[data-switch-tab]').forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.querySelector(`[data-auth-tab="${link.dataset.switchTab}"]`).click();
+      });
+    });
+    document.querySelectorAll('.role-option').forEach((opt) => {
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('.role-option').forEach((o) => o.classList.remove('role-option--selected'));
+        opt.classList.add('role-option--selected');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>참여 방법 안내 - SOS랩</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    .guide-hero {
+      padding: var(--space-16) 0 var(--space-12);
+      background: linear-gradient(180deg, var(--color-secondary-light) 0%, var(--color-bg) 100%);
+      text-align: center;
+    }
+    .guide-hero__title {
+      font-size: var(--text-3xl);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-4);
+    }
+    .guide-hero__subtitle {
+      font-size: var(--text-lg);
+      color: var(--color-text-secondary);
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    /* Role Tabs */
+    .role-tabs {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-2);
+      margin-top: var(--space-8);
+    }
+    .role-tab {
+      padding: var(--space-3) var(--space-5);
+      background: white;
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-full);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .role-tab:hover { border-color: var(--color-primary); }
+    .role-tab.is-active {
+      background: var(--color-primary);
+      color: white;
+      border-color: var(--color-primary);
+    }
+
+    /* Steps */
+    .steps-section {
+      padding: var(--space-12) 0;
+    }
+    .step-row {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: var(--space-6);
+      margin-bottom: var(--space-8);
+      position: relative;
+    }
+    .step-row:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 40px;
+      top: 80px;
+      bottom: -32px;
+      width: 2px;
+      background: var(--color-border);
+    }
+    .step-num {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      color: white;
+      font-size: var(--text-2xl);
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 8px 24px -8px rgba(37, 99, 235, 0.4);
+    }
+    .step-body {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+    }
+    .step-body__title {
+      font-size: var(--text-xl);
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      margin-bottom: var(--space-3);
+    }
+    .step-body__desc {
+      font-size: var(--text-base);
+      line-height: 1.7;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-4);
+    }
+    .step-checklist {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .step-check {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3);
+      background: var(--color-bg);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+    }
+    .step-check__icon {
+      width: 24px;
+      height: 24px;
+      background: var(--color-secondary-light);
+      color: var(--color-secondary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* FAQ */
+    .faq-section {
+      padding: var(--space-12) 0;
+      background: var(--color-surface);
+      border-top: 1px solid var(--color-border);
+    }
+    .faq-item {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-3);
+      overflow: hidden;
+    }
+    .faq-item__q {
+      padding: var(--space-5);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-size: var(--text-base);
+      font-weight: 600;
+    }
+    .faq-item__q::before {
+      content: 'Q.';
+      color: var(--color-primary);
+      font-weight: 900;
+      margin-right: var(--space-3);
+    }
+    .faq-item__a {
+      padding: 0 var(--space-5) var(--space-5);
+      padding-left: 56px;
+      color: var(--color-text-secondary);
+      font-size: var(--text-sm);
+      line-height: 1.7;
+      border-top: 1px solid var(--color-border);
+      padding-top: var(--space-4);
+    }
+  </style>
+</head>
+<body data-nav="guide">
+  <div data-slot="header"></div>
+
+  <main class="page">
+    <section class="guide-hero">
+      <div class="container">
+        <nav class="breadcrumb" style="justify-content: center;">
+          <a href="/mockup/pages/index.html">홈</a><span>/</span>
+          <a href="/mockup/pages/public/about.html">플랫폼 소개</a><span>/</span>
+          <span>참여 방법</span>
+        </nav>
+        <h1 class="guide-hero__title">SOS랩에 참여하는 방법</h1>
+        <p class="guide-hero__subtitle">
+          누구나 쉽게 우리 지역의 문제를 함께 해결할 수 있습니다.<br>
+          시민·학생·교수·지자체·기관 각자의 참여 방식을 안내해드립니다.
+        </p>
+        <div class="role-tabs">
+          <div class="role-tab is-active">👥 시민</div>
+          <div class="role-tab">🎓 학생</div>
+          <div class="role-tab">👨‍🏫 교수</div>
+          <div class="role-tab">🏢 기관 · 기업</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="steps-section">
+      <div class="container" style="max-width: 820px;">
+        <div class="step-row">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h2 class="step-body__title">회원가입 및 로그인</h2>
+            <p class="step-body__desc">
+              SOS랩 홈페이지에서 간단한 정보 입력으로 가입할 수 있습니다.
+              카카오·네이버·구글 계정으로도 바로 시작할 수 있습니다.
+            </p>
+            <div class="step-checklist">
+              <div class="step-check">
+                <div class="step-check__icon">✓</div>
+                <span>이메일 주소와 기본 정보만으로 가입</span>
+              </div>
+              <div class="step-check">
+                <div class="step-check__icon">✓</div>
+                <span>소셜 로그인 지원 (카카오·네이버·구글)</span>
+              </div>
+              <div class="step-check">
+                <div class="step-check__icon">✓</div>
+                <span>거주 지역 선택 (대전/공주/예산/세종)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-row">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h2 class="step-body__title">지역 문제 제보하기</h2>
+            <p class="step-body__desc">
+              일상에서 발견한 지역의 문제를 제목·설명·사진·위치와 함께 등록합니다.
+              익명 제보도 가능합니다.
+            </p>
+            <div class="step-checklist">
+              <div class="step-check">
+                <div class="step-check__icon">✓</div>
+                <span>카테고리 선택 (환경·안전·교통·복지·문화·기타)</span>
+              </div>
+              <div class="step-check">
+                <div class="step-check__icon">✓</div>
+                <span>지도에서 위치 선택 또는 GPS 자동 인식</span>
+              </div>
+              <div class="step-check">
+                <div class="step-check__icon">✓</div>
+                <span>사진 최대 5장 첨부 가능</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-row">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h2 class="step-body__title">공감 · 댓글로 의견 나누기</h2>
+            <p class="step-body__desc">
+              다른 시민이 제보한 문제에 공감 투표하고 의견을 댓글로 남겨주세요.
+              공감이 많은 문제가 우선적으로 리빙랩 프로젝트로 전환됩니다.
+            </p>
+            <div class="step-checklist">
+              <div class="step-check">
+                <div class="step-check__icon">✓</div>
+                <span>공감 투표로 우선순위 결정</span>
+              </div>
+              <div class="step-check">
+                <div class="step-check__icon">✓</div>
+                <span>처리 상태 실시간 확인 (접수→검토→처리→완료)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-row">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h2 class="step-body__title">리빙랩 프로젝트 참여</h2>
+            <p class="step-body__desc">
+              관심 있는 리빙랩 프로젝트에 직접 참여할 수 있습니다.
+              설문, 인터뷰, 시제품 테스트 등 다양한 방식으로 참여 가능합니다.
+            </p>
+            <div class="step-checklist">
+              <div class="step-check">
+                <div class="step-check__icon">✓</div>
+                <span>현장 피드백 등록 (설문·체크리스트·사진·메모)</span>
+              </div>
+              <div class="step-check">
+                <div class="step-check__icon">✓</div>
+                <span>아이디어 보드에서 팀원과 협업</span>
+              </div>
+              <div class="step-check">
+                <div class="step-check__icon">✓</div>
+                <span>참여 활동은 봉사시간으로 자동 인증</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-row">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h2 class="step-body__title">봉사시간 인증 받기</h2>
+            <p class="step-body__desc">
+              플랫폼에서 참여한 봉사활동은 VMS(자원봉사 인증관리)와
+              1365 자원봉사포털에 자동으로 인증되어 포트폴리오에 기록됩니다.
+            </p>
+            <div class="step-checklist">
+              <div class="step-check">
+                <div class="step-check__icon">✓</div>
+                <span>VMS · 1365 자동 연동</span>
+              </div>
+              <div class="step-check">
+                <div class="step-check__icon">✓</div>
+                <span>개인 포트폴리오 PDF 다운로드 가능</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: var(--space-10);">
+          <a href="/mockup/pages/public/login.html" class="btn btn--primary btn--lg">
+            지금 시작하기
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="faq-section">
+      <div class="container" style="max-width: 820px;">
+        <div style="text-align: center; margin-bottom: var(--space-8);">
+          <h2 style="font-size: var(--text-2xl); font-weight: 800;">자주 묻는 질문</h2>
+          <p style="color: var(--color-text-secondary); margin-top: var(--space-2);">궁금한 점을 해결해드립니다</p>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-item__q">
+            SOS랩에 참여하려면 대학교 구성원이어야 하나요?
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
+          </div>
+          <div class="faq-item__a">
+            아닙니다. 대전·공주·예산·세종 지역의 모든 시민이 참여할 수 있습니다.
+            교수, 학생뿐만 아니라 지역 주민, 공무원, 지역기업 관계자 누구나 회원가입 후 이용 가능합니다.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-item__q">
+            익명으로 문제를 제보할 수 있나요?
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
+          </div>
+          <div class="faq-item__a">
+            가능합니다. 제보 시 "익명 제보" 옵션을 선택하면 다른 사용자에게 작성자가 공개되지 않습니다.
+            단, 관리자는 악성 제보 방지를 위해 작성자 정보를 확인할 수 있습니다.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-item__q">
+            봉사시간은 어떻게 인정받나요?
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
+          </div>
+          <div class="faq-item__a">
+            SOS랩의 봉사활동과 리빙랩 참여는 VMS(사회복지자원봉사인증관리)와 1365 자원봉사포털에 자동으로 연동됩니다.
+            활동 종료 후 관리자 확인을 거쳐 봉사시간이 공식 인정되며, 개인 포트폴리오에도 기록됩니다.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-item__q">
+            제보한 문제는 어떻게 처리되나요?
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
+          </div>
+          <div class="faq-item__a">
+            제보 즉시 관리자가 검토하며, 담당자가 배정되면 상태가 실시간으로 업데이트됩니다.
+            단순 민원은 지자체에 전달되고, 구조적 문제는 리빙랩 프로젝트로 전환되어 대학 연구진이 참여해 해결합니다.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-item__q">
+            참여에 비용이 드나요?
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
+          </div>
+          <div class="faq-item__a">
+            모든 플랫폼 이용은 무료입니다. 회원가입, 제보, 리빙랩 참여, 봉사활동 신청 등 어떤 기능도 별도 비용이 들지 않습니다.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-slot="footer"></div>
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

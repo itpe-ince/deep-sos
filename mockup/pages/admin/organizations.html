@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>참여 기관 · MOU 관리 - SOS랩 관리자</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+      margin-bottom: var(--space-5);
+    }
+    .mini-stat {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .mini-stat__icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mini-stat__value {
+      font-size: var(--text-xl);
+      font-weight: 800;
+    }
+    .mini-stat__label {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+
+    .org-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .org-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: var(--logo-bg, #dbeafe);
+      color: var(--logo-color, #2563eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: var(--text-xs);
+      flex-shrink: 0;
+    }
+    .org-info__name {
+      font-size: var(--text-sm);
+      font-weight: 700;
+    }
+    .org-info__region {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+    .mou-bar {
+      width: 80px;
+      height: 6px;
+      background: #f1f5f9;
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: var(--space-2);
+    }
+    .mou-bar__fill {
+      height: 100%;
+      background: var(--fill-color, var(--color-success));
+      border-radius: var(--radius-full);
+    }
+
+    .tag-cluster {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+  </style>
+</head>
+<body data-admin-nav="organizations">
+  <div class="admin-layout">
+    <div data-slot="admin-side"></div>
+    <div class="admin-main">
+      <div data-slot="admin-top"></div>
+
+      <main class="admin-content">
+        <div class="admin-page-header">
+          <div class="admin-page-header__breadcrumb">
+            <a href="#">관리자</a><span>/</span>
+            <span>참여 기관 · MOU</span>
+          </div>
+          <div class="admin-page-header__flex">
+            <div>
+              <h1 class="admin-page-header__title">참여 기관 · MOU 관리</h1>
+              <p class="admin-page-header__subtitle">지자체, 연구기관, 기업과의 협력 및 협약 현황을 관리합니다</p>
+            </div>
+            <div style="display: flex; gap: var(--space-2);">
+              <button class="btn btn--secondary btn--sm">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                </svg>
+                Excel 내보내기
+              </button>
+              <button class="btn btn--primary btn--sm">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                새 기관 등록
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <section class="stats-row">
+          <div class="mini-stat">
+            <div class="mini-stat__icon" style="background: #dbeafe; color: #2563eb;">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M3 21v-2a4 4 0 014-4h10a4 4 0 014 4v2M7 3h10a2 2 0 012 2v6a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="mini-stat__value">48</div>
+              <div class="mini-stat__label">등록 기관</div>
+            </div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat__icon" style="background: #d1fae5; color: #059669;">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="mini-stat__value">32</div>
+              <div class="mini-stat__label">MOU 체결 완료</div>
+            </div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat__icon" style="background: #fef3c7; color: #d97706;">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M12 8v4l3 3M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="mini-stat__value">5</div>
+              <div class="mini-stat__label">만료 임박 (30일)</div>
+            </div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat__icon" style="background: #ede9fe; color: #7c3aed;">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M9 11H5a2 2 0 00-2 2v7a2 2 0 002 2h14a2 2 0 002-2v-7a2 2 0 00-2-2h-4"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div>
+              <div class="mini-stat__value">12</div>
+              <div class="mini-stat__label">협력 진행 프로젝트</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Filter -->
+        <div class="filter-bar" style="margin-bottom: var(--space-4);">
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">유형</span>
+            <select class="filter-bar__select">
+              <option>전체</option>
+              <option>지자체</option>
+              <option>연구기관</option>
+              <option>기업</option>
+              <option>NGO</option>
+              <option>학교</option>
+            </select>
+          </div>
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">MOU 상태</span>
+            <select class="filter-bar__select">
+              <option>전체</option>
+              <option>체결 완료</option>
+              <option>협의중</option>
+              <option>만료 임박</option>
+              <option>만료</option>
+            </select>
+          </div>
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">지역</span>
+            <select class="filter-bar__select">
+              <option>전체</option><option>대전</option><option>공주</option><option>예산</option><option>세종</option>
+            </select>
+          </div>
+          <div class="filter-bar__spacer"></div>
+          <input type="text" placeholder="기관명 검색..." style="padding: var(--space-2) var(--space-3); font-size: var(--text-sm); border: 1px solid var(--color-border); border-radius: var(--radius-md); width: 220px;">
+        </div>
+
+        <!-- Table -->
+        <div class="admin-card">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th class="admin-table__check"><input type="checkbox"></th>
+                <th>기관</th>
+                <th>유형</th>
+                <th>전문분야</th>
+                <th>MOU 상태</th>
+                <th>체결일</th>
+                <th>만료일</th>
+                <th>연계 프로젝트</th>
+                <th style="width: 80px;">액션</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td>
+                  <div class="org-row">
+                    <div class="org-logo" style="--logo-bg: #dbeafe; --logo-color: #2563eb;">대전</div>
+                    <div>
+                      <div class="org-info__name">대전광역시</div>
+                      <div class="org-info__region">대전 · 지자체</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge--info">지자체</span></td>
+                <td><div class="tag-cluster">
+                  <span class="badge badge--outline">청년정책</span>
+                  <span class="badge badge--outline">도시재생</span>
+                </div></td>
+                <td>
+                  <div class="mou-bar"><div class="mou-bar__fill" style="width: 85%;"></div></div>
+                  <span class="badge badge--success">체결중 · 12개월 남음</span>
+                </td>
+                <td>2025.04.01</td>
+                <td>2028.03.31</td>
+                <td><strong>3건</strong></td>
+                <td>
+                  <button class="action-icon-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td>
+                  <div class="org-row">
+                    <div class="org-logo" style="--logo-bg: #d1fae5; --logo-color: #059669;">공주</div>
+                    <div>
+                      <div class="org-info__name">공주시청</div>
+                      <div class="org-info__region">공주 · 지자체</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge--info">지자체</span></td>
+                <td><div class="tag-cluster">
+                  <span class="badge badge--outline">문화재생</span>
+                  <span class="badge badge--outline">관광</span>
+                </div></td>
+                <td>
+                  <div class="mou-bar"><div class="mou-bar__fill" style="width: 70%;"></div></div>
+                  <span class="badge badge--success">체결중</span>
+                </td>
+                <td>2025.06.15</td>
+                <td>2027.06.14</td>
+                <td><strong>2건</strong></td>
+                <td>
+                  <button class="action-icon-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td>
+                  <div class="org-row">
+                    <div class="org-logo" style="--logo-bg: #ede9fe; --logo-color: #7c3aed;">K-W</div>
+                    <div>
+                      <div class="org-info__name">한국수자원공사</div>
+                      <div class="org-info__region">대전 · 공공기관</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge--purple">연구기관</span></td>
+                <td><div class="tag-cluster">
+                  <span class="badge badge--outline">수자원</span>
+                  <span class="badge badge--outline">재난대응</span>
+                </div></td>
+                <td>
+                  <div class="mou-bar"><div class="mou-bar__fill" style="width: 95%;"></div></div>
+                  <span class="badge badge--success">체결중</span>
+                </td>
+                <td>2025.07.20</td>
+                <td>2028.07.19</td>
+                <td><strong>1건</strong></td>
+                <td>
+                  <button class="action-icon-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td>
+                  <div class="org-row">
+                    <div class="org-logo" style="--logo-bg: #fef3c7; --logo-color: #d97706;">LS</div>
+                    <div>
+                      <div class="org-info__name">LS엠트론</div>
+                      <div class="org-info__region">대전 · 기업</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge--warning">기업</span></td>
+                <td><div class="tag-cluster">
+                  <span class="badge badge--outline">ICT</span>
+                  <span class="badge badge--outline">농업기계</span>
+                </div></td>
+                <td>
+                  <div class="mou-bar"><div class="mou-bar__fill" style="width: 35%; background: #f59e0b;"></div></div>
+                  <span class="badge badge--warning">만료 임박 · 28일</span>
+                </td>
+                <td>2024.05.10</td>
+                <td>2026.05.09</td>
+                <td><strong>1건</strong></td>
+                <td>
+                  <button class="action-icon-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td>
+                  <div class="org-row">
+                    <div class="org-logo" style="--logo-bg: #ffedd5; --logo-color: #ea580c;">세종</div>
+                    <div>
+                      <div class="org-info__name">세종특별자치시청</div>
+                      <div class="org-info__region">세종 · 지자체</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge--info">지자체</span></td>
+                <td><div class="tag-cluster">
+                  <span class="badge badge--outline">모빌리티</span>
+                  <span class="badge badge--outline">스마트시티</span>
+                </div></td>
+                <td>
+                  <div class="mou-bar"><div class="mou-bar__fill" style="width: 60%;"></div></div>
+                  <span class="badge badge--success">체결중</span>
+                </td>
+                <td>2025.11.01</td>
+                <td>2027.10.31</td>
+                <td><strong>2건</strong></td>
+                <td>
+                  <button class="action-icon-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td>
+                  <div class="org-row">
+                    <div class="org-logo" style="--logo-bg: #fce7f3; --logo-color: #db2777;">갤럽</div>
+                    <div>
+                      <div class="org-info__name">한국갤럽</div>
+                      <div class="org-info__region">서울 · 연구기관</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge--purple">연구기관</span></td>
+                <td><div class="tag-cluster">
+                  <span class="badge badge--outline">사회조사</span>
+                  <span class="badge badge--outline">여론조사</span>
+                </div></td>
+                <td>
+                  <div class="mou-bar"><div class="mou-bar__fill" style="width: 0%; background: var(--color-text-muted);"></div></div>
+                  <span class="badge badge--gray">협의중</span>
+                </td>
+                <td style="color: var(--color-text-muted);">—</td>
+                <td style="color: var(--color-text-muted);">—</td>
+                <td><strong>0건</strong></td>
+                <td>
+                  <button class="action-icon-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <nav class="pagination">
+          <button>‹</button>
+          <a href="#" class="is-active">1</a>
+          <a href="#">2</a>
+          <a href="#">3</a>
+          <button>›</button>
+        </nav>
+      </main>
+    </div>
+  </div>
+
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

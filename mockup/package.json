@@ -1,0 +1,24 @@
+{
+  "name": "sos-lab-mockup",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SOS랩 (USCP) 프로토타입 - HTML/CSS/JS 기반 (Next.js 전환 대비)",
+  "scripts": {
+    "dev": "live-server .. --port=8765 --open=/mockup/pages/index.html --wait=200 --ignore=node_modules",
+    "start": "npm run dev",
+    "serve": "npx -y serve .. -l 8765",
+    "open": "open http://localhost:8765/mockup/pages/index.html"
+  },
+  "keywords": [
+    "sos-lab",
+    "uscp",
+    "mockup",
+    "prototype",
+    "livinglab"
+  ],
+  "author": "sangincha",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}

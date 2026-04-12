@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>봉사활동 관리 - SOS랩 관리자</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    /* Integration Status */
+    .integration-status {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+      margin-bottom: var(--space-5);
+    }
+    .integration-card {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      position: relative;
+    }
+    .integration-card__header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+    }
+    .integration-card__logo {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: var(--text-xs);
+      color: white;
+    }
+    .integration-card__logo--vms {
+      background: linear-gradient(135deg, #e11d48, #be123c);
+    }
+    .integration-card__logo--1365 {
+      background: linear-gradient(135deg, #059669, #047857);
+    }
+    .integration-card__logo--sync {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    }
+    .integration-card__name {
+      font-size: var(--text-md);
+      font-weight: 700;
+    }
+    .integration-card__status {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+    .integration-card__status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-success);
+    }
+    .integration-card__meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--color-border);
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+    }
+    .integration-card__total {
+      font-size: var(--text-lg);
+      font-weight: 800;
+      color: var(--color-text);
+    }
+
+    /* Quick Stats */
+    .quick-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+    }
+    .quick-stat {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+    }
+    .quick-stat__label {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+    .quick-stat__value {
+      font-size: var(--text-2xl);
+      font-weight: 800;
+      margin-top: var(--space-1);
+    }
+
+    .cell-sync {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: 2px var(--space-2);
+      border-radius: var(--radius-full);
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .cell-sync--ok {
+      background: #d1fae5;
+      color: #059669;
+    }
+    .cell-sync--pending {
+      background: #fef3c7;
+      color: #d97706;
+    }
+    .cell-sync--fail {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+  </style>
+</head>
+<body data-admin-nav="volunteers">
+  <div class="admin-layout">
+    <div data-slot="admin-side"></div>
+    <div class="admin-main">
+      <div data-slot="admin-top"></div>
+
+      <main class="admin-content">
+        <div class="admin-page-header">
+          <div class="admin-page-header__breadcrumb">
+            <a href="#">관리자</a>
+            <span>/</span>
+            <span>봉사활동</span>
+          </div>
+          <div class="admin-page-header__flex">
+            <div>
+              <h1 class="admin-page-header__title">봉사활동 관리</h1>
+              <p class="admin-page-header__subtitle">VMS · 1365 자원봉사포털과 자동 연동되어 봉사 시간이 인증됩니다</p>
+            </div>
+            <div style="display: flex; gap: var(--space-2);">
+              <button class="btn btn--secondary btn--sm">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+                </svg>
+                수동 동기화
+              </button>
+              <button class="btn btn--primary btn--sm">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                새 활동 등록
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Integration Status -->
+        <section class="integration-status">
+          <div class="integration-card">
+            <div class="integration-card__header">
+              <div class="integration-card__logo integration-card__logo--vms">VMS</div>
+              <div>
+                <div class="integration-card__name">VMS 연동</div>
+                <div class="integration-card__status">
+                  <span class="integration-card__status-dot"></span>
+                  정상 작동 · 실시간 동기화
+                </div>
+              </div>
+            </div>
+            <div class="integration-card__meta">
+              <span>누적 연동</span>
+              <div class="integration-card__total">1,428건</div>
+            </div>
+          </div>
+
+          <div class="integration-card">
+            <div class="integration-card__header">
+              <div class="integration-card__logo integration-card__logo--1365">1365</div>
+              <div>
+                <div class="integration-card__name">1365 자원봉사포털</div>
+                <div class="integration-card__status">
+                  <span class="integration-card__status-dot"></span>
+                  정상 작동 · 자동 전송
+                </div>
+              </div>
+            </div>
+            <div class="integration-card__meta">
+              <span>누적 연동</span>
+              <div class="integration-card__total">1,417건</div>
+            </div>
+          </div>
+
+          <div class="integration-card">
+            <div class="integration-card__header">
+              <div class="integration-card__logo integration-card__logo--sync">SYNC</div>
+              <div>
+                <div class="integration-card__name">오늘 동기화 현황</div>
+                <div class="integration-card__status">
+                  <span class="integration-card__status-dot"></span>
+                  마지막 동기화: 10분 전
+                </div>
+              </div>
+            </div>
+            <div class="integration-card__meta">
+              <span>성공 / 실패</span>
+              <div class="integration-card__total">24 / <span style="color: var(--color-danger);">0</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Quick Stats -->
+        <section class="quick-stats">
+          <div class="quick-stat">
+            <div class="quick-stat__label">이번 달 활동</div>
+            <div class="quick-stat__value">32건</div>
+          </div>
+          <div class="quick-stat">
+            <div class="quick-stat__label">이번 달 봉사시간</div>
+            <div class="quick-stat__value">580h</div>
+          </div>
+          <div class="quick-stat">
+            <div class="quick-stat__label">참여자 수</div>
+            <div class="quick-stat__value">148명</div>
+          </div>
+          <div class="quick-stat">
+            <div class="quick-stat__label">VMS 인증률</div>
+            <div class="quick-stat__value">99%</div>
+          </div>
+        </section>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar" style="margin-bottom: var(--space-4);">
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">상태</span>
+            <select class="filter-bar__select">
+              <option>전체</option>
+              <option>예정</option>
+              <option>진행중</option>
+              <option>완료</option>
+              <option>취소</option>
+            </select>
+          </div>
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">유형</span>
+            <select class="filter-bar__select">
+              <option>전체</option>
+              <option>교육 멘토링</option>
+              <option>환경 정화</option>
+              <option>복지 돌봄</option>
+              <option>문화</option>
+            </select>
+          </div>
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">VMS 상태</span>
+            <select class="filter-bar__select">
+              <option>전체</option>
+              <option>동기화 완료</option>
+              <option>대기중</option>
+              <option>실패</option>
+            </select>
+          </div>
+          <div class="filter-bar__spacer"></div>
+          <div class="filter-bar__group">
+            <input type="text" placeholder="활동명 검색..." style="padding: var(--space-2) var(--space-3); font-size: var(--text-sm); border: 1px solid var(--color-border); border-radius: var(--radius-md); width: 220px;">
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="admin-card">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th class="admin-table__check"><input type="checkbox"></th>
+                <th>활동명</th>
+                <th>유형</th>
+                <th>캠퍼스</th>
+                <th>일시</th>
+                <th>참여자</th>
+                <th>시간</th>
+                <th>상태</th>
+                <th>VMS</th>
+                <th>1365</th>
+                <th style="width: 80px;">액션</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td style="max-width: 280px;">
+                  <div style="font-weight: 600;">지역아동센터 학습 멘토링</div>
+                  <div style="font-size: 11px; color: var(--color-text-muted);">대전 서구 지역아동센터</div>
+                </td>
+                <td><span class="badge badge--outline">교육</span></td>
+                <td><span class="badge badge--campus-dj">대전</span></td>
+                <td>2026.04.11 14:00</td>
+                <td><strong>12 / 15명</strong></td>
+                <td><strong>4h</strong></td>
+                <td><span class="badge badge--warning">진행중</span></td>
+                <td><span class="cell-sync cell-sync--pending">⏳ 대기</span></td>
+                <td><span class="cell-sync cell-sync--pending">⏳ 대기</span></td>
+                <td>
+                  <button class="action-icon-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td style="max-width: 280px;">
+                  <div style="font-weight: 600;">다문화가정 한국어 교실</div>
+                  <div style="font-size: 11px; color: var(--color-text-muted);">공주시 다문화지원센터</div>
+                </td>
+                <td><span class="badge badge--outline">교육</span></td>
+                <td><span class="badge badge--campus-gj">공주</span></td>
+                <td>2026.04.09 10:00</td>
+                <td><strong>8 / 10명</strong></td>
+                <td><strong>4h</strong></td>
+                <td><span class="badge badge--success">완료</span></td>
+                <td><span class="cell-sync cell-sync--ok">✓ 완료</span></td>
+                <td><span class="cell-sync cell-sync--ok">✓ 완료</span></td>
+                <td>
+                  <button class="action-icon-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td style="max-width: 280px;">
+                  <div style="font-weight: 600;">예산 어르신 디지털 역량 교실</div>
+                  <div style="font-size: 11px; color: var(--color-text-muted);">예산군 복지관</div>
+                </td>
+                <td><span class="badge badge--outline">복지</span></td>
+                <td><span class="badge badge--campus-ys">예산</span></td>
+                <td>2026.04.08 09:30</td>
+                <td><strong>15 / 20명</strong></td>
+                <td><strong>3h</strong></td>
+                <td><span class="badge badge--success">완료</span></td>
+                <td><span class="cell-sync cell-sync--ok">✓ 완료</span></td>
+                <td><span class="cell-sync cell-sync--ok">✓ 완료</span></td>
+                <td>
+                  <button class="action-icon-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td style="max-width: 280px;">
+                  <div style="font-weight: 600;">갑천 환경정화 봉사</div>
+                  <div style="font-size: 11px; color: var(--color-text-muted);">대전 갑천 일대</div>
+                </td>
+                <td><span class="badge badge--outline">환경</span></td>
+                <td><span class="badge badge--campus-dj">대전</span></td>
+                <td>2026.04.05 09:00</td>
+                <td><strong>25 / 30명</strong></td>
+                <td><strong>5h</strong></td>
+                <td><span class="badge badge--success">완료</span></td>
+                <td><span class="cell-sync cell-sync--ok">✓ 완료</span></td>
+                <td><span class="cell-sync cell-sync--ok">✓ 완료</span></td>
+                <td>
+                  <button class="action-icon-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td style="max-width: 280px;">
+                  <div style="font-weight: 600;">세종시 버스정류장 안전점검</div>
+                  <div style="font-size: 11px; color: var(--color-text-muted);">세종시 일원</div>
+                </td>
+                <td><span class="badge badge--outline">안전</span></td>
+                <td><span class="badge badge--campus-sj">세종</span></td>
+                <td>2026.04.15 10:00 예정</td>
+                <td><strong>0 / 12명</strong></td>
+                <td><strong>4h</strong></td>
+                <td><span class="badge badge--info">예정</span></td>
+                <td><span class="cell-sync cell-sync--pending">—</span></td>
+                <td><span class="cell-sync cell-sync--pending">—</span></td>
+                <td>
+                  <button class="action-icon-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td style="max-width: 280px;">
+                  <div style="font-weight: 600;">공주 전통시장 환경개선</div>
+                  <div style="font-size: 11px; color: var(--color-text-muted);">공주 중동시장</div>
+                </td>
+                <td><span class="badge badge--outline">문화</span></td>
+                <td><span class="badge badge--campus-gj">공주</span></td>
+                <td>2026.04.02 13:00</td>
+                <td><strong>10 / 12명</strong></td>
+                <td><strong>6h</strong></td>
+                <td><span class="badge badge--success">완료</span></td>
+                <td><span class="cell-sync cell-sync--fail">✗ 실패</span></td>
+                <td><span class="cell-sync cell-sync--pending">⏳ 재시도</span></td>
+                <td>
+                  <button class="action-icon-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <nav class="pagination">
+          <button>‹</button>
+          <a href="#" class="is-active">1</a>
+          <a href="#">2</a>
+          <a href="#">3</a>
+          <button>›</button>
+        </nav>
+      </main>
+    </div>
+  </div>
+
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

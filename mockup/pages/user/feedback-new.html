@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>현장 피드백 등록 - SOS랩</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    .form-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .form-section {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      margin-bottom: var(--space-5);
+    }
+    .form-section__title {
+      font-size: var(--text-md);
+      font-weight: 700;
+      margin-bottom: var(--space-1);
+    }
+    .form-section__subtitle {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-5);
+    }
+
+    /* Type Selector */
+    .type-selector {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-3);
+    }
+    .type-option {
+      padding: var(--space-4);
+      background: var(--color-bg);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-md);
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .type-option:hover {
+      border-color: var(--color-primary);
+    }
+    .type-option--selected {
+      border-color: var(--color-primary);
+      background: var(--color-primary-light);
+    }
+    .type-option__icon {
+      font-size: 28px;
+      margin-bottom: var(--space-2);
+    }
+    .type-option__label {
+      font-size: var(--text-sm);
+      font-weight: 700;
+    }
+    .type-option__desc {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-top: var(--space-1);
+    }
+
+    /* Survey Item */
+    .survey-question {
+      padding: var(--space-4);
+      background: var(--color-bg);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-3);
+    }
+    .survey-question__number {
+      font-size: var(--text-xs);
+      color: var(--color-primary);
+      font-weight: 700;
+      margin-bottom: var(--space-1);
+    }
+    .survey-question__title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      margin-bottom: var(--space-3);
+    }
+    .survey-options {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .survey-option {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-3);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .survey-option:hover {
+      border-color: var(--color-primary);
+      background: var(--color-primary-light);
+    }
+    .survey-option--selected {
+      border-color: var(--color-primary);
+      background: var(--color-primary-light);
+    }
+    .rating-scale {
+      display: flex;
+      gap: var(--space-2);
+    }
+    .rating-option {
+      flex: 1;
+      padding: var(--space-3);
+      text-align: center;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .rating-option--selected {
+      background: var(--color-primary);
+      color: white;
+      border-color: var(--color-primary);
+    }
+
+    /* Checklist */
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3);
+      background: var(--color-bg);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-2);
+      cursor: pointer;
+    }
+    .checklist-item__check {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      background: var(--color-surface);
+    }
+    .checklist-item--checked .checklist-item__check {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: white;
+    }
+    .checklist-item--checked .checklist-item__check::after {
+      content: '✓';
+      font-size: 14px;
+      font-weight: 900;
+    }
+    .checklist-item__label {
+      font-size: var(--text-sm);
+      font-weight: 500;
+    }
+
+    /* Photo */
+    .photo-uploader {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-3);
+    }
+    .photo-slot {
+      aspect-ratio: 1;
+      background: var(--color-bg);
+      border: 2px dashed var(--color-border);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--color-text-muted);
+    }
+    .photo-slot--filled {
+      background: linear-gradient(135deg, #93c5fd, #60a5fa);
+      border-style: solid;
+      border-color: var(--color-primary);
+    }
+
+    /* Project select */
+    .project-info {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-4);
+      background: var(--color-primary-light);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-4);
+    }
+    .project-info__icon {
+      width: 40px;
+      height: 40px;
+      background: var(--color-primary);
+      color: white;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .project-info__name {
+      font-size: var(--text-sm);
+      font-weight: 700;
+    }
+    .project-info__stage {
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--space-3);
+      padding: var(--space-5) 0;
+    }
+
+    @media (max-width: 1024px) {
+      .type-selector {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body data-user-nav="feedback">
+  <div data-slot="header-user"></div>
+
+  <div class="user-layout">
+    <div data-slot="user-lnb"></div>
+
+    <main class="user-content">
+      <div class="form-wrap">
+        <div class="user-page-header">
+          <nav class="breadcrumb">
+            <a href="/mockup/pages/user/dashboard.html">대시보드</a>
+            <span>/</span>
+            <a href="/mockup/pages/user/project-member.html">대전잡스</a>
+            <span>/</span>
+            <span>현장 피드백</span>
+          </nav>
+          <h1 class="user-page-header__title">현장 피드백 등록</h1>
+          <p class="user-page-header__subtitle">
+            리빙랩 프로젝트의 현장에서 수집한 의견, 관찰, 데이터를 기록해주세요.
+          </p>
+        </div>
+
+        <form>
+          <!-- Project Info -->
+          <div class="project-info">
+            <div class="project-info__icon">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M9 11H5a2 2 0 00-2 2v7a2 2 0 002 2h14a2 2 0 002-2v-7a2 2 0 00-2-2h-4"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div>
+              <div class="project-info__name">대전잡스 프로젝트</div>
+              <div class="project-info__stage">실행 단계 · 플랫폼 요구사항 분석 및 설계</div>
+            </div>
+          </div>
+
+          <!-- Type -->
+          <section class="form-section">
+            <h2 class="form-section__title">피드백 유형 <span class="required" style="color: var(--color-danger);">*</span></h2>
+            <p class="form-section__subtitle">어떤 방식으로 피드백을 기록할까요?</p>
+            <div class="type-selector">
+              <div class="type-option type-option--selected">
+                <div class="type-option__icon">📋</div>
+                <div class="type-option__label">설문</div>
+                <div class="type-option__desc">구조화된 질문</div>
+              </div>
+              <div class="type-option">
+                <div class="type-option__icon">✅</div>
+                <div class="type-option__label">체크리스트</div>
+                <div class="type-option__desc">항목 확인</div>
+              </div>
+              <div class="type-option">
+                <div class="type-option__icon">📸</div>
+                <div class="type-option__label">사진</div>
+                <div class="type-option__desc">현장 사진</div>
+              </div>
+              <div class="type-option">
+                <div class="type-option__icon">📝</div>
+                <div class="type-option__label">메모</div>
+                <div class="type-option__desc">자유 기록</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Title -->
+          <section class="form-section">
+            <h2 class="form-section__title">제목 <span class="required" style="color: var(--color-danger);">*</span></h2>
+            <p class="form-section__subtitle">피드백을 한 줄로 요약해주세요</p>
+            <input type="text" class="form-input" value="대전 원도심 청년 인터뷰 - 일자리 수요 조사">
+          </section>
+
+          <!-- Survey Template -->
+          <section class="form-section">
+            <h2 class="form-section__title">설문 응답</h2>
+            <p class="form-section__subtitle">청년 대상 일자리 수요 조사 템플릿 · 템플릿 변경</p>
+
+            <div class="survey-question">
+              <div class="survey-question__number">Q1 / 5</div>
+              <div class="survey-question__title">현재 가장 필요한 일자리 경험은 무엇인가요?</div>
+              <div class="survey-options">
+                <div class="survey-option">
+                  <input type="radio" name="q1">
+                  <span>단기 인턴십 (1-3개월)</span>
+                </div>
+                <div class="survey-option survey-option--selected">
+                  <input type="radio" name="q1" checked>
+                  <span>프로젝트 기반 경험 (3-6개월)</span>
+                </div>
+                <div class="survey-option">
+                  <input type="radio" name="q1">
+                  <span>창업 실험 기회</span>
+                </div>
+                <div class="survey-option">
+                  <input type="radio" name="q1">
+                  <span>현장 견학 및 멘토링</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="survey-question">
+              <div class="survey-question__number">Q2 / 5</div>
+              <div class="survey-question__title">대전 정착 의향은 어느 정도인가요? (1-5)</div>
+              <div class="rating-scale">
+                <div class="rating-option">1</div>
+                <div class="rating-option">2</div>
+                <div class="rating-option">3</div>
+                <div class="rating-option rating-option--selected">4</div>
+                <div class="rating-option">5</div>
+              </div>
+            </div>
+
+            <div class="survey-question">
+              <div class="survey-question__number">Q3 / 5</div>
+              <div class="survey-question__title">추가 의견</div>
+              <textarea class="form-textarea" rows="3" placeholder="자유롭게 의견을 적어주세요"></textarea>
+            </div>
+          </section>
+
+          <!-- Photos -->
+          <section class="form-section">
+            <h2 class="form-section__title">현장 사진 <span style="font-size: var(--text-xs); color: var(--color-text-muted); font-weight: 500;">(선택)</span></h2>
+            <p class="form-section__subtitle">현장 상황을 증명할 사진을 첨부해주세요</p>
+            <div class="photo-uploader">
+              <div class="photo-slot photo-slot--filled"></div>
+              <div class="photo-slot photo-slot--filled"></div>
+              <div class="photo-slot">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+              </div>
+              <div class="photo-slot">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+              </div>
+            </div>
+          </section>
+
+          <!-- Memo -->
+          <section class="form-section">
+            <h2 class="form-section__title">현장 메모</h2>
+            <p class="form-section__subtitle">관찰 내용이나 추가 사항을 자유롭게 기록해주세요</p>
+            <textarea class="form-textarea" rows="5" placeholder="현장에서 관찰한 내용, 대화 내용, 기타 특이사항 등을 기록해주세요"></textarea>
+          </section>
+
+          <!-- Tags -->
+          <section class="form-section">
+            <h2 class="form-section__title">태그</h2>
+            <p class="form-section__subtitle">검색과 분류를 위한 키워드를 추가하세요</p>
+            <div style="display: flex; flex-wrap: wrap; gap: var(--space-2); padding: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-md);">
+              <span class="badge badge--primary">청년인터뷰</span>
+              <span class="badge badge--primary">일자리수요</span>
+              <span class="badge badge--primary">대전원도심</span>
+              <input type="text" placeholder="태그 추가..." style="border: none; outline: none; background: transparent; flex: 1; font-size: var(--text-sm);">
+            </div>
+          </section>
+
+          <!-- Actions -->
+          <div class="form-actions">
+            <button type="button" class="btn btn--secondary">취소</button>
+            <button type="button" class="btn btn--ghost">임시 저장</button>
+            <button type="submit" class="btn btn--primary">등록하기</button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script src="/mockup/scripts/app.js"></script>
+  <script>
+    document.querySelectorAll('.type-option').forEach((opt) => {
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('.type-option').forEach((o) => o.classList.remove('type-option--selected'));
+        opt.classList.add('type-option--selected');
+      });
+    });
+    document.querySelectorAll('.survey-option').forEach((opt) => {
+      opt.addEventListener('click', () => {
+        const group = opt.parentElement;
+        group.querySelectorAll('.survey-option').forEach((o) => o.classList.remove('survey-option--selected'));
+        opt.classList.add('survey-option--selected');
+      });
+    });
+    document.querySelectorAll('.rating-option').forEach((opt) => {
+      opt.addEventListener('click', () => {
+        opt.parentElement.querySelectorAll('.rating-option').forEach((o) => o.classList.remove('rating-option--selected'));
+        opt.classList.add('rating-option--selected');
+      });
+    });
+  </script>
+</body>
+</html>

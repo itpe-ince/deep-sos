@@ -1,0 +1,91 @@
+# USCP v1 — 운영 Docker Compose override (Sprint 5 Day 1)
+#
+# 사용법:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# 차이점 (base 대비):
+# - nginx: 80/443 노출 + SSL 볼륨 + uscp.prod.conf 템플릿 사용
+# - certbot: Let's Encrypt 자동 갱신 컨테이너
+# - api/web: 외부 포트 노출 안 함 (internal only)
+# - minio: 외부 9001 노출 안 함 (관리자는 SSH 포워딩으로 접근)
+# - 환경변수: .env.prod에서 SERVER_NAME, CORS_ORIGINS 등 주입
+
+services:
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d/uscp.prod.conf:/etc/nginx/templates/default.conf.template:ro
+      - certbot-webroot:/var/www/certbot:ro
+      - certbot-etc:/etc/letsencrypt:ro
+    environment:
+      - SERVER_NAME=${SERVER_NAME:-staging.uscp.local}
+    # nginx 공식 이미지는 /etc/nginx/templates/*.template의 ${VAR}를 envsubst로 치환해
+    # /etc/nginx/conf.d/*.conf로 전개한다.
+    depends_on:
+      - web
+      - api
+
+  certbot:
+    image: certbot/certbot:latest
+    container_name: uscp-certbot
+    restart: unless-stopped
+    volumes:
+      - certbot-webroot:/var/www/certbot
+      - certbot-etc:/etc/letsencrypt
+    # 12시간마다 갱신 시도 (Let's Encrypt 권장)
+    entrypoint: >
+      /bin/sh -c 'trap exit TERM;
+      while :; do certbot renew --webroot -w /var/www/certbot --quiet;
+      sleep 12h & wait $${!}; done;'
+    depends_on:
+      - nginx
+
+  web:
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=https://${SERVER_NAME:-staging.uscp.local}/api
+      - NEXT_PUBLIC_KAKAO_MAP_KEY=${KAKAO_MAP_API_KEY:-}
+    # 외부 포트 노출 제거 — nginx를 통해서만 접근
+
+  api:
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=postgresql+asyncpg://uscp:${POSTGRES_PASSWORD}@db:5432/uscp
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - JWT_REFRESH_SECRET_KEY=${JWT_REFRESH_SECRET_KEY}
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_BUCKET=uscp-uploads
+      - MINIO_SECURE=false
+      - CORS_ORIGINS=https://${SERVER_NAME:-staging.uscp.local}
+      - FRONTEND_URL=https://${SERVER_NAME:-staging.uscp.local}
+      - SENTRY_DSN=${SENTRY_DSN:-}
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+      - SMTP_FROM=${SMTP_FROM:-noreply@uscp.local}
+      - MAIL_DEV_MODE=false
+      - VMS_MODE=${VMS_MODE:-mock}
+      - KAKAO_CLIENT_ID=${KAKAO_CLIENT_ID:-}
+      - KAKAO_CLIENT_SECRET=${KAKAO_CLIENT_SECRET:-}
+      - KAKAO_REDIRECT_URI=https://${SERVER_NAME:-staging.uscp.local}/api/v1/auth/oauth/kakao/callback
+      - NAVER_CLIENT_ID=${NAVER_CLIENT_ID:-}
+      - NAVER_CLIENT_SECRET=${NAVER_CLIENT_SECRET:-}
+      - NAVER_REDIRECT_URI=https://${SERVER_NAME:-staging.uscp.local}/api/v1/auth/oauth/naver/callback
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - GOOGLE_REDIRECT_URI=https://${SERVER_NAME:-staging.uscp.local}/api/v1/auth/oauth/google/callback
+
+  minio:
+    # 9001 admin console 외부 노출 제거 — prod에선 SSH 터널링으로 접근
+    ports: []
+
+volumes:
+  certbot-webroot:
+  certbot-etc:

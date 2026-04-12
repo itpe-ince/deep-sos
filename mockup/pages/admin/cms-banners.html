@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>배너 · 공지 관리 - SOS랩 관리자</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    .cms-tabs {
+      display: flex;
+      gap: var(--space-2);
+      margin-bottom: var(--space-5);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .cms-tab {
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+    }
+    .cms-tab.is-active {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+    }
+
+    /* Banner Card */
+    .banner-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+    .banner-card {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .banner-preview {
+      aspect-ratio: 21 / 9;
+      background: linear-gradient(135deg, var(--bg-a, #2563eb), var(--bg-b, #7c3aed));
+      position: relative;
+      padding: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: white;
+    }
+    .banner-preview::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.2), transparent 50%);
+    }
+    .banner-preview__content {
+      position: relative;
+      z-index: 1;
+    }
+    .banner-preview__title {
+      font-size: var(--text-lg);
+      font-weight: 800;
+      margin-bottom: var(--space-1);
+    }
+    .banner-preview__desc {
+      font-size: var(--text-xs);
+      opacity: 0.85;
+    }
+    .banner-preview__btn {
+      display: inline-block;
+      padding: var(--space-1) var(--space-3);
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-sm);
+      font-size: 10px;
+      font-weight: 700;
+      margin-top: var(--space-2);
+    }
+    .banner-info {
+      padding: var(--space-4);
+    }
+    .banner-info__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-2);
+    }
+    .banner-info__name {
+      font-size: var(--text-sm);
+      font-weight: 700;
+    }
+    .banner-info__status {
+      font-size: 10px;
+      padding: 2px var(--space-2);
+      border-radius: var(--radius-full);
+      font-weight: 700;
+    }
+    .banner-info__meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-top: var(--space-3);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--color-border);
+    }
+    .banner-info__actions {
+      display: flex;
+      gap: var(--space-2);
+      margin-top: var(--space-3);
+    }
+
+    /* Announcement */
+    .announcement-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      gap: var(--space-4);
+      align-items: center;
+      padding: var(--space-4);
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-2);
+    }
+    .announcement-item__pin {
+      color: var(--color-warning);
+    }
+    .announcement-item__title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+    }
+    .announcement-item__title.is-important::before {
+      content: '🔥 ';
+    }
+    .announcement-item__meta {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-top: 2px;
+    }
+    .announcement-item__status {
+      font-size: var(--text-xs);
+    }
+
+    @media (max-width: 1024px) {
+      .banner-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body data-admin-nav="cms-banners">
+  <div class="admin-layout">
+    <div data-slot="admin-side"></div>
+    <div class="admin-main">
+      <div data-slot="admin-top"></div>
+
+      <main class="admin-content">
+        <div class="admin-page-header">
+          <div class="admin-page-header__breadcrumb">
+            <a href="#">관리자</a><span>/</span>
+            <span>CMS</span><span>/</span>
+            <span>배너 · 공지 관리</span>
+          </div>
+          <div class="admin-page-header__flex">
+            <div>
+              <h1 class="admin-page-header__title">배너 · 공지 관리</h1>
+              <p class="admin-page-header__subtitle">메인 히어로 배너, 팝업 공지, 뉴스 등을 관리합니다</p>
+            </div>
+            <button class="btn btn--primary btn--sm">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              새 배너
+            </button>
+          </div>
+        </div>
+
+        <div class="cms-tabs">
+          <div class="cms-tab is-active">메인 배너 (4)</div>
+          <div class="cms-tab">팝업 공지 (2)</div>
+          <div class="cms-tab">공지사항 (18)</div>
+          <div class="cms-tab">뉴스 (9)</div>
+        </div>
+
+        <!-- Banner Grid -->
+        <div class="banner-grid">
+          <div class="banner-card">
+            <div class="banner-preview" style="--bg-a: #2563eb; --bg-b: #1d4ed8;">
+              <div class="banner-preview__content">
+                <div class="banner-preview__title">지역 문제 제보 캠페인</div>
+                <div class="banner-preview__desc">우리 지역의 문제, 여러분의 제보로 해결해요</div>
+                <div class="banner-preview__btn">지금 제보하기 →</div>
+              </div>
+            </div>
+            <div class="banner-info">
+              <div class="banner-info__header">
+                <div class="banner-info__name">메인 히어로 #1</div>
+                <span class="banner-info__status" style="background: #d1fae5; color: #059669;">게시중</span>
+              </div>
+              <div style="font-size: var(--text-xs); color: var(--color-text-muted);">/issues · 순서 1번</div>
+              <div class="banner-info__meta">
+                <span>📅 2026.04.01 ~ 06.30</span>
+                <span>👁 12,453</span>
+              </div>
+              <div class="banner-info__actions">
+                <button class="btn btn--secondary btn--sm btn--block">수정</button>
+                <button class="btn btn--ghost btn--sm">숨김</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="banner-card">
+            <div class="banner-preview" style="--bg-a: #059669; --bg-b: #047857;">
+              <div class="banner-preview__content">
+                <div class="banner-preview__title">4월 청년 리빙랩 참여자 모집</div>
+                <div class="banner-preview__desc">대전잡스 프로젝트 파일럿 청년 50명 모집</div>
+                <div class="banner-preview__btn">신청하기 →</div>
+              </div>
+            </div>
+            <div class="banner-info">
+              <div class="banner-info__header">
+                <div class="banner-info__name">메인 히어로 #2</div>
+                <span class="banner-info__status" style="background: #d1fae5; color: #059669;">게시중</span>
+              </div>
+              <div style="font-size: var(--text-xs); color: var(--color-text-muted);">/projects/prj-001 · 순서 2번</div>
+              <div class="banner-info__meta">
+                <span>📅 2026.04.05 ~ 05.15</span>
+                <span>👁 8,248</span>
+              </div>
+              <div class="banner-info__actions">
+                <button class="btn btn--secondary btn--sm btn--block">수정</button>
+                <button class="btn btn--ghost btn--sm">숨김</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="banner-card">
+            <div class="banner-preview" style="--bg-a: #7c3aed; --bg-b: #5b21b6;">
+              <div class="banner-preview__content">
+                <div class="banner-preview__title">예산 고령자 디지털 교실 사례집</div>
+                <div class="banner-preview__desc">우리 플랫폼이 만든 성과를 확인하세요</div>
+                <div class="banner-preview__btn">사례 보기 →</div>
+              </div>
+            </div>
+            <div class="banner-info">
+              <div class="banner-info__header">
+                <div class="banner-info__name">메인 히어로 #3</div>
+                <span class="banner-info__status" style="background: #fef3c7; color: #d97706;">예약됨</span>
+              </div>
+              <div style="font-size: var(--text-xs); color: var(--color-text-muted);">/success-cases · 순서 3번</div>
+              <div class="banner-info__meta">
+                <span>📅 2026.05.01 ~ 07.31</span>
+                <span>👁 -</span>
+              </div>
+              <div class="banner-info__actions">
+                <button class="btn btn--secondary btn--sm btn--block">수정</button>
+                <button class="btn btn--ghost btn--sm">삭제</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="banner-card">
+            <div class="banner-preview" style="--bg-a: #ea580c; --bg-b: #c2410c;">
+              <div class="banner-preview__content">
+                <div class="banner-preview__title">세종 모빌리티 리빙랩 공모</div>
+                <div class="banner-preview__desc">자율주행 아이디어 공모전 참여하세요</div>
+                <div class="banner-preview__btn">참여하기 →</div>
+              </div>
+            </div>
+            <div class="banner-info">
+              <div class="banner-info__header">
+                <div class="banner-info__name">메인 히어로 #4</div>
+                <span class="banner-info__status" style="background: #f3f4f6; color: #6b7280;">종료됨</span>
+              </div>
+              <div style="font-size: var(--text-xs); color: var(--color-text-muted);">/projects/prj-004 · 순서 4번</div>
+              <div class="banner-info__meta">
+                <span>📅 2026.02.01 ~ 03.31</span>
+                <span>👁 5,127</span>
+              </div>
+              <div class="banner-info__actions">
+                <button class="btn btn--secondary btn--sm btn--block">수정</button>
+                <button class="btn btn--ghost btn--sm">복제</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Announcement List -->
+        <div class="admin-card">
+          <div class="admin-card__header">
+            <h2 class="admin-card__title">최근 공지사항</h2>
+            <button class="btn btn--ghost btn--sm">전체 보기 →</button>
+          </div>
+          <div class="admin-card__body">
+            <div class="announcement-item">
+              <svg class="announcement-item__pin" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/>
+              </svg>
+              <div>
+                <div class="announcement-item__title is-important">[중요] 2026년 상반기 리빙랩 프로젝트 공모 안내</div>
+                <div class="announcement-item__meta">관리자 · 2026.04.10 · 조회 2,418</div>
+              </div>
+              <span class="announcement-item__status">
+                <span class="badge badge--success">게시중</span>
+              </span>
+              <button class="action-icon-btn">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </button>
+            </div>
+            <div class="announcement-item">
+              <div></div>
+              <div>
+                <div class="announcement-item__title">VMS 연동 시스템 점검 안내 (4.15 02:00-04:00)</div>
+                <div class="announcement-item__meta">시스템관리자 · 2026.04.08 · 조회 892</div>
+              </div>
+              <span class="announcement-item__status">
+                <span class="badge badge--success">게시중</span>
+              </span>
+              <button class="action-icon-btn">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </button>
+            </div>
+            <div class="announcement-item">
+              <div></div>
+              <div>
+                <div class="announcement-item__title">3월 월간 리빙랩 활동 리포트 발행</div>
+                <div class="announcement-item__meta">지역사회특화센터 · 2026.04.05 · 조회 1,247</div>
+              </div>
+              <span class="announcement-item__status">
+                <span class="badge badge--success">게시중</span>
+              </span>
+              <button class="action-icon-btn">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </button>
+            </div>
+            <div class="announcement-item">
+              <div></div>
+              <div>
+                <div class="announcement-item__title">신규 캠퍼스 앰배서더 모집 (각 캠퍼스 2명)</div>
+                <div class="announcement-item__meta">관리자 · 2026.04.01 · 조회 3,124</div>
+              </div>
+              <span class="announcement-item__status">
+                <span class="badge badge--info">임시저장</span>
+              </span>
+              <button class="action-icon-btn">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

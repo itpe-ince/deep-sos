@@ -1,0 +1,109 @@
+name: Deploy Staging
+
+on:
+  workflow_run:
+    workflows: [CI]
+    branches: [main]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: '배포할 이미지 태그 (기본: latest)'
+        required: false
+        default: 'latest'
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    # CI 워크플로가 성공한 경우에만 실행 (workflow_run 트리거)
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    environment:
+      name: staging
+      url: https://${{ vars.SERVER_NAME }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set image tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ inputs.image_tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=latest" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.STAGING_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "${{ vars.STAGING_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Copy compose files
+        run: |
+          scp -i ~/.ssh/id_ed25519 \
+            docker-compose.yml \
+            docker-compose.prod.yml \
+            nginx/conf.d/uscp.prod.conf \
+            ${{ secrets.STAGING_USER }}@${{ vars.STAGING_HOST }}:/srv/uscp/
+
+      - name: Pull new images and restart
+        run: |
+          ssh -i ~/.ssh/id_ed25519 \
+            ${{ secrets.STAGING_USER }}@${{ vars.STAGING_HOST }} \
+            "cd /srv/uscp && \
+             docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} && \
+             IMAGE_TAG=${{ steps.tag.outputs.tag }} docker compose \
+               -f docker-compose.yml -f docker-compose.prod.yml \
+               --env-file .env.prod \
+               pull api web && \
+             IMAGE_TAG=${{ steps.tag.outputs.tag }} docker compose \
+               -f docker-compose.yml -f docker-compose.prod.yml \
+               --env-file .env.prod \
+               up -d --no-deps api web"
+
+      - name: Run DB migrations
+        run: |
+          ssh -i ~/.ssh/id_ed25519 \
+            ${{ secrets.STAGING_USER }}@${{ vars.STAGING_HOST }} \
+            "cd /srv/uscp && docker compose \
+               -f docker-compose.yml -f docker-compose.prod.yml \
+               --env-file .env.prod \
+               exec -T api alembic upgrade head"
+
+      - name: Health check
+        run: |
+          for i in 1 2 3 4 5; do
+            if curl -fsS "https://${{ vars.SERVER_NAME }}/api/v1/health"; then
+              echo ""
+              echo "✅ Health check passed"
+              exit 0
+            fi
+            echo "Attempt $i failed, retrying in 5s..."
+            sleep 5
+          done
+          echo "❌ Health check failed after 5 attempts"
+          exit 1
+
+      - name: Notify Slack on success
+        if: success()
+        run: |
+          if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
+            curl -X POST -H 'Content-type: application/json' \
+              --data "{\"text\":\"✅ USCP staging 배포 성공: ${{ steps.tag.outputs.tag }}\"}" \
+              "${{ secrets.SLACK_WEBHOOK_URL }}"
+          fi
+
+      - name: Notify Slack on failure
+        if: failure()
+        run: |
+          if [ -n "${{ secrets.SLACK_WEBHOOK_URL }}" ]; then
+            curl -X POST -H 'Content-type: application/json' \
+              --data "{\"text\":\"❌ USCP staging 배포 실패: ${{ steps.tag.outputs.tag }} (${{ github.sha }})\"}" \
+              "${{ secrets.SLACK_WEBHOOK_URL }}"
+          fi

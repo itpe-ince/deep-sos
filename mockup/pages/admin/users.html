@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사용자 관리 - SOS랩 관리자</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    .user-stats {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+    }
+    .user-stat {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      text-align: center;
+    }
+    .user-stat__value {
+      font-size: var(--text-xl);
+      font-weight: 800;
+      color: var(--accent, var(--color-primary));
+    }
+    .user-stat__label {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-top: 2px;
+    }
+
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--avatar-a, #2563eb), var(--avatar-b, #7c3aed));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: var(--text-xs);
+      flex-shrink: 0;
+    }
+    .user-email {
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+    .user-name {
+      font-size: var(--text-sm);
+      font-weight: 600;
+    }
+
+    .activity-dots {
+      display: flex;
+      gap: 3px;
+    }
+    .activity-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      background: var(--color-border);
+    }
+    .activity-dot--1 { background: #dbeafe; }
+    .activity-dot--2 { background: #93c5fd; }
+    .activity-dot--3 { background: #3b82f6; }
+    .activity-dot--4 { background: #1e40af; }
+  </style>
+</head>
+<body data-admin-nav="users">
+  <div class="admin-layout">
+    <div data-slot="admin-side"></div>
+    <div class="admin-main">
+      <div data-slot="admin-top"></div>
+
+      <main class="admin-content">
+        <div class="admin-page-header">
+          <div class="admin-page-header__breadcrumb">
+            <a href="#">관리자</a><span>/</span>
+            <span>사용자 관리</span>
+          </div>
+          <div class="admin-page-header__flex">
+            <div>
+              <h1 class="admin-page-header__title">사용자 관리</h1>
+              <p class="admin-page-header__subtitle">플랫폼 사용자의 계정, 역할, 권한을 관리합니다</p>
+            </div>
+            <div style="display: flex; gap: var(--space-2);">
+              <button class="btn btn--secondary btn--sm">Excel 내보내기</button>
+              <button class="btn btn--primary btn--sm">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                사용자 추가
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <section class="user-stats">
+          <div class="user-stat">
+            <div class="user-stat__value" style="--accent: #2563eb;">1,438</div>
+            <div class="user-stat__label">전체 사용자</div>
+          </div>
+          <div class="user-stat">
+            <div class="user-stat__value" style="--accent: #059669;">400</div>
+            <div class="user-stat__label">학생</div>
+          </div>
+          <div class="user-stat">
+            <div class="user-stat__value" style="--accent: #7c3aed;">50</div>
+            <div class="user-stat__label">교수</div>
+          </div>
+          <div class="user-stat">
+            <div class="user-stat__value" style="--accent: #ea580c;">988</div>
+            <div class="user-stat__label">시민 · 기타</div>
+          </div>
+          <div class="user-stat">
+            <div class="user-stat__value" style="--accent: #d97706;">20</div>
+            <div class="user-stat__label">관리자</div>
+          </div>
+        </section>
+
+        <!-- Filter -->
+        <div class="filter-bar" style="margin-bottom: var(--space-4);">
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">역할</span>
+            <select class="filter-bar__select">
+              <option>전체</option><option>학생</option><option>교수</option><option>직원</option><option>시민</option><option>지자체</option><option>기업</option><option>관리자</option>
+            </select>
+          </div>
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">캠퍼스</span>
+            <select class="filter-bar__select">
+              <option>전체</option><option>대전</option><option>공주</option><option>예산</option><option>세종</option>
+            </select>
+          </div>
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">상태</span>
+            <select class="filter-bar__select">
+              <option>활성</option><option>비활성</option><option>정지</option>
+            </select>
+          </div>
+          <div class="filter-bar__spacer"></div>
+          <input type="text" placeholder="이름, 이메일 검색..." style="padding: var(--space-2) var(--space-3); font-size: var(--text-sm); border: 1px solid var(--color-border); border-radius: var(--radius-md); width: 240px;">
+        </div>
+
+        <div class="admin-card">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th class="admin-table__check"><input type="checkbox"></th>
+                <th>사용자</th>
+                <th>역할</th>
+                <th>소속</th>
+                <th>활동 레벨</th>
+                <th>기여 현황</th>
+                <th>가입일</th>
+                <th>최근 접속</th>
+                <th>상태</th>
+                <th style="width: 80px;">액션</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-avatar" style="--avatar-a: #2563eb; --avatar-b: #7c3aed;">김</div>
+                    <div>
+                      <div class="user-name">김교수</div>
+                      <div class="user-email">prof.kim@univ.ac.kr</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge--purple">교수</span></td>
+                <td>대전캠퍼스 · 경영학과</td>
+                <td>
+                  <strong>Lv.8 혁신교수</strong>
+                  <div class="activity-dots">
+                    <div class="activity-dot activity-dot--4"></div>
+                    <div class="activity-dot activity-dot--4"></div>
+                    <div class="activity-dot activity-dot--3"></div>
+                    <div class="activity-dot activity-dot--4"></div>
+                    <div class="activity-dot activity-dot--4"></div>
+                  </div>
+                </td>
+                <td>
+                  <div style="font-size: 11px; color: var(--color-text-muted);">프로젝트 <strong style="color: var(--color-text);">3</strong> · 이슈 <strong style="color: var(--color-text);">12</strong></div>
+                </td>
+                <td>2024.03.02</td>
+                <td>10분 전</td>
+                <td><span class="badge badge--success">활성</span></td>
+                <td>
+                  <button class="action-icon-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-avatar" style="--avatar-a: #ea580c; --avatar-b: #fb923c;">박</div>
+                    <div>
+                      <div class="user-name">박학생</div>
+                      <div class="user-email">park@univ.ac.kr</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge--info">학생</span></td>
+                <td>대전캠퍼스 · 경영학과 3학년</td>
+                <td>
+                  <strong>Lv.4 해결사</strong>
+                  <div class="activity-dots">
+                    <div class="activity-dot activity-dot--3"></div>
+                    <div class="activity-dot activity-dot--3"></div>
+                    <div class="activity-dot activity-dot--2"></div>
+                    <div class="activity-dot activity-dot--3"></div>
+                    <div class="activity-dot activity-dot--4"></div>
+                  </div>
+                </td>
+                <td>
+                  <div style="font-size: 11px; color: var(--color-text-muted);">프로젝트 <strong style="color: var(--color-text);">3</strong> · 이슈 <strong style="color: var(--color-text);">7</strong></div>
+                </td>
+                <td>2024.09.01</td>
+                <td>1시간 전</td>
+                <td><span class="badge badge--success">활성</span></td>
+                <td>
+                  <button class="action-icon-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-avatar" style="--avatar-a: #059669; --avatar-b: #10b981;">김</div>
+                    <div>
+                      <div class="user-name">김시민</div>
+                      <div class="user-email">citizen.kim@naver.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge--gray">시민</span></td>
+                <td>공주시 신관동</td>
+                <td>
+                  <strong>Lv.3 활동시민</strong>
+                  <div class="activity-dots">
+                    <div class="activity-dot activity-dot--2"></div>
+                    <div class="activity-dot activity-dot--3"></div>
+                    <div class="activity-dot activity-dot--3"></div>
+                    <div class="activity-dot activity-dot--2"></div>
+                    <div class="activity-dot activity-dot--1"></div>
+                  </div>
+                </td>
+                <td>
+                  <div style="font-size: 11px; color: var(--color-text-muted);">이슈 <strong style="color: var(--color-text);">5</strong> · 댓글 <strong style="color: var(--color-text);">18</strong></div>
+                </td>
+                <td>2025.12.15</td>
+                <td>3시간 전</td>
+                <td><span class="badge badge--success">활성</span></td>
+                <td>
+                  <button class="action-icon-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-avatar" style="--avatar-a: #dc2626; --avatar-b: #ef4444;">최</div>
+                    <div>
+                      <div class="user-name">최창업</div>
+                      <div class="user-email">choi@startup.co.kr</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge--warning">기업</span></td>
+                <td>대전 원도심</td>
+                <td>
+                  <strong>Lv.2 참여자</strong>
+                  <div class="activity-dots">
+                    <div class="activity-dot activity-dot--1"></div>
+                    <div class="activity-dot activity-dot--2"></div>
+                    <div class="activity-dot activity-dot--2"></div>
+                    <div class="activity-dot"></div>
+                    <div class="activity-dot"></div>
+                  </div>
+                </td>
+                <td>
+                  <div style="font-size: 11px; color: var(--color-text-muted);">이슈 <strong style="color: var(--color-text);">1</strong> · 프로젝트 <strong style="color: var(--color-text);">0</strong></div>
+                </td>
+                <td>2026.02.10</td>
+                <td>오늘</td>
+                <td><span class="badge badge--success">활성</span></td>
+                <td>
+                  <button class="action-icon-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-avatar" style="--avatar-a: #6b7280; --avatar-b: #9ca3af;">이</div>
+                    <div>
+                      <div class="user-name">이시민</div>
+                      <div class="user-email">lee@daum.net</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge--gray">시민</span></td>
+                <td>세종시</td>
+                <td>
+                  <strong>Lv.1 새내기</strong>
+                  <div class="activity-dots">
+                    <div class="activity-dot activity-dot--1"></div>
+                    <div class="activity-dot"></div>
+                    <div class="activity-dot"></div>
+                    <div class="activity-dot"></div>
+                    <div class="activity-dot"></div>
+                  </div>
+                </td>
+                <td>
+                  <div style="font-size: 11px; color: var(--color-text-muted);">이슈 <strong style="color: var(--color-text);">0</strong> · 공감 <strong style="color: var(--color-text);">3</strong></div>
+                </td>
+                <td>2026.04.08</td>
+                <td>어제</td>
+                <td><span class="badge badge--gray">비활성</span></td>
+                <td>
+                  <button class="action-icon-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-avatar" style="--avatar-a: #7c3aed; --avatar-b: #a855f7;">정</div>
+                    <div>
+                      <div class="user-name">정공무원</div>
+                      <div class="user-email">jeong@sejong.go.kr</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge--info">지자체</span></td>
+                <td>세종시청 · 교통정책과</td>
+                <td>
+                  <strong>Lv.5 파트너</strong>
+                  <div class="activity-dots">
+                    <div class="activity-dot activity-dot--3"></div>
+                    <div class="activity-dot activity-dot--4"></div>
+                    <div class="activity-dot activity-dot--3"></div>
+                    <div class="activity-dot activity-dot--4"></div>
+                    <div class="activity-dot activity-dot--3"></div>
+                  </div>
+                </td>
+                <td>
+                  <div style="font-size: 11px; color: var(--color-text-muted);">프로젝트 <strong style="color: var(--color-text);">2</strong> · 검토 <strong style="color: var(--color-text);">24</strong></div>
+                </td>
+                <td>2025.11.20</td>
+                <td>2시간 전</td>
+                <td><span class="badge badge--success">활성</span></td>
+                <td>
+                  <button class="action-icon-btn">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <nav class="pagination">
+          <button>‹</button>
+          <a href="#" class="is-active">1</a>
+          <a href="#">2</a>
+          <a href="#">3</a>
+          <a href="#">...</a>
+          <a href="#">144</a>
+          <button>›</button>
+        </nav>
+      </main>
+    </div>
+  </div>
+
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

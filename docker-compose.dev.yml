@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    container_name: uscp-dev-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=uscp
+      - POSTGRES_USER=uscp
+      - POSTGRES_PASSWORD=uscp-dev-password
+    ports:
+      - "15432:5432"  # 호스트 15432 → 컨테이너 5432 (충돌 회피)
+    volumes:
+      - pgdata-dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U uscp -d uscp"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: uscp-dev-redis
+    restart: unless-stopped
+    ports:
+      - "16379:6379"  # 호스트 16379 → 컨테이너 6379
+    volumes:
+      - redisdata-dev:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  minio:
+    image: minio/minio:latest
+    container_name: uscp-dev-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin123
+    ports:
+      - "19000:9000"
+      - "19001:9001"
+    volumes:
+      - miniodata-dev:/data
+
+volumes:
+  pgdata-dev:
+  redisdata-dev:
+  miniodata-dev:

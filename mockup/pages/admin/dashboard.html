@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 대시보드 - SOS랩</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    .admin-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+      margin-bottom: var(--space-5);
+    }
+    .admin-kpi {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      position: relative;
+    }
+    .admin-kpi__top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--space-4);
+    }
+    .admin-kpi__icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .admin-kpi__trend {
+      font-size: var(--text-xs);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 2px var(--space-2);
+      border-radius: var(--radius-full);
+    }
+    .admin-kpi__trend--up {
+      background: #d1fae5;
+      color: #059669;
+    }
+    .admin-kpi__trend--down {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+    .admin-kpi__label {
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+      font-weight: 600;
+    }
+    .admin-kpi__value {
+      font-size: var(--text-3xl);
+      font-weight: 900;
+      line-height: 1;
+      margin: var(--space-2) 0;
+    }
+    .admin-kpi__compare {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+
+    /* 2-column layout */
+    .dash-two-col {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: var(--space-5);
+      margin-bottom: var(--space-5);
+    }
+
+    /* Chart area */
+    .chart-area {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+    }
+    .chart-area__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-5);
+    }
+    .chart-area__title {
+      font-size: var(--text-md);
+      font-weight: 700;
+    }
+    .chart-bars {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--space-2);
+      align-items: end;
+      height: 220px;
+      padding-bottom: var(--space-4);
+      border-bottom: 1px solid var(--color-border);
+      margin-bottom: var(--space-3);
+    }
+    .chart-bar {
+      background: linear-gradient(180deg, var(--color-primary), #60a5fa);
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      position: relative;
+    }
+    .chart-bar:hover::before {
+      content: attr(data-value);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0f172a;
+      color: white;
+      padding: 4px 8px;
+      font-size: 10px;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      margin-bottom: 4px;
+    }
+    .chart-labels {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--space-2);
+      font-size: 10px;
+      color: var(--color-text-muted);
+      text-align: center;
+    }
+
+    /* Recent list */
+    .recent-list {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .recent-list__header {
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .recent-list__title {
+      font-size: var(--text-md);
+      font-weight: 700;
+    }
+    .recent-item {
+      padding: var(--space-3) var(--space-5);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .recent-item:last-child {
+      border-bottom: none;
+    }
+    .recent-item__body {
+      flex: 1;
+      min-width: 0;
+    }
+    .recent-item__title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+    .recent-item__meta {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+
+    /* Campus breakdown */
+    .campus-breakdown {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+    }
+    .campus-bar {
+      margin-bottom: var(--space-4);
+    }
+    .campus-bar:last-child {
+      margin-bottom: 0;
+    }
+    .campus-bar__label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-2);
+      font-size: var(--text-sm);
+    }
+    .campus-bar__name {
+      font-weight: 600;
+    }
+    .campus-bar__count {
+      color: var(--color-text-muted);
+      font-size: var(--text-xs);
+    }
+    .campus-bar__track {
+      height: 8px;
+      background: #f1f5f9;
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    .campus-bar__fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+    }
+
+    @media (max-width: 1200px) {
+      .admin-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .dash-two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body data-admin-nav="dashboard">
+  <div class="admin-layout">
+    <div data-slot="admin-side"></div>
+    <div class="admin-main">
+      <div data-slot="admin-top"></div>
+
+      <main class="admin-content">
+        <div class="admin-page-header">
+          <div class="admin-page-header__breadcrumb">
+            <a href="#">관리자</a>
+            <span>/</span>
+            <span>통합 대시보드</span>
+          </div>
+          <div class="admin-page-header__flex">
+            <div>
+              <h1 class="admin-page-header__title">통합 대시보드</h1>
+              <p class="admin-page-header__subtitle">2026년 4월 11일 · 플랫폼 전체 현황</p>
+            </div>
+            <div style="display: flex; gap: var(--space-2);">
+              <button class="btn btn--secondary btn--sm">
+                이번 달 ▾
+              </button>
+              <button class="btn btn--secondary btn--sm">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                </svg>
+                보고서 내보내기
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <section class="admin-kpi-grid">
+          <div class="admin-kpi">
+            <div class="admin-kpi__top">
+              <div class="admin-kpi__icon" style="background: var(--color-primary-light); color: var(--color-primary);">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+                </svg>
+              </div>
+              <div class="admin-kpi__trend admin-kpi__trend--up">
+                <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                  <path d="M18 15l-6-6-6 6"/>
+                </svg>
+                12%
+              </div>
+            </div>
+            <div class="admin-kpi__label">등록된 지역 문제</div>
+            <div class="admin-kpi__value">184</div>
+            <div class="admin-kpi__compare">이번 달 +22건 · 해결 127건</div>
+          </div>
+
+          <div class="admin-kpi">
+            <div class="admin-kpi__top">
+              <div class="admin-kpi__icon" style="background: var(--color-secondary-light); color: var(--color-secondary);">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M9 11H5a2 2 0 00-2 2v7a2 2 0 002 2h14a2 2 0 002-2v-7a2 2 0 00-2-2h-4"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              </div>
+              <div class="admin-kpi__trend admin-kpi__trend--up">
+                <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                  <path d="M18 15l-6-6-6 6"/>
+                </svg>
+                8%
+              </div>
+            </div>
+            <div class="admin-kpi__label">진행 중 리빙랩 프로젝트</div>
+            <div class="admin-kpi__value">12</div>
+            <div class="admin-kpi__compare">4개 캠퍼스 · 완료 3건</div>
+          </div>
+
+          <div class="admin-kpi">
+            <div class="admin-kpi__top">
+              <div class="admin-kpi__icon" style="background: #ede9fe; color: #7c3aed;">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+                </svg>
+              </div>
+              <div class="admin-kpi__trend admin-kpi__trend--up">
+                <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                  <path d="M18 15l-6-6-6 6"/>
+                </svg>
+                24%
+              </div>
+            </div>
+            <div class="admin-kpi__label">누적 봉사 시간</div>
+            <div class="admin-kpi__value">2,845</div>
+            <div class="admin-kpi__compare">VMS 동기화 99% · 이번 달 +580h</div>
+          </div>
+
+          <div class="admin-kpi">
+            <div class="admin-kpi__top">
+              <div class="admin-kpi__icon" style="background: #ffedd5; color: #ea580c;">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+                </svg>
+              </div>
+              <div class="admin-kpi__trend admin-kpi__trend--up">
+                <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                  <path d="M18 15l-6-6-6 6"/>
+                </svg>
+                18%
+              </div>
+            </div>
+            <div class="admin-kpi__label">참여 사용자</div>
+            <div class="admin-kpi__value">1,438</div>
+            <div class="admin-kpi__compare">교수 50 · 학생 400 · 시민 988</div>
+          </div>
+        </section>
+
+        <!-- Charts + Campus -->
+        <section class="dash-two-col">
+          <div class="chart-area">
+            <div class="chart-area__header">
+              <h2 class="chart-area__title">월별 이슈 등록 · 해결 현황</h2>
+              <div style="display: flex; gap: var(--space-2); font-size: var(--text-xs);">
+                <span style="display: flex; align-items: center; gap: 4px;">
+                  <span style="width: 10px; height: 10px; background: var(--color-primary); border-radius: 2px;"></span>
+                  등록
+                </span>
+                <span style="display: flex; align-items: center; gap: 4px;">
+                  <span style="width: 10px; height: 10px; background: #93c5fd; border-radius: 2px;"></span>
+                  해결
+                </span>
+              </div>
+            </div>
+            <div class="chart-bars">
+              <div class="chart-bar" style="height: 40%;" data-value="12건"></div>
+              <div class="chart-bar" style="height: 55%;" data-value="17건"></div>
+              <div class="chart-bar" style="height: 45%;" data-value="14건"></div>
+              <div class="chart-bar" style="height: 65%;" data-value="20건"></div>
+              <div class="chart-bar" style="height: 50%;" data-value="15건"></div>
+              <div class="chart-bar" style="height: 72%;" data-value="22건"></div>
+              <div class="chart-bar" style="height: 60%;" data-value="18건"></div>
+              <div class="chart-bar" style="height: 85%;" data-value="26건"></div>
+              <div class="chart-bar" style="height: 78%;" data-value="24건"></div>
+              <div class="chart-bar" style="height: 90%;" data-value="28건"></div>
+              <div class="chart-bar" style="height: 95%;" data-value="30건"></div>
+              <div class="chart-bar" style="height: 100%;" data-value="32건"></div>
+            </div>
+            <div class="chart-labels">
+              <span>5월</span><span>6월</span><span>7월</span><span>8월</span>
+              <span>9월</span><span>10월</span><span>11월</span><span>12월</span>
+              <span>1월</span><span>2월</span><span>3월</span><span>4월</span>
+            </div>
+          </div>
+
+          <div class="campus-breakdown">
+            <h2 class="chart-area__title" style="margin-bottom: var(--space-5);">캠퍼스별 활동</h2>
+            <div class="campus-bar">
+              <div class="campus-bar__label">
+                <span class="campus-bar__name">대전 (청년정착)</span>
+                <span class="campus-bar__count">4개 · 35명</span>
+              </div>
+              <div class="campus-bar__track">
+                <div class="campus-bar__fill" style="width: 85%; background: #2563eb;"></div>
+              </div>
+            </div>
+            <div class="campus-bar">
+              <div class="campus-bar__label">
+                <span class="campus-bar__name">공주 (문화재생)</span>
+                <span class="campus-bar__count">3개 · 28명</span>
+              </div>
+              <div class="campus-bar__track">
+                <div class="campus-bar__fill" style="width: 70%; background: #059669;"></div>
+              </div>
+            </div>
+            <div class="campus-bar">
+              <div class="campus-bar__label">
+                <span class="campus-bar__name">예산 (고령자돌봄)</span>
+                <span class="campus-bar__count">3개 · 42명</span>
+              </div>
+              <div class="campus-bar__track">
+                <div class="campus-bar__fill" style="width: 90%; background: #7c3aed;"></div>
+              </div>
+            </div>
+            <div class="campus-bar">
+              <div class="campus-bar__label">
+                <span class="campus-bar__name">세종 (모빌리티)</span>
+                <span class="campus-bar__count">2개 · 20명</span>
+              </div>
+              <div class="campus-bar__track">
+                <div class="campus-bar__fill" style="width: 50%; background: #ea580c;"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Recent Lists -->
+        <section class="dash-two-col">
+          <div class="recent-list">
+            <div class="recent-list__header">
+              <h2 class="recent-list__title">처리 대기 이슈 <span class="badge badge--danger">7</span></h2>
+              <a href="/mockup/pages/admin/issues.html" class="btn btn--ghost btn--sm">전체 →</a>
+            </div>
+            <div class="recent-item">
+              <span class="badge badge--status-submitted">접수됨</span>
+              <div class="recent-item__body">
+                <div class="recent-item__title">대전 원도심 청년 문화공간 부족</div>
+                <div class="recent-item__meta">환경 · 대전 · 10분 전</div>
+              </div>
+              <button class="btn btn--primary btn--sm">배정</button>
+            </div>
+            <div class="recent-item">
+              <span class="badge badge--status-submitted">접수됨</span>
+              <div class="recent-item__body">
+                <div class="recent-item__title">세종시 대중교통 배차 간격 개선 요청</div>
+                <div class="recent-item__meta">교통 · 세종 · 1시간 전</div>
+              </div>
+              <button class="btn btn--primary btn--sm">배정</button>
+            </div>
+            <div class="recent-item">
+              <span class="badge badge--status-reviewing">검토중</span>
+              <div class="recent-item__body">
+                <div class="recent-item__title">공주 백제문화권 청년 창업 지원 부족</div>
+                <div class="recent-item__meta">문화 · 공주 · 2시간 전</div>
+              </div>
+              <button class="btn btn--secondary btn--sm">검토</button>
+            </div>
+            <div class="recent-item">
+              <span class="badge badge--status-reviewing">검토중</span>
+              <div class="recent-item__body">
+                <div class="recent-item__title">예산 지역 버스 노선 확충 요청</div>
+                <div class="recent-item__meta">교통 · 예산 · 3시간 전</div>
+              </div>
+              <button class="btn btn--secondary btn--sm">검토</button>
+            </div>
+          </div>
+
+          <div class="recent-list">
+            <div class="recent-list__header">
+              <h2 class="recent-list__title">마일스톤 임박</h2>
+              <a href="/mockup/pages/admin/projects.html" class="btn btn--ghost btn--sm">전체 →</a>
+            </div>
+            <div class="recent-item">
+              <div class="recent-item__body">
+                <div class="recent-item__title">플랫폼 요구사항 분석 완료</div>
+                <div class="recent-item__meta">대전잡스 · ~2026.04.30</div>
+              </div>
+              <span class="badge badge--warning">5일</span>
+            </div>
+            <div class="recent-item">
+              <div class="recent-item__body">
+                <div class="recent-item__title">지역 기업 파일럿 확정</div>
+                <div class="recent-item__meta">대전잡스 · ~2026.05.10</div>
+              </div>
+              <span class="badge badge--warning">15일</span>
+            </div>
+            <div class="recent-item">
+              <div class="recent-item__body">
+                <div class="recent-item__title">백제문화 유휴공간 리모델링</div>
+                <div class="recent-item__meta">백제문화권 · ~2026.05.30</div>
+              </div>
+              <span class="badge badge--info">35일</span>
+            </div>
+            <div class="recent-item">
+              <div class="recent-item__body">
+                <div class="recent-item__title">원격진료 부스 시범 운영</div>
+                <div class="recent-item__meta">예산 돌봄테크 · ~2026.06.15</div>
+              </div>
+              <span class="badge badge--info">51일</span>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

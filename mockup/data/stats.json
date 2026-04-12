@@ -1,0 +1,14 @@
+{
+  "platform": {
+    "resolvedIssues": 127,
+    "activeProjects": 12,
+    "totalVolunteerHours": 2845,
+    "participantCount": 1438
+  },
+  "campuses": [
+    { "code": "DJ", "name": "대전", "type": "청년정착", "projects": 4, "color": "#2563eb" },
+    { "code": "GJ", "name": "공주", "type": "문화재생", "projects": 3, "color": "#059669" },
+    { "code": "YS", "name": "예산", "type": "고령자돌봄", "projects": 3, "color": "#7c3aed" },
+    { "code": "SJ", "name": "세종", "type": "모빌리티", "projects": 2, "color": "#ea580c" }
+  ]
+}
