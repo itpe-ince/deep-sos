@@ -28,4 +28,11 @@ export default defineConfig({
         ]
       : []),
   ],
+  webServer: process.env.CI
+    ? undefined // CI는 별도 서비스 띄움
+    : {
+        command: 'npm run dev',
+        port: 3800,
+        reuseExistingServer: true,
+      },
 });

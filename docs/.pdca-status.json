@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-04-12T08:17:03.031Z",
+  "lastUpdated": "2026-04-12T09:10:20.807Z",
   "activeFeatures": [
     "uscp-v1",
     "sos-lab",
@@ -51,7 +51,8 @@
     "portfolio",
     "notification_service.py",
     "fixtures",
-    "e2e"
+    "e2e",
+    "i18n"
   ],
   "primaryFeature": "uscp-v1",
   "features": {
@@ -76,7 +77,9 @@
       "designDoc": "docs/02-design/features/uscp-v1.design.md",
       "doDoc": "docs/03-do/uscp-v1.do.md",
       "analysisDoc": "docs/03-analysis/uscp-v1.analysis.md",
-      "currentSprint": "Sprint 5 · Production Deployment Readiness (COMPLETE)",
+      "currentSprint": "Sprint 6 · Quality Hardening (COMPLETE)",
+      "sprint6MatchRate": 97,
+      "sprint6AnalysisDoc": "docs/03-analysis/uscp-v1-sprint6.analysis.md",
       "sprint5MatchRate": 96,
       "sprint5AnalysisDoc": "docs/03-analysis/uscp-v1-sprint5.analysis.md",
       "backendEndpointsSprint5": 62,
@@ -188,9 +191,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-09T05:17:50.472Z",
-        "lastUpdated": "2026-04-12T02:29:16.300Z"
+        "lastUpdated": "2026-04-12T08:40:11.935Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/scripts/rollback.sh"
+      "lastFile": "/Users/sangincha/dev/deep-sos/backend/scripts/seed_e2e.py"
     },
     "tmp": {
       "phase": "do",
@@ -344,7 +347,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T09:59:57.240Z",
-        "lastUpdated": "2026-04-12T03:50:04.577Z"
+        "lastUpdated": "2026-04-12T09:10:07.320Z"
       },
       "lastFile": "/Users/sangincha/dev/deep-sos/frontend/playwright.config.ts"
     },
@@ -357,9 +360,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T10:01:33.749Z",
-        "lastUpdated": "2026-04-12T03:12:15.124Z"
+        "lastUpdated": "2026-04-12T09:04:41.038Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/components/layout/Header.tsx"
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/components/layout/NotificationBell.tsx"
     },
     "(public)": {
       "phase": "do",
@@ -370,9 +373,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T10:02:11.262Z",
-        "lastUpdated": "2026-04-11T11:01:04.765Z"
+        "lastUpdated": "2026-04-12T09:02:37.279Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/(public)/page.tsx"
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/(public)/layout.tsx"
     },
     "about": {
       "phase": "do",
@@ -526,7 +529,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T12:59:35.668Z",
-        "lastUpdated": "2026-04-11T13:00:35.802Z"
+        "lastUpdated": "2026-04-12T09:02:57.901Z"
       },
       "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/user/layout.tsx"
     },
@@ -604,7 +607,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T13:28:53.704Z",
-        "lastUpdated": "2026-04-12T02:09:29.622Z"
+        "lastUpdated": "2026-04-12T09:04:22.291Z"
       },
       "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/components/admin/TipTapEditor.tsx"
     },
@@ -786,9 +789,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-12T03:50:21.997Z",
-        "lastUpdated": "2026-04-12T08:17:03.031Z"
+        "lastUpdated": "2026-04-12T08:40:27.819Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/tests/e2e/fixtures/auth.ts"
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/tests/e2e/fixtures/seed.ts"
     },
     "e2e": {
       "phase": "do",
@@ -799,9 +802,22 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-12T03:50:37.536Z",
-        "lastUpdated": "2026-04-12T07:55:00.125Z"
+        "lastUpdated": "2026-04-12T09:10:20.807Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/tests/e2e/auth.spec.ts"
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/tests/e2e/accessibility.spec.ts"
+    },
+    "i18n": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-04-12T08:36:00.070Z",
+        "lastUpdated": "2026-04-12T08:36:00.070Z"
+      },
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/i18n/request.ts"
     }
   },
   "pipeline": {
@@ -812,7 +828,7 @@
   "session": {
     "startedAt": "2026-04-07T07:44:19.225Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-04-12T08:17:03.031Z"
+    "lastActivity": "2026-04-12T09:10:20.807Z"
   },
   "history": [
     {
@@ -2552,6 +2568,162 @@
     {
       "timestamp": "2026-04-12T08:17:03.031Z",
       "feature": "fixtures",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T08:31:02.529Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T08:34:47.092Z",
+      "feature": "e2e",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T08:36:00.070Z",
+      "feature": "i18n",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T08:36:11.683Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T08:36:16.008Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T08:40:06.345Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T08:40:11.935Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T08:40:27.819Z",
+      "feature": "fixtures",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:02:26.787Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:02:37.279Z",
+      "feature": "(public)",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:02:57.901Z",
+      "feature": "user",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:02:58.992Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:03:22.452Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:03:28.974Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:03:35.132Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:03:40.086Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:03:45.864Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:03:51.085Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:03:57.423Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:04:05.586Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:04:17.062Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:04:22.291Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:04:34.435Z",
+      "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:04:41.038Z",
+      "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:10:07.320Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T09:10:20.807Z",
+      "feature": "e2e",
       "phase": "do",
       "action": "updated"
     }

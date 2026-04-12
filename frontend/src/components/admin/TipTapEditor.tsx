@@ -73,6 +73,7 @@ export function TipTapEditor({ initialContent, onChange }: Props) {
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
           className={btnClass(editor.isActive('heading', { level: 1 }))}
           title="제목 1"
+          aria-label="제목 1"
         >
           <Heading1 className="h-4 w-4" />
         </button>
@@ -81,6 +82,7 @@ export function TipTapEditor({ initialContent, onChange }: Props) {
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           className={btnClass(editor.isActive('heading', { level: 2 }))}
           title="제목 2"
+          aria-label="제목 2"
         >
           <Heading2 className="h-4 w-4" />
         </button>
@@ -90,6 +92,7 @@ export function TipTapEditor({ initialContent, onChange }: Props) {
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={btnClass(editor.isActive('bold'))}
           title="굵게"
+          aria-label="굵게"
         >
           <Bold className="h-4 w-4" />
         </button>
@@ -98,6 +101,7 @@ export function TipTapEditor({ initialContent, onChange }: Props) {
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={btnClass(editor.isActive('italic'))}
           title="기울임"
+          aria-label="기울임"
         >
           <Italic className="h-4 w-4" />
         </button>
@@ -107,6 +111,7 @@ export function TipTapEditor({ initialContent, onChange }: Props) {
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={btnClass(editor.isActive('bulletList'))}
           title="글머리 목록"
+          aria-label="글머리 목록"
         >
           <List className="h-4 w-4" />
         </button>
@@ -115,6 +120,7 @@ export function TipTapEditor({ initialContent, onChange }: Props) {
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className={btnClass(editor.isActive('orderedList'))}
           title="번호 목록"
+          aria-label="번호 목록"
         >
           <ListOrdered className="h-4 w-4" />
         </button>
@@ -128,6 +134,7 @@ export function TipTapEditor({ initialContent, onChange }: Props) {
           }}
           className={btnClass(editor.isActive('link'))}
           title="링크"
+          aria-label="링크"
         >
           <LinkIcon className="h-4 w-4" />
         </button>
@@ -175,6 +182,7 @@ export function TipTapEditor({ initialContent, onChange }: Props) {
           }}
           className={btnClass(false)}
           title="이미지 (파일 업로드 또는 URL)"
+          aria-label="이미지 삽입"
         >
           <ImageIc className="h-4 w-4" />
         </button>
@@ -184,6 +192,7 @@ export function TipTapEditor({ initialContent, onChange }: Props) {
           onClick={() => editor.chain().focus().undo().run()}
           className={btnClass(false)}
           title="실행 취소"
+          aria-label="실행 취소"
         >
           <Undo className="h-4 w-4" />
         </button>
@@ -192,6 +201,7 @@ export function TipTapEditor({ initialContent, onChange }: Props) {
           onClick={() => editor.chain().focus().redo().run()}
           className={btnClass(false)}
           title="다시 실행"
+          aria-label="다시 실행"
         >
           <Redo className="h-4 w-4" />
         </button>

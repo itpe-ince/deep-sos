@@ -1,0 +1,75 @@
+{
+  "common": {
+    "siteName": "SOS랩",
+    "siteSubtitle": "대학과 지역이 함께 만드는 사회공헌 플랫폼",
+    "loading": "로딩 중...",
+    "error": "오류가 발생했습니다",
+    "save": "저장",
+    "cancel": "취소",
+    "delete": "삭제",
+    "edit": "수정",
+    "create": "등록",
+    "search": "검색",
+    "back": "뒤로",
+    "more": "더보기",
+    "confirm": "확인",
+    "close": "닫기",
+    "submit": "제출"
+  },
+  "nav": {
+    "home": "홈",
+    "issues": "지역 문제 제안",
+    "projects": "리빙랩 프로젝트",
+    "volunteers": "봉사활동",
+    "successCases": "성공사례",
+    "about": "소개",
+    "guide": "이용 가이드",
+    "campus": "캠퍼스 정보",
+    "login": "로그인",
+    "logout": "로그아웃",
+    "dashboard": "대시보드",
+    "myPage": "마이페이지",
+    "admin": "관리자"
+  },
+  "auth": {
+    "login": "로그인",
+    "register": "회원가입",
+    "email": "이메일",
+    "password": "비밀번호",
+    "name": "이름",
+    "forgotPassword": "비밀번호를 잊으셨나요?",
+    "resetPassword": "비밀번호 재설정",
+    "loginSuccess": "로그인되었습니다",
+    "logoutSuccess": "로그아웃되었습니다",
+    "registerSuccess": "회원가입이 완료되었습니다"
+  },
+  "issue": {
+    "title": "지역 문제 제안",
+    "newIssue": "문제 제안하기",
+    "category": "카테고리",
+    "description": "상세 설명",
+    "vote": "공감하기",
+    "unvote": "공감 취소",
+    "comment": "댓글",
+    "commentPlaceholder": "의견을 남겨주세요",
+    "submit": "문제 제안하기"
+  },
+  "project": {
+    "title": "리빙랩 프로젝트",
+    "phase": "진행 단계",
+    "participants": "참여 인원",
+    "status": "상태"
+  },
+  "dashboard": {
+    "greeting": "안녕하세요, {name}님",
+    "myIssues": "내 이슈",
+    "myProjects": "내 프로젝트",
+    "myVolunteers": "내 봉사활동",
+    "recentActivity": "최근 활동"
+  },
+  "footer": {
+    "copyright": "SOS랩 (USCP). All rights reserved.",
+    "privacy": "개인정보처리방침",
+    "terms": "이용약관"
+  }
+}

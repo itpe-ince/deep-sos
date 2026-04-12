@@ -1,0 +1,75 @@
+{
+  "common": {
+    "siteName": "SOS Lab",
+    "siteSubtitle": "University–Community Social Contribution Platform",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "back": "Back",
+    "more": "More",
+    "confirm": "Confirm",
+    "close": "Close",
+    "submit": "Submit"
+  },
+  "nav": {
+    "home": "Home",
+    "issues": "Community Issues",
+    "projects": "Living Lab Projects",
+    "volunteers": "Volunteering",
+    "successCases": "Success Stories",
+    "about": "About",
+    "guide": "User Guide",
+    "campus": "Campus Info",
+    "login": "Log In",
+    "logout": "Log Out",
+    "dashboard": "Dashboard",
+    "myPage": "My Page",
+    "admin": "Admin"
+  },
+  "auth": {
+    "login": "Log In",
+    "register": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "forgotPassword": "Forgot your password?",
+    "resetPassword": "Reset Password",
+    "loginSuccess": "Logged in successfully",
+    "logoutSuccess": "Logged out successfully",
+    "registerSuccess": "Registration complete"
+  },
+  "issue": {
+    "title": "Community Issues",
+    "newIssue": "Submit an Issue",
+    "category": "Category",
+    "description": "Description",
+    "vote": "Vote",
+    "unvote": "Remove Vote",
+    "comment": "Comment",
+    "commentPlaceholder": "Share your thoughts",
+    "submit": "Submit Issue"
+  },
+  "project": {
+    "title": "Living Lab Projects",
+    "phase": "Phase",
+    "participants": "Participants",
+    "status": "Status"
+  },
+  "dashboard": {
+    "greeting": "Hello, {name}",
+    "myIssues": "My Issues",
+    "myProjects": "My Projects",
+    "myVolunteers": "My Volunteering",
+    "recentActivity": "Recent Activity"
+  },
+  "footer": {
+    "copyright": "SOS Lab (USCP). All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  }
+}

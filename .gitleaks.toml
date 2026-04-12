@@ -1,0 +1,18 @@
+title = "USCP Gitleaks Config"
+
+[allowlist]
+  description = "USCP project-specific allowlist"
+  paths = [
+    '''\.env\.example$''',
+    '''\.env\.test$''',
+    '''tests/''',
+    '''scripts/seed_e2e\.py$''',
+  ]
+  regexTarget = "match"
+  regexes = [
+    # Allow example/test JWT secrets (clearly non-production values)
+    '''test-secret''',
+    '''test-refresh-secret''',
+    '''e2e-test-secret''',
+    '''e2e-test-refresh-secret''',
+  ]
