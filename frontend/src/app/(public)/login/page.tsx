@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
 import { api, ApiError } from '@/lib/api';
 
@@ -85,11 +86,12 @@ export default function LoginPage() {
             backgroundSize: '40px 40px',
           }}
         />
-        <Link href="/" className="relative z-10 flex items-center gap-3 text-lg font-extrabold">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/15 backdrop-blur-sm text-xs font-black">
-            SOS
+        <Link href="/" className="relative z-10 flex items-center gap-3">
+          <Image src="/logo.png" alt="국립공주대학교" width={140} height={28} className="brightness-0 invert" />
+          <div className="flex flex-col leading-tight">
+            <span className="text-xl font-black tracking-tight">USCP</span>
+            <span className="text-xs font-semibold tracking-wider text-white/60">온라인 사회공헌 플랫폼</span>
           </div>
-          SOS랩
         </Link>
         <div className="relative z-10">
           <div className="mb-6 inline-block rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold backdrop-blur-sm">
@@ -122,7 +124,7 @@ export default function LoginPage() {
           </div>
         </div>
         <div className="relative z-10 text-xs opacity-60">
-          © 2026 SOS랩 (USCP) · 지역사회특화센터 · ESG센터 · 국제협력센터
+          © 2026 USCP · 지역사회특화센터 · ESG센터 · 국제협력센터
         </div>
       </aside>
 
