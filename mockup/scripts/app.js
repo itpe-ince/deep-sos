@@ -1,12 +1,15 @@
-/* SOS랩 USCP - Common Scripts */
+/* USCP - Common Scripts */
 
 // 공통 컴포넌트 주입 (GNB, Footer)
 const COMMON_HEADER_PUBLIC = `
 <header class="gnb" data-component="Header">
   <div class="gnb__inner">
     <a href="/mockup/pages/index.html" class="gnb__brand">
-      <div class="gnb__logo">SOS</div>
-      <span>SOS랩</span>
+      <img src="/mockup/images/logo.png" alt="국립공주대학교" style="height:32px;">
+      <div style="display:flex;flex-direction:column;line-height:1.2;">
+        <span style="font-size:20px;font-weight:900;letter-spacing:-0.02em;background:linear-gradient(135deg,var(--color-primary),var(--color-secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">USCP</span>
+        <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;color:var(--color-text-secondary);">온라인 사회공헌 플랫폼</span>
+      </div>
     </a>
     <nav class="gnb__menu" data-component="Navigation">
       <a href="/mockup/pages/public/about.html" data-nav="about">플랫폼 소개</a>
@@ -38,8 +41,11 @@ const COMMON_HEADER_USER = `
 <header class="gnb" data-component="Header">
   <div class="gnb__inner">
     <a href="/mockup/pages/index.html" class="gnb__brand">
-      <div class="gnb__logo">SOS</div>
-      <span>SOS랩</span>
+      <img src="/mockup/images/logo.png" alt="국립공주대학교" style="height:32px;">
+      <div style="display:flex;flex-direction:column;line-height:1.2;">
+        <span style="font-size:20px;font-weight:900;letter-spacing:-0.02em;background:linear-gradient(135deg,var(--color-primary),var(--color-secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">USCP</span>
+        <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;color:var(--color-text-secondary);">온라인 사회공헌 플랫폼</span>
+      </div>
     </a>
     <nav class="gnb__menu" data-component="Navigation">
       <a href="/mockup/pages/public/about.html" data-nav="about">플랫폼 소개</a>
@@ -81,10 +87,9 @@ const COMMON_HEADER_USER = `
 const ADMIN_SIDE = `
 <aside class="admin-side" data-component="AdminSidebar">
   <div class="admin-side__brand">
-    <div class="admin-side__logo">SOS</div>
+    <img src="/mockup/images/logo.png" alt="국립공주대학교" style="height:28px;">
     <div>
-      <div class="admin-side__title">SOS랩 관리자</div>
-      <div class="admin-side__subtitle">USCP Admin</div>
+      <div class="admin-side__title">USCP 관리자</div>
     </div>
   </div>
   <nav class="admin-side__nav">
@@ -269,19 +274,21 @@ const USER_LNB = `
         <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
       </svg>
       대전잡스 프로젝트
+      <span class="badge badge--status-progress" style="margin-left:auto;font-size:10px;padding:2px 6px;">실행</span>
     </a>
-    <a href="/mockup/pages/user/feedback-new.html" class="lnb__item" data-user-nav="feedback">
+    <a href="#" class="lnb__item" style="opacity:0.5;pointer-events:none;">
       <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
       </svg>
-      현장 피드백
+      공주 리빙랩 프로젝트
+      <span class="badge badge--gray" style="margin-left:auto;font-size:10px;padding:2px 6px;">탐색</span>
     </a>
-    <a href="/mockup/pages/user/idea-board.html" class="lnb__item" data-user-nav="board">
+    <a href="#" class="lnb__item" style="opacity:0.5;pointer-events:none;">
       <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-        <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+        <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
       </svg>
-      아이디어 보드
+      세종 교통문제 해결
+      <span class="badge badge--success" style="margin-left:auto;font-size:10px;padding:2px 6px;">완료</span>
     </a>
 
     <div class="lnb__section">계정</div>
@@ -307,8 +314,7 @@ const COMMON_FOOTER = `
     <div class="footer__grid">
       <div>
         <div class="footer__brand">
-          <div class="gnb__logo">SOS</div>
-          <span>SOS랩</span>
+          <img src="/mockup/images/logo.png" alt="국립공주대학교" style="height:32px;filter:brightness(0) invert(1);">
         </div>
         <p class="footer__desc">
           대학-지자체-시민이 함께하는 온라인 사회공헌 플랫폼.<br>
@@ -318,7 +324,7 @@ const COMMON_FOOTER = `
       <div>
         <h4 class="footer__title">플랫폼</h4>
         <ul class="footer__list">
-          <li><a href="/mockup/pages/public/about.html">SOS랩이란?</a></li>
+          <li><a href="/mockup/pages/public/about.html">USCP란?</a></li>
           <li><a href="/mockup/pages/public/campus.html">캠퍼스 소개</a></li>
           <li><a href="/mockup/pages/public/guide.html">참여 방법</a></li>
           <li><a href="/mockup/pages/public/success-cases.html">성공 사례</a></li>
@@ -344,7 +350,7 @@ const COMMON_FOOTER = `
       </div>
     </div>
     <div class="footer__bottom">
-      <div>© 2026 SOS랩 (USCP) · 2025 글로컬대학 본지정 사업</div>
+      <div>© 2026 USCP · 2025 글로컬대학 본지정 사업</div>
       <div class="footer__sdgs">
         <div class="footer__sdg-badge" title="SDG 4">4</div>
         <div class="footer__sdg-badge" title="SDG 9">9</div>
@@ -372,7 +378,7 @@ const DEMO_DOCK = `
     <div class="demo-dock__group" style="--group-color: #2563eb;">
       <div class="demo-dock__group-title">공개 영역 (11)</div>
       <a href="/mockup/pages/index.html" class="demo-dock__item"><span class="demo-dock__item-code">P-01</span>홈</a>
-      <a href="/mockup/pages/public/about.html" class="demo-dock__item"><span class="demo-dock__item-code">P-02</span>SOS랩이란?</a>
+      <a href="/mockup/pages/public/about.html" class="demo-dock__item"><span class="demo-dock__item-code">P-02</span>USCP란?</a>
       <a href="/mockup/pages/public/campus.html" class="demo-dock__item"><span class="demo-dock__item-code">P-03</span>캠퍼스별 리빙랩</a>
       <a href="/mockup/pages/public/guide.html" class="demo-dock__item"><span class="demo-dock__item-code">P-04</span>참여 방법 안내</a>
       <a href="/mockup/pages/public/issues.html" class="demo-dock__item"><span class="demo-dock__item-code">P-05</span>지역 문제 목록</a>
@@ -509,5 +515,5 @@ const loadData = async (name) => {
 
 // Export (모듈 환경 대비)
 if (typeof window !== 'undefined') {
-  window.SOS = { formatDate, formatNumber, loadData };
+  window.USCP = { formatDate, formatNumber, loadData };
 }

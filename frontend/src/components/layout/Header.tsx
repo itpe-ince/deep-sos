@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { LayoutDashboard, LogOut, Search, User } from 'lucide-react';
 import { useAuth } from '@/lib/use-auth';
@@ -16,12 +17,13 @@ export function Header() {
       <div className="mx-auto flex h-full max-w-layout items-center justify-between gap-6 px-6">
         <Link
           href="/"
-          className="flex items-center gap-3 text-lg font-extrabold text-text"
+          className="flex items-center gap-3"
         >
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-secondary text-xs font-black text-white">
-            SOS
+          <Image src="/logo.png" alt="국립공주대학교" width={160} height={32} priority />
+          <div className="flex flex-col leading-tight">
+            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-xl font-black tracking-tight text-transparent">USCP</span>
+            <span className="text-xs font-semibold tracking-wider text-text-secondary">온라인 사회공헌 플랫폼</span>
           </div>
-          <span>SOS랩</span>
         </Link>
 
         <nav className="hidden flex-1 items-center justify-center gap-1 lg:flex">

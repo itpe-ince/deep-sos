@@ -3,7 +3,7 @@
  * 브라우저는 /api/v1 prefix로 프록시되지만, SSR은 내부 URL로 직접 호출한다.
  */
 const SERVER_API_URL =
-  process.env.INTERNAL_API_URL ?? 'http://127.0.0.1:8000/api/v1';
+  process.env.INTERNAL_API_URL ?? 'http://127.0.0.1:3810/api/v1';
 
 interface PageMeta {
   total: number;

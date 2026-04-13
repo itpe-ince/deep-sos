@@ -3,13 +3,13 @@ import type { Metadata } from 'next';
 import { fetchCmsPage } from '@/lib/server-api';
 
 export const metadata: Metadata = {
-  title: 'SOS랩이란?',
+  title: 'USCP란?',
   description:
-    'SOS랩(USCP)은 대학과 지역사회가 함께 문제를 발굴하고 해결하는 온라인 사회공헌 플랫폼입니다.',
+    'USCP(Union Social Contribution Platform)는 대학과 지역사회가 함께 문제를 발굴하고 해결하는 온라인 사회공헌 플랫폼입니다.',
 };
 
 /**
- * P-02 SOS랩이란? — mockup/pages/public/about.html 포팅
+ * P-02 USCP란? — mockup/pages/public/about.html 포팅
  * Sprint 2: 상단에 CMS에서 관리하는 동적 콘텐츠 섹션 노출.
  */
 export default async function AboutPage() {
@@ -34,7 +34,7 @@ export default async function AboutPage() {
             <span>/</span>
             <span>플랫폼 소개</span>
           </nav>
-          <h1 className="mb-4 text-3xl font-black tracking-tight">SOS랩이란?</h1>
+          <h1 className="mb-4 text-3xl font-black tracking-tight">USCP란?</h1>
           <p className="mx-auto max-w-2xl text-lg text-text-secondary">
             대학과 지역사회가 함께 문제를 발굴하고 해결하는
             <br />
@@ -57,7 +57,7 @@ export default async function AboutPage() {
             <div className="space-y-4 text-base leading-relaxed text-text-secondary">
               <p>
                 <strong className="text-text">
-                  SOS랩 (USCP, Union Social Contribution Platform)
+                  온라인 사회공헌 플랫폼(USCP, Union Social Contribution Platform)
                 </strong>
                 은 2025 글로컬대학 본지정 사업의 핵심 플랫폼으로, 대학의 역량을
                 지역사회 문제 해결에 연결하는 디지털 인프라입니다.

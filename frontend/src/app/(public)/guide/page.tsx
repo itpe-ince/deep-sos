@@ -64,7 +64,7 @@ const STEPS = [
 
 const FAQS = [
   {
-    q: 'SOS랩에 참여하려면 대학교 구성원이어야 하나요?',
+    q: 'USCP에 참여하려면 대학교 구성원이어야 하나요?',
     a: '아닙니다. 대전·공주·예산·세종 지역의 모든 시민이 참여할 수 있습니다. 교수, 학생뿐만 아니라 지역 주민, 공무원, 지역기업 관계자 누구나 회원가입 후 이용 가능합니다.',
   },
   {
@@ -110,7 +110,7 @@ export default async function GuidePage() {
             <span>참여 방법</span>
           </nav>
           <h1 className="mb-4 text-3xl font-black tracking-tight">
-            SOS랩에 참여하는 방법
+            USCP에 참여하는 방법
           </h1>
           <p className="mx-auto max-w-2xl text-lg text-text-secondary">
             누구나 쉽게 우리 지역의 문제를 함께 해결할 수 있습니다.

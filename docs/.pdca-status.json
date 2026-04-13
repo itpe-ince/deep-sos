@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-04-12T11:19:46.776Z",
+  "lastUpdated": "2026-04-13T02:11:32.285Z",
   "activeFeatures": [
     "uscp-v1",
     "sos-lab",
@@ -191,9 +191,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-09T05:17:50.472Z",
-        "lastUpdated": "2026-04-12T10:52:34.173Z"
+        "lastUpdated": "2026-04-13T02:11:22.936Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/backend/scripts/seed_e2e.py"
+      "lastFile": "/Users/sangincha/dev/deep-sos/mockup/scripts/app.js"
     },
     "tmp": {
       "phase": "do",
@@ -347,9 +347,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T09:59:57.240Z",
-        "lastUpdated": "2026-04-12T11:19:46.776Z"
+        "lastUpdated": "2026-04-12T22:53:51.443Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/lib/use-auth.ts"
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/lib/server-api.ts"
     },
     "layout": {
       "phase": "do",
@@ -360,9 +360,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T10:01:33.749Z",
-        "lastUpdated": "2026-04-12T09:04:41.038Z"
+        "lastUpdated": "2026-04-13T02:11:32.285Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/components/layout/NotificationBell.tsx"
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/components/layout/Header.tsx"
     },
     "(public)": {
       "phase": "do",
@@ -386,7 +386,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T11:05:50.894Z",
-        "lastUpdated": "2026-04-11T13:31:08.606Z"
+        "lastUpdated": "2026-04-13T02:01:12.788Z"
       },
       "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/(public)/about/page.tsx"
     },
@@ -828,7 +828,7 @@
   "session": {
     "startedAt": "2026-04-07T07:44:19.225Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-04-12T11:19:46.776Z"
+    "lastActivity": "2026-04-13T02:11:32.285Z"
   },
   "history": [
     {
@@ -2778,6 +2778,204 @@
     {
       "timestamp": "2026-04-12T11:19:46.776Z",
       "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-12T22:53:51.443Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T01:24:44.675Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:00:12.808Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:00:18.854Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:00:26.555Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:00:35.210Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:00:41.660Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:00:49.614Z",
+      "feature": "about",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:00:57.591Z",
+      "feature": "about",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:01:04.746Z",
+      "feature": "about",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:01:12.788Z",
+      "feature": "about",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:01:26.004Z",
+      "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:01:32.159Z",
+      "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:01:44.988Z",
+      "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:01:51.046Z",
+      "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:05:42.801Z",
+      "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:05:51.946Z",
+      "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:05:58.711Z",
+      "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:06:08.386Z",
+      "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:06:46.111Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:06:58.898Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:07:18.958Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:07:32.889Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:07:50.089Z",
+      "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:07:58.831Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:08:22.703Z",
+      "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:08:30.133Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:09:15.207Z",
+      "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:09:22.430Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:09:59.455Z",
+      "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:10:11.468Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:11:22.936Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-13T02:11:32.285Z",
+      "feature": "layout",
       "phase": "do",
       "action": "updated"
     }

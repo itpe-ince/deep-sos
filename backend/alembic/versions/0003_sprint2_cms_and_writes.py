@@ -119,7 +119,7 @@ _GUIDE_TIPTAP = {
             "content": [
                 {
                     "type": "text",
-                    "text": "누구나 5단계로 SOS랩에 참여할 수 있습니다. 로그인만 하면 바로 시작할 수 있어요.",
+                    "text": "누구나 5단계로 USCP에 참여할 수 있습니다. 로그인만 하면 바로 시작할 수 있어요.",
                 }
             ],
         },
@@ -341,7 +341,7 @@ def upgrade() -> None:
             title="참여 가이드",
             content_json=json.dumps(_GUIDE_TIPTAP, ensure_ascii=False),
             content_html=(
-                "<h1>참여 가이드</h1><p>누구나 5단계로 SOS랩에 참여할 수 있습니다. "
+                "<h1>참여 가이드</h1><p>누구나 5단계로 USCP에 참여할 수 있습니다. "
                 "로그인만 하면 바로 시작할 수 있어요.</p>"
                 "<ol>"
                 "<li><strong>1. 지역 문제 발견</strong> — 주변에서 발견한 문제를 제안합니다.</li>"

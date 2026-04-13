@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
 export function Footer() {
@@ -6,11 +7,8 @@ export function Footer() {
       <div className="mx-auto max-w-layout">
         <div className="mb-8 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-1">
-            <div className="mb-4 flex items-center gap-3 text-lg font-extrabold text-white">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-secondary text-xs font-black text-white">
-                SOS
-              </div>
-              <span>SOS랩</span>
+            <div className="mb-4">
+              <Image src="/logo.png" alt="국립공주대학교" width={180} height={36} className="brightness-0 invert" />
             </div>
             <p className="max-w-[400px] text-sm leading-relaxed">
               대학-지자체-시민이 함께하는 온라인 사회공헌 플랫폼.
@@ -20,7 +18,7 @@ export function Footer() {
           </div>
 
           <FooterGroup title="플랫폼">
-            <FooterLink href="/about">SOS랩이란?</FooterLink>
+            <FooterLink href="/about">USCP란?</FooterLink>
             <FooterLink href="/campus">캠퍼스 소개</FooterLink>
             <FooterLink href="/guide">참여 방법</FooterLink>
             <FooterLink href="/success-cases">성공 사례</FooterLink>
@@ -43,7 +41,7 @@ export function Footer() {
         </div>
 
         <div className="flex flex-col items-center justify-between gap-4 border-t border-[#374151] pt-6 text-xs text-[#6b7280] md:flex-row">
-          <div>© 2026 SOS랩 (USCP) · 2025 글로컬대학 본지정 사업</div>
+          <div>© 2026 USCP · 2025 글로컬대학 본지정 사업</div>
           <div className="flex gap-2">
             {[4, 9, 10, 11, 17].map((n) => (
               <div
