@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOS랩 - 대학과 지역이 함께 만드는 사회공헌 플랫폼</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <link rel="stylesheet" href="/mockup/styles/pages/home.css">
+</head>
+<body data-nav="home">
+  <!-- Header (auto-injected) -->
+  <div data-slot="header"></div>
+
+  <main class="page">
+
+    <!-- Hero Section -->
+    <section class="hero" data-component="Hero">
+      <div class="hero__inner">
+        <div class="hero__eyebrow">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+          2025 글로컬대학 본지정 사업 · Local-to-Global 사회 책무성 실현
+        </div>
+        <h1 class="hero__title">
+          대학과 지역이 함께 만드는<br>
+          <em>사회공헌 플랫폼</em>
+        </h1>
+        <p class="hero__desc">
+          지역의 문제를 함께 발견하고, 대학의 역량으로 해결하며,
+          성과를 지역에 환원합니다. 리빙랩 5단계 프로세스를 통해
+          문제 해결의 전 과정을 투명하게 공개합니다.
+        </p>
+        <div class="hero__actions">
+          <a href="/mockup/pages/public/issues.html" class="btn btn--primary btn--lg">
+            지역 문제 제보하기
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+          <a href="/mockup/pages/public/projects.html" class="btn btn--secondary btn--lg">
+            리빙랩 둘러보기
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI Section -->
+    <section class="kpi-section" data-component="StatsGrid">
+      <div class="kpi-grid">
+        <div class="stat-card" data-component="StatCard">
+          <div class="stat-card__icon">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/>
+            </svg>
+          </div>
+          <div class="stat-card__label">해결된 문제</div>
+          <div class="stat-card__value">127<span style="font-size: var(--text-lg); color: var(--color-text-muted); font-weight: 500;">건</span></div>
+          <div class="stat-card__meta stat-card__meta--up">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+              <path d="M18 15l-6-6-6 6"/>
+            </svg>
+            지난달 대비 +12
+          </div>
+        </div>
+
+        <div class="stat-card" data-component="StatCard">
+          <div class="stat-card__icon" style="background: var(--color-secondary-light); color: var(--color-secondary);">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M12 2v20M2 12h20"/>
+            </svg>
+          </div>
+          <div class="stat-card__label">진행 중인 프로젝트</div>
+          <div class="stat-card__value">12<span style="font-size: var(--text-lg); color: var(--color-text-muted); font-weight: 500;">개</span></div>
+          <div class="stat-card__meta">4개 캠퍼스 전체</div>
+        </div>
+
+        <div class="stat-card" data-component="StatCard">
+          <div class="stat-card__icon" style="background: #ede9fe; color: #7c3aed;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+            </svg>
+          </div>
+          <div class="stat-card__label">누적 봉사 시간</div>
+          <div class="stat-card__value">2,845<span style="font-size: var(--text-lg); color: var(--color-text-muted); font-weight: 500;">시간</span></div>
+          <div class="stat-card__meta stat-card__meta--up">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+              <path d="M18 15l-6-6-6 6"/>
+            </svg>
+            이번 학기 +580
+          </div>
+        </div>
+
+        <div class="stat-card" data-component="StatCard">
+          <div class="stat-card__icon" style="background: #ffedd5; color: #ea580c;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+              <circle cx="9" cy="7" r="4"/>
+            </svg>
+          </div>
+          <div class="stat-card__label">참여 시민</div>
+          <div class="stat-card__value">1,438<span style="font-size: var(--text-lg); color: var(--color-text-muted); font-weight: 500;">명</span></div>
+          <div class="stat-card__meta">교수·학생·시민</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 최근 지역 문제 -->
+    <section class="section">
+      <div class="container">
+        <div class="section__head-flex">
+          <div>
+            <h2 class="section__title">최근 제보된 지역 문제</h2>
+            <p class="section__subtitle">시민이 직접 발견한 우리 지역의 문제들</p>
+          </div>
+          <a href="/mockup/pages/public/issues.html" class="btn btn--ghost">
+            전체 보기
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+
+        <div class="grid grid--3">
+          <a href="/mockup/pages/public/issue-detail.html" class="card card--hover" data-component="IssueCard">
+            <div class="card__header">
+              <div style="display: flex; gap: var(--space-2);">
+                <span class="badge badge--outline">안전</span>
+                <span class="badge badge--status-progress">처리중</span>
+              </div>
+              <span class="badge badge--campus-gj">공주</span>
+            </div>
+            <h3 class="card__title">공주캠퍼스 앞 횡단보도 신호 대기 시간이 너무 깁니다</h3>
+            <p class="card__description">
+              아침 통학 시간에 공주캠퍼스 앞 횡단보도 신호가 너무 길어 학생들의 안전이 우려됩니다. 특히 비 오는 날에는...
+            </p>
+            <div class="card__meta">
+              <span class="card__meta-item">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/>
+                </svg>
+                142
+              </span>
+              <span class="card__meta-item">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+                </svg>
+                23
+              </span>
+              <span style="margin-left: auto;">6일 전</span>
+            </div>
+          </a>
+
+          <a href="/mockup/pages/public/issue-detail.html" class="card card--hover" data-component="IssueCard">
+            <div class="card__header">
+              <div style="display: flex; gap: var(--space-2);">
+                <span class="badge badge--outline">환경</span>
+                <span class="badge badge--status-assigned">담당 배정</span>
+              </div>
+              <span class="badge badge--campus-dj">대전</span>
+            </div>
+            <h3 class="card__title">대전캠퍼스 도서관 주변 쓰레기 무단 투기 심각</h3>
+            <p class="card__description">
+              대전캠퍼스 중앙도서관 뒤편에 쓰레기가 계속 쌓이고 있습니다. 분리수거함 설치와 정기적인 청소가 필요합니다.
+            </p>
+            <div class="card__meta">
+              <span class="card__meta-item">👍 89</span>
+              <span class="card__meta-item">💬 12</span>
+              <span style="margin-left: auto;">3일 전</span>
+            </div>
+          </a>
+
+          <a href="/mockup/pages/public/issue-detail.html" class="card card--hover" data-component="IssueCard">
+            <div class="card__header">
+              <div style="display: flex; gap: var(--space-2);">
+                <span class="badge badge--outline">복지</span>
+                <span class="badge badge--status-resolved">해결됨</span>
+              </div>
+              <span class="badge badge--campus-ys">예산</span>
+            </div>
+            <h3 class="card__title">예산 지역 고령자 디지털 교육 수요 증가</h3>
+            <p class="card__description">
+              예산 지역 어르신들이 키오스크, 스마트폰 사용에 어려움을 겪고 있습니다. 정기적인 디지털 교육 프로그램이 필요합니다.
+            </p>
+            <div class="card__meta">
+              <span class="card__meta-item">👍 203</span>
+              <span class="card__meta-item">💬 45</span>
+              <span style="margin-left: auto;">2주 전</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 진행 중인 리빙랩 -->
+    <section class="section" style="background: var(--color-surface);">
+      <div class="container">
+        <div class="section__head-flex">
+          <div>
+            <h2 class="section__title">진행 중인 리빙랩 프로젝트</h2>
+            <p class="section__subtitle">대학이 주도하는 지역 혁신 실험실</p>
+          </div>
+          <a href="/mockup/pages/public/projects.html" class="btn btn--ghost">
+            전체 보기
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+
+        <div class="grid grid--3">
+          <a href="/mockup/pages/public/project-detail.html" class="card card--hover" data-component="ProjectCard">
+            <div class="card__header">
+              <span class="badge badge--campus-dj">대전 · 청년정착</span>
+              <span class="badge badge--status-progress">실행 단계</span>
+            </div>
+            <h3 class="card__title">청년 일자리 경험 플랫폼 '대전잡스'</h3>
+            <p class="card__description">
+              ICT 기반 청년 일자리 실험 및 농촌형 주거·일·경험 플랫폼 개발. 지역 청년들이 다양한 일 경험을 통해 진로를 탐색할 수 있도록 지원합니다.
+            </p>
+            <div style="margin-top: var(--space-4);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2); font-size: var(--text-xs);">
+                <span style="color: var(--color-text-secondary);">진행률</span>
+                <span style="color: var(--color-primary); font-weight: 700;">35%</span>
+              </div>
+              <div style="height: 6px; background: var(--color-surface-hover); border-radius: var(--radius-full); overflow: hidden;">
+                <div style="height: 100%; width: 35%; background: linear-gradient(90deg, var(--color-primary), #60a5fa); border-radius: var(--radius-full);"></div>
+              </div>
+            </div>
+            <div class="card__meta">
+              <span class="card__meta-item">👥 12명</span>
+              <span class="card__meta-item">🏢 4기관</span>
+              <span style="margin-left: auto;">~ 2026.12</span>
+            </div>
+          </a>
+
+          <a href="/mockup/pages/public/project-detail.html" class="card card--hover" data-component="ProjectCard">
+            <div class="card__header">
+              <span class="badge badge--campus-gj">공주 · 문화재생</span>
+              <span class="badge badge--status-progress">개발 단계</span>
+            </div>
+            <h3 class="card__title">백제문화권 청년 문화기획자 양성</h3>
+            <p class="card__description">
+              공주의 백제문화 자원을 활용한 청년 문화기획자 양성 프로그램. 유휴공간을 활용한 문화 창업 랩 운영.
+            </p>
+            <div style="margin-top: var(--space-4);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2); font-size: var(--text-xs);">
+                <span style="color: var(--color-text-secondary);">진행률</span>
+                <span style="color: var(--color-secondary); font-weight: 700;">60%</span>
+              </div>
+              <div style="height: 6px; background: var(--color-surface-hover); border-radius: var(--radius-full); overflow: hidden;">
+                <div style="height: 100%; width: 60%; background: linear-gradient(90deg, var(--color-secondary), #34d399); border-radius: var(--radius-full);"></div>
+              </div>
+            </div>
+            <div class="card__meta">
+              <span class="card__meta-item">👥 8명</span>
+              <span class="card__meta-item">🏢 3기관</span>
+              <span style="margin-left: auto;">~ 2026.11</span>
+            </div>
+          </a>
+
+          <a href="/mockup/pages/public/project-detail.html" class="card card--hover" data-component="ProjectCard">
+            <div class="card__header">
+              <span class="badge badge--campus-ys">예산 · 고령자돌봄</span>
+              <span class="badge badge--status-progress">검증 단계</span>
+            </div>
+            <h3 class="card__title">예산 고령자 돌봄테크 리빙랩</h3>
+            <p class="card__description">
+              원격진료 부스, 건강 모니터링, 디지털 역량 강화 플랫폼을 통한 고령자 돌봄 서비스 구축.
+            </p>
+            <div style="margin-top: var(--space-4);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2); font-size: var(--text-xs);">
+                <span style="color: var(--color-text-secondary);">진행률</span>
+                <span style="color: #7c3aed; font-weight: 700;">80%</span>
+              </div>
+              <div style="height: 6px; background: var(--color-surface-hover); border-radius: var(--radius-full); overflow: hidden;">
+                <div style="height: 100%; width: 80%; background: linear-gradient(90deg, #7c3aed, #a78bfa); border-radius: var(--radius-full);"></div>
+              </div>
+            </div>
+            <div class="card__meta">
+              <span class="card__meta-item">👥 15명</span>
+              <span class="card__meta-item">🏢 6기관</span>
+              <span style="margin-left: auto;">~ 2026.10</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 캠퍼스별 리빙랩 -->
+    <section class="campus-section">
+      <div class="container">
+        <div class="section__header" style="text-align: center;">
+          <h2 class="section__title">캠퍼스별 특화 리빙랩</h2>
+          <p class="section__subtitle">4개 캠퍼스가 각 지역 특성에 맞춘 리빙랩을 운영합니다</p>
+        </div>
+        <div class="campus-grid">
+          <a href="/mockup/pages/public/campus.html" class="campus-card" style="--campus-color: var(--color-campus-dj);">
+            <div class="campus-card__badge">대전캠퍼스</div>
+            <h3 class="campus-card__name">청년정착 리빙랩</h3>
+            <p class="campus-card__type">ICT 기반 청년일자리 실험, 농촌형 주거·일·경험 플랫폼</p>
+            <div class="campus-card__meta">
+              <span>프로젝트 4건</span>
+              <span>·</span>
+              <span>참여 35명</span>
+            </div>
+          </a>
+
+          <a href="/mockup/pages/public/campus.html" class="campus-card" style="--campus-color: var(--color-campus-gj);">
+            <div class="campus-card__badge">공주캠퍼스</div>
+            <h3 class="campus-card__name">교육·역사·문화재생 리빙랩</h3>
+            <p class="campus-card__type">백제문화권 청년문화기획, 도시유휴공간 활용 창업랩</p>
+            <div class="campus-card__meta">
+              <span>프로젝트 3건</span>
+              <span>·</span>
+              <span>참여 28명</span>
+            </div>
+          </a>
+
+          <a href="/mockup/pages/public/campus.html" class="campus-card" style="--campus-color: var(--color-campus-ys);">
+            <div class="campus-card__badge">예산캠퍼스</div>
+            <h3 class="campus-card__name">고령자돌봄테크 리빙랩</h3>
+            <p class="campus-card__type">원격진료부스, 건강 모니터링, 디지털 역량강화 플랫폼</p>
+            <div class="campus-card__meta">
+              <span>프로젝트 3건</span>
+              <span>·</span>
+              <span>참여 42명</span>
+            </div>
+          </a>
+
+          <a href="/mockup/pages/public/campus.html" class="campus-card" style="--campus-color: var(--color-campus-sj);">
+            <div class="campus-card__badge">세종캠퍼스</div>
+            <h3 class="campus-card__name">모빌리티 리빙랩</h3>
+            <p class="campus-card__type">자율주행, 차량공유서비스, 교통문제 해결 플랫폼</p>
+            <div class="campus-card__meta">
+              <span>프로젝트 2건</span>
+              <span>·</span>
+              <span>참여 20명</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+      <div class="container">
+        <h2 class="cta-section__title">여러분의 참여가 변화를 만듭니다</h2>
+        <p class="cta-section__desc">
+          지역의 문제를 알고 계신가요? 여러분의 제보 하나가<br>
+          대학과 지역을 움직이는 출발점이 됩니다.
+        </p>
+        <div style="display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap;">
+          <a href="/mockup/pages/public/login.html" class="btn btn--primary btn--lg">
+            지금 시작하기
+          </a>
+          <a href="/mockup/pages/public/about.html" class="btn btn--secondary btn--lg">
+            자세히 알아보기
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer (auto-injected) -->
+  <div data-slot="footer"></div>
+
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

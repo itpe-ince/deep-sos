@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>이슈 관리 - SOS랩 관리자</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    /* Status tabs */
+    .status-tabs {
+      display: flex;
+      gap: var(--space-2);
+      margin-bottom: var(--space-5);
+      overflow-x: auto;
+    }
+    .status-tab {
+      padding: var(--space-3) var(--space-4);
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      transition: all var(--transition-fast);
+    }
+    .status-tab:hover {
+      border-color: var(--color-primary);
+    }
+    .status-tab.is-active {
+      background: var(--color-primary);
+      color: white;
+      border-color: var(--color-primary);
+    }
+    .status-tab__count {
+      padding: 1px var(--space-2);
+      background: var(--color-surface-hover);
+      border-radius: var(--radius-full);
+      font-size: 10px;
+    }
+    .status-tab.is-active .status-tab__count {
+      background: rgba(255, 255, 255, 0.25);
+      color: white;
+    }
+
+    .issue-row-title {
+      font-weight: 600;
+      color: var(--color-text);
+      cursor: pointer;
+      display: block;
+      text-decoration: none;
+      max-width: 400px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .issue-row-title:hover {
+      color: var(--color-primary);
+    }
+
+    .cell-user {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .cell-user__avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+    .cell-vote {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      font-weight: 700;
+    }
+
+    .bulk-actions {
+      padding: var(--space-3) var(--space-4);
+      background: var(--color-primary-light);
+      border: 1px solid var(--color-primary);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-3);
+      display: none;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .bulk-actions.is-visible {
+      display: flex;
+    }
+    .bulk-actions__count {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-primary);
+    }
+
+    .action-icon-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      color: var(--color-text-secondary);
+    }
+    .action-icon-btn:hover {
+      background: var(--color-bg);
+      color: var(--color-primary);
+    }
+  </style>
+</head>
+<body data-admin-nav="issues">
+  <div class="admin-layout">
+    <div data-slot="admin-side"></div>
+    <div class="admin-main">
+      <div data-slot="admin-top"></div>
+
+      <main class="admin-content">
+        <div class="admin-page-header">
+          <div class="admin-page-header__breadcrumb">
+            <a href="#">관리자</a>
+            <span>/</span>
+            <span>지역 문제</span>
+          </div>
+          <div class="admin-page-header__flex">
+            <div>
+              <h1 class="admin-page-header__title">지역 문제 관리</h1>
+              <p class="admin-page-header__subtitle">시민 제보를 검토하고, 담당자를 배정하며, 처리 상태를 관리합니다</p>
+            </div>
+            <div style="display: flex; gap: var(--space-2);">
+              <button class="btn btn--secondary btn--sm">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                </svg>
+                Excel 내보내기
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Tabs -->
+        <div class="status-tabs">
+          <div class="status-tab is-active">
+            전체 <span class="status-tab__count">184</span>
+          </div>
+          <div class="status-tab">
+            📥 접수됨 <span class="status-tab__count">7</span>
+          </div>
+          <div class="status-tab">
+            🔍 검토중 <span class="status-tab__count">12</span>
+          </div>
+          <div class="status-tab">
+            👤 담당 배정 <span class="status-tab__count">23</span>
+          </div>
+          <div class="status-tab">
+            ⚙️ 처리중 <span class="status-tab__count">15</span>
+          </div>
+          <div class="status-tab">
+            ✅ 해결됨 <span class="status-tab__count">127</span>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar" style="margin-bottom: var(--space-4);">
+          <div class="filter-bar__group">
+            <input type="text" placeholder="제목, 내용 검색..." style="padding: var(--space-2) var(--space-3); font-size: var(--text-sm); border: 1px solid var(--color-border); border-radius: var(--radius-md); width: 240px;">
+          </div>
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">캠퍼스</span>
+            <select class="filter-bar__select">
+              <option>전체</option><option>대전</option><option>공주</option><option>예산</option><option>세종</option>
+            </select>
+          </div>
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">카테고리</span>
+            <select class="filter-bar__select">
+              <option>전체</option><option>환경</option><option>안전</option><option>교통</option><option>복지</option><option>문화</option>
+            </select>
+          </div>
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">우선순위</span>
+            <select class="filter-bar__select">
+              <option>전체</option><option>높음</option><option>보통</option><option>낮음</option>
+            </select>
+          </div>
+          <div class="filter-bar__spacer"></div>
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">정렬</span>
+            <select class="filter-bar__select">
+              <option>최신순</option><option>공감순</option><option>오래된 순</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Bulk actions (hidden by default) -->
+        <div class="bulk-actions is-visible">
+          <span class="bulk-actions__count">2개 선택됨</span>
+          <button class="btn btn--primary btn--sm">일괄 배정</button>
+          <button class="btn btn--secondary btn--sm">상태 변경</button>
+          <button class="btn btn--ghost btn--sm" style="color: var(--color-danger);">삭제</button>
+          <div style="margin-left: auto;">
+            <button class="btn btn--ghost btn--sm">선택 해제</button>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="admin-card">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th class="admin-table__check">
+                  <input type="checkbox">
+                </th>
+                <th style="width: 70px;">ID</th>
+                <th>제목</th>
+                <th>카테고리</th>
+                <th>캠퍼스</th>
+                <th>상태</th>
+                <th>
+                  <span class="admin-table__sort is-active">
+                    공감
+                    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+                  </span>
+                </th>
+                <th>제보자</th>
+                <th>담당자</th>
+                <th>제보일</th>
+                <th style="width: 120px;">액션</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox" checked></td>
+                <td style="color: var(--color-text-muted); font-weight: 600;">#184</td>
+                <td><a class="issue-row-title">대전 원도심 청년 문화공간 부족</a></td>
+                <td><span class="badge badge--outline">문화</span></td>
+                <td><span class="badge badge--campus-dj">대전</span></td>
+                <td><span class="badge badge--status-submitted">접수됨</span></td>
+                <td><span class="cell-vote">👍 34</span></td>
+                <td>
+                  <div class="cell-user">
+                    <div class="cell-user__avatar">최</div>
+                    최창업
+                  </div>
+                </td>
+                <td style="color: var(--color-text-muted);">—</td>
+                <td>10분 전</td>
+                <td>
+                  <div class="admin-table__actions">
+                    <a href="/mockup/pages/admin/issue-detail.html" class="action-icon-btn" title="상세">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </a>
+                    <button class="btn btn--primary btn--sm">배정</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" checked></td>
+                <td style="color: var(--color-text-muted); font-weight: 600;">#183</td>
+                <td><a class="issue-row-title">세종시 대중교통 배차 간격 개선 요청</a></td>
+                <td><span class="badge badge--outline">교통</span></td>
+                <td><span class="badge badge--campus-sj">세종</span></td>
+                <td><span class="badge badge--status-submitted">접수됨</span></td>
+                <td><span class="cell-vote">👍 67</span></td>
+                <td>
+                  <div class="cell-user">
+                    <div class="cell-user__avatar" style="background: #d1fae5; color: #059669;">정</div>
+                    정민수
+                  </div>
+                </td>
+                <td style="color: var(--color-text-muted);">—</td>
+                <td>1시간 전</td>
+                <td>
+                  <div class="admin-table__actions">
+                    <a href="/mockup/pages/admin/issue-detail.html" class="action-icon-btn" title="상세">
+                      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </a>
+                    <button class="btn btn--primary btn--sm">배정</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td style="color: var(--color-text-muted); font-weight: 600;">#182</td>
+                <td><a href="/mockup/pages/admin/issue-detail.html" class="issue-row-title">공주 백제문화권 청년 창업 지원 부족</a></td>
+                <td><span class="badge badge--outline">문화</span></td>
+                <td><span class="badge badge--campus-gj">공주</span></td>
+                <td><span class="badge badge--status-reviewing">검토중</span></td>
+                <td><span class="cell-vote">👍 78</span></td>
+                <td>
+                  <div class="cell-user">
+                    <div class="cell-user__avatar" style="background: #ede9fe; color: #7c3aed;">강</div>
+                    강예술
+                  </div>
+                </td>
+                <td>박심사관</td>
+                <td>7일 전</td>
+                <td>
+                  <div class="admin-table__actions">
+                    <a href="/mockup/pages/admin/issue-detail.html" class="action-icon-btn"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></a>
+                    <button class="btn btn--secondary btn--sm">검토</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td style="color: var(--color-text-muted); font-weight: 600;">#181</td>
+                <td><a href="/mockup/pages/admin/issue-detail.html" class="issue-row-title">대전캠퍼스 도서관 주변 쓰레기 무단 투기 심각</a></td>
+                <td><span class="badge badge--outline">환경</span></td>
+                <td><span class="badge badge--campus-dj">대전</span></td>
+                <td><span class="badge badge--status-assigned">담당 배정</span></td>
+                <td><span class="cell-vote">👍 89</span></td>
+                <td>
+                  <div class="cell-user">
+                    <div class="cell-user__avatar" style="background: #ffedd5; color: #ea580c;">박</div>
+                    박학생
+                  </div>
+                </td>
+                <td>이환경</td>
+                <td>3일 전</td>
+                <td>
+                  <div class="admin-table__actions">
+                    <a href="/mockup/pages/admin/issue-detail.html" class="action-icon-btn"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></a>
+                    <button class="btn btn--secondary btn--sm">관리</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td style="color: var(--color-text-muted); font-weight: 600;">#180</td>
+                <td><a href="/mockup/pages/admin/issue-detail.html" class="issue-row-title">공주캠퍼스 앞 횡단보도 신호 대기 시간이 너무 깁니다</a></td>
+                <td><span class="badge badge--outline">안전</span></td>
+                <td><span class="badge badge--campus-gj">공주</span></td>
+                <td><span class="badge badge--status-progress">처리중</span></td>
+                <td><span class="cell-vote">👍 142</span></td>
+                <td>
+                  <div class="cell-user">
+                    <div class="cell-user__avatar">김</div>
+                    김시민
+                  </div>
+                </td>
+                <td>이담당</td>
+                <td>6일 전</td>
+                <td>
+                  <div class="admin-table__actions">
+                    <a href="/mockup/pages/admin/issue-detail.html" class="action-icon-btn"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></a>
+                    <button class="btn btn--secondary btn--sm">관리</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td style="color: var(--color-text-muted); font-weight: 600;">#179</td>
+                <td><a href="/mockup/pages/admin/issue-detail.html" class="issue-row-title">예산 지역 고령자 디지털 교육 수요 증가</a></td>
+                <td><span class="badge badge--outline">복지</span></td>
+                <td><span class="badge badge--campus-ys">예산</span></td>
+                <td><span class="badge badge--status-resolved">해결됨</span></td>
+                <td><span class="cell-vote">👍 203</span></td>
+                <td>
+                  <div class="cell-user">
+                    <div class="cell-user__avatar" style="background: #dbeafe; color: #2563eb;">이</div>
+                    이교수
+                  </div>
+                </td>
+                <td>박복지</td>
+                <td>2주 전</td>
+                <td>
+                  <div class="admin-table__actions">
+                    <a href="/mockup/pages/admin/issue-detail.html" class="action-icon-btn"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></a>
+                    <span class="badge badge--success">완료</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <nav class="pagination">
+          <button>‹</button>
+          <a href="#" class="is-active">1</a>
+          <a href="#">2</a>
+          <a href="#">3</a>
+          <a href="#">...</a>
+          <a href="#">31</a>
+          <button>›</button>
+        </nav>
+      </main>
+    </div>
+  </div>
+
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

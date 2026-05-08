@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아이디어 보드 - SOS랩</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    .board-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      margin-bottom: var(--space-5);
+    }
+    .board-info {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4) var(--space-5);
+      margin-bottom: var(--space-5);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+    .board-info__icon {
+      width: 44px;
+      height: 44px;
+      background: #ede9fe;
+      color: #7c3aed;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .board-info__title {
+      font-size: var(--text-md);
+      font-weight: 700;
+    }
+    .board-info__meta {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-top: var(--space-1);
+    }
+    .board-info__stats {
+      margin-left: auto;
+      display: flex;
+      gap: var(--space-6);
+      font-size: var(--text-sm);
+    }
+    .board-info__stat-label {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+    .board-info__stat-value {
+      font-weight: 700;
+    }
+
+    /* Board Grid */
+    .board-layout {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+      min-height: 600px;
+    }
+
+    .board-column {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .board-column__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--color-border);
+      margin-bottom: var(--space-2);
+    }
+    .board-column__title {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .board-column__count {
+      background: var(--color-surface);
+      padding: 2px var(--space-2);
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+      font-weight: 600;
+    }
+    .board-column__add {
+      padding: var(--space-1);
+      color: var(--color-text-muted);
+    }
+    .board-column__add:hover {
+      color: var(--color-primary);
+    }
+
+    /* Idea Card */
+    .idea-card {
+      padding: var(--space-3);
+      border-radius: var(--radius-md);
+      background: var(--card-bg, #fef3c7);
+      border: 1px solid rgba(0,0,0,0.05);
+      cursor: grab;
+      transition: all var(--transition-fast);
+      box-shadow: var(--shadow-sm);
+    }
+    .idea-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .idea-card__content {
+      font-size: var(--text-sm);
+      line-height: 1.5;
+      color: #1f2937;
+      margin-bottom: var(--space-3);
+    }
+    .idea-card__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: var(--text-xs);
+      color: rgba(0,0,0,0.5);
+    }
+    .idea-card__author {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+    .idea-card__author-avatar {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 800;
+      color: rgba(0,0,0,0.7);
+    }
+    .idea-card__vote {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      background: rgba(0,0,0,0.08);
+      padding: 2px var(--space-2);
+      border-radius: var(--radius-full);
+      font-weight: 700;
+    }
+    .idea-card--voted .idea-card__vote {
+      background: var(--color-primary);
+      color: white;
+    }
+
+    /* Add Card */
+    .add-card {
+      padding: var(--space-3);
+      border: 2px dashed var(--color-border);
+      border-radius: var(--radius-md);
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+      cursor: pointer;
+      background: transparent;
+    }
+    .add-card:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+      background: var(--color-primary-light);
+    }
+
+    /* Board Toolbar */
+    .board-toolbar {
+      display: flex;
+      gap: var(--space-2);
+    }
+    .color-picker {
+      display: flex;
+      gap: var(--space-1);
+      padding: var(--space-1);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+    }
+    .color-swatch {
+      width: 24px;
+      height: 24px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+    .color-swatch.is-active {
+      border-color: var(--color-primary);
+    }
+
+    @media (max-width: 1024px) {
+      .board-layout {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .board-info {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .board-info__stats {
+        margin-left: 0;
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .board-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body data-user-nav="board">
+  <div data-slot="header-user"></div>
+
+  <div class="user-layout">
+    <div data-slot="user-lnb"></div>
+
+    <main class="user-content">
+      <div class="board-header">
+        <div>
+          <nav class="breadcrumb">
+            <a href="/mockup/pages/user/dashboard.html">대시보드</a>
+            <span>/</span>
+            <a href="/mockup/pages/user/project-member.html">대전잡스</a>
+            <span>/</span>
+            <span>아이디어 보드</span>
+          </nav>
+          <h1 class="user-page-header__title">청년 일자리 아이디어 보드</h1>
+        </div>
+        <div class="board-toolbar">
+          <div class="color-picker">
+            <div class="color-swatch is-active" style="background: #fef3c7;"></div>
+            <div class="color-swatch" style="background: #dbeafe;"></div>
+            <div class="color-swatch" style="background: #d1fae5;"></div>
+            <div class="color-swatch" style="background: #fce7f3;"></div>
+            <div class="color-swatch" style="background: #ede9fe;"></div>
+          </div>
+          <button class="btn btn--secondary">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+              <path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/>
+            </svg>
+            공유
+          </button>
+        </div>
+      </div>
+
+      <div class="board-info">
+        <div class="board-info__icon">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+          </svg>
+        </div>
+        <div>
+          <div class="board-info__title">청년 일자리 아이디어 보드</div>
+          <div class="board-info__meta">
+            <strong>브레인스토밍 → 어피니티 매핑</strong> · 박학생 님이 생성 · 2026.04.05
+          </div>
+        </div>
+        <div class="board-info__stats">
+          <div>
+            <div class="board-info__stat-label">총 카드</div>
+            <div class="board-info__stat-value">14</div>
+          </div>
+          <div>
+            <div class="board-info__stat-label">참여자</div>
+            <div class="board-info__stat-value">8명</div>
+          </div>
+          <div>
+            <div class="board-info__stat-label">총 투표</div>
+            <div class="board-info__stat-value">47</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Board -->
+      <div class="board-layout">
+        <!-- Column 1: 문제 인식 -->
+        <div class="board-column">
+          <div class="board-column__header">
+            <div class="board-column__title">
+              <span>🔍</span> 문제 인식
+              <span class="board-column__count">4</span>
+            </div>
+            <button class="board-column__add">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="idea-card idea-card--voted" style="--card-bg: #fef3c7;">
+            <div class="idea-card__content">대전 지역 청년 인구 유출이 심각하다 (최근 5년 12% 감소)</div>
+            <div class="idea-card__footer">
+              <div class="idea-card__author">
+                <div class="idea-card__author-avatar">박</div>
+                박학생
+              </div>
+              <div class="idea-card__vote">👍 12</div>
+            </div>
+          </div>
+
+          <div class="idea-card" style="--card-bg: #fef3c7;">
+            <div class="idea-card__content">청년들이 경험할 수 있는 일자리가 대기업 위주로 편중</div>
+            <div class="idea-card__footer">
+              <div class="idea-card__author">
+                <div class="idea-card__author-avatar">정</div>
+                정개발
+              </div>
+              <div class="idea-card__vote">👍 8</div>
+            </div>
+          </div>
+
+          <div class="idea-card" style="--card-bg: #fef3c7;">
+            <div class="idea-card__content">농촌 지역은 인력 부족, 청년은 생활 인프라 부족 미스매치</div>
+            <div class="idea-card__footer">
+              <div class="idea-card__author">
+                <div class="idea-card__author-avatar">이</div>
+                이멘토
+              </div>
+              <div class="idea-card__vote">👍 9</div>
+            </div>
+          </div>
+
+          <div class="idea-card" style="--card-bg: #fef3c7;">
+            <div class="idea-card__content">단기 체험 후 실제 일자리 연결이 어렵다</div>
+            <div class="idea-card__footer">
+              <div class="idea-card__author">
+                <div class="idea-card__author-avatar">박</div>
+                박학생
+              </div>
+              <div class="idea-card__vote">👍 5</div>
+            </div>
+          </div>
+
+          <button class="add-card">+ 카드 추가</button>
+        </div>
+
+        <!-- Column 2: 아이디어 -->
+        <div class="board-column">
+          <div class="board-column__header">
+            <div class="board-column__title">
+              <span>💡</span> 해결 아이디어
+              <span class="board-column__count">5</span>
+            </div>
+            <button class="board-column__add">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="idea-card idea-card--voted" style="--card-bg: #dbeafe;">
+            <div class="idea-card__content">1-3개월 단기 일경험 + 주거 패키지 제공</div>
+            <div class="idea-card__footer">
+              <div class="idea-card__author">
+                <div class="idea-card__author-avatar">김</div>
+                김교수
+              </div>
+              <div class="idea-card__vote">👍 15</div>
+            </div>
+          </div>
+
+          <div class="idea-card" style="--card-bg: #dbeafe;">
+            <div class="idea-card__content">ICT 매칭 알고리즘으로 청년-일자리 자동 매칭</div>
+            <div class="idea-card__footer">
+              <div class="idea-card__author">
+                <div class="idea-card__author-avatar">정</div>
+                정개발
+              </div>
+              <div class="idea-card__vote">👍 11</div>
+            </div>
+          </div>
+
+          <div class="idea-card" style="--card-bg: #dbeafe;">
+            <div class="idea-card__content">경험 기록 자동 포트폴리오 기능</div>
+            <div class="idea-card__footer">
+              <div class="idea-card__author">
+                <div class="idea-card__author-avatar">박</div>
+                박학생
+              </div>
+              <div class="idea-card__vote">👍 7</div>
+            </div>
+          </div>
+
+          <div class="idea-card" style="--card-bg: #dbeafe;">
+            <div class="idea-card__content">멘토-멘티 연결 시스템</div>
+            <div class="idea-card__footer">
+              <div class="idea-card__author">
+                <div class="idea-card__author-avatar">이</div>
+                이멘토
+              </div>
+              <div class="idea-card__vote">👍 6</div>
+            </div>
+          </div>
+
+          <div class="idea-card" style="--card-bg: #dbeafe;">
+            <div class="idea-card__content">지역 기업 네트워킹 이벤트 월 1회 운영</div>
+            <div class="idea-card__footer">
+              <div class="idea-card__author">
+                <div class="idea-card__author-avatar">최</div>
+                최기업
+              </div>
+              <div class="idea-card__vote">👍 4</div>
+            </div>
+          </div>
+
+          <button class="add-card">+ 카드 추가</button>
+        </div>
+
+        <!-- Column 3: 타겟 사용자 -->
+        <div class="board-column">
+          <div class="board-column__header">
+            <div class="board-column__title">
+              <span>🎯</span> 타겟 사용자
+              <span class="board-column__count">3</span>
+            </div>
+            <button class="board-column__add">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="idea-card" style="--card-bg: #d1fae5;">
+            <div class="idea-card__content">대전 거주 20-30대 취업 준비생</div>
+            <div class="idea-card__footer">
+              <div class="idea-card__author">
+                <div class="idea-card__author-avatar">김</div>
+                김교수
+              </div>
+              <div class="idea-card__vote">👍 8</div>
+            </div>
+          </div>
+
+          <div class="idea-card" style="--card-bg: #d1fae5;">
+            <div class="idea-card__content">수도권 청년 중 지방 이주 고려자</div>
+            <div class="idea-card__footer">
+              <div class="idea-card__author">
+                <div class="idea-card__author-avatar">박</div>
+                박학생
+              </div>
+              <div class="idea-card__vote">👍 6</div>
+            </div>
+          </div>
+
+          <div class="idea-card" style="--card-bg: #d1fae5;">
+            <div class="idea-card__content">대학 졸업 예정 4학년</div>
+            <div class="idea-card__footer">
+              <div class="idea-card__author">
+                <div class="idea-card__author-avatar">이</div>
+                이멘토
+              </div>
+              <div class="idea-card__vote">👍 5</div>
+            </div>
+          </div>
+
+          <button class="add-card">+ 카드 추가</button>
+        </div>
+
+        <!-- Column 4: 실행 방안 -->
+        <div class="board-column">
+          <div class="board-column__header">
+            <div class="board-column__title">
+              <span>⚡</span> 실행 방안
+              <span class="board-column__count">2</span>
+            </div>
+            <button class="board-column__add">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="idea-card" style="--card-bg: #ede9fe;">
+            <div class="idea-card__content">파일럿 5개 기업 선정 → 10명 체험단 운영</div>
+            <div class="idea-card__footer">
+              <div class="idea-card__author">
+                <div class="idea-card__author-avatar">김</div>
+                김교수
+              </div>
+              <div class="idea-card__vote">👍 7</div>
+            </div>
+          </div>
+
+          <div class="idea-card" style="--card-bg: #ede9fe;">
+            <div class="idea-card__content">대전일자리경제진흥원 협력 → 홍보 채널 확보</div>
+            <div class="idea-card__footer">
+              <div class="idea-card__author">
+                <div class="idea-card__author-avatar">최</div>
+                최기업
+              </div>
+              <div class="idea-card__vote">👍 3</div>
+            </div>
+          </div>
+
+          <button class="add-card">+ 카드 추가</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>대시보드 - SOS랩</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    .dashboard-hero {
+      background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+      color: white;
+      padding: var(--space-8);
+      border-radius: var(--radius-xl);
+      margin-bottom: var(--space-6);
+      position: relative;
+      overflow: hidden;
+    }
+    .dashboard-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.15), transparent 40%),
+        radial-gradient(circle at 85% 70%, rgba(255,255,255,0.15), transparent 40%);
+    }
+    .dashboard-hero__content {
+      position: relative;
+      z-index: 1;
+    }
+    .dashboard-hero__greeting {
+      font-size: var(--text-xs);
+      opacity: 0.85;
+      margin-bottom: var(--space-2);
+      letter-spacing: 0.05em;
+    }
+    .dashboard-hero__title {
+      font-size: var(--text-2xl);
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-3);
+    }
+    .dashboard-hero__desc {
+      font-size: var(--text-md);
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: var(--space-6);
+      max-width: 600px;
+    }
+    .dashboard-hero__stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-3);
+    }
+    .dashboard-hero__stat {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+    }
+    .dashboard-hero__stat-label {
+      font-size: var(--text-xs);
+      opacity: 0.8;
+    }
+    .dashboard-hero__stat-value {
+      font-size: var(--text-xl);
+      font-weight: 800;
+      margin-top: var(--space-1);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: var(--space-6);
+    }
+
+    .dash-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      margin-bottom: var(--space-5);
+    }
+    .dash-card:last-child {
+      margin-bottom: 0;
+    }
+    .dash-card__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-4);
+    }
+    .dash-card__title {
+      font-size: var(--text-md);
+      font-weight: 700;
+    }
+    .dash-card__link {
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+    }
+
+    /* Activity Timeline */
+    .activity {
+      display: flex;
+      gap: var(--space-3);
+      padding: var(--space-3) 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .activity:last-child {
+      border-bottom: none;
+    }
+    .activity__icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .activity__icon--blue { background: var(--color-primary-light); color: var(--color-primary); }
+    .activity__icon--green { background: var(--color-secondary-light); color: var(--color-secondary); }
+    .activity__icon--purple { background: #ede9fe; color: #7c3aed; }
+    .activity__icon--orange { background: #ffedd5; color: #ea580c; }
+    .activity__body {
+      flex: 1;
+      min-width: 0;
+    }
+    .activity__title {
+      font-size: var(--text-sm);
+      color: var(--color-text);
+      line-height: 1.5;
+    }
+    .activity__title strong {
+      font-weight: 700;
+    }
+    .activity__time {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-top: var(--space-1);
+    }
+
+    /* Quick Action */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-3);
+    }
+    .quick-action {
+      padding: var(--space-5);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      transition: all var(--transition-fast);
+      text-decoration: none;
+      color: inherit;
+    }
+    .quick-action:hover {
+      border-color: var(--color-primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      color: inherit;
+    }
+    .quick-action__icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--space-2);
+    }
+    .quick-action__title {
+      font-size: var(--text-sm);
+      font-weight: 700;
+    }
+    .quick-action__desc {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+
+    /* My Project */
+    .my-project {
+      padding: var(--space-4);
+      background: var(--color-bg);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-3);
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      transition: all var(--transition-fast);
+    }
+    .my-project:hover {
+      background: var(--color-primary-light);
+      color: inherit;
+    }
+    .my-project:last-child {
+      margin-bottom: 0;
+    }
+    .my-project__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-2);
+    }
+    .my-project__title {
+      font-size: var(--text-sm);
+      font-weight: 700;
+    }
+    .my-project__progress {
+      height: 4px;
+      background: var(--color-border);
+      border-radius: var(--radius-full);
+      margin-top: var(--space-2);
+      overflow: hidden;
+    }
+    .my-project__progress-fill {
+      height: 100%;
+      background: var(--color-primary);
+      border-radius: var(--radius-full);
+    }
+    .my-project__meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-top: var(--space-2);
+    }
+
+    /* Notification */
+    .notif-item {
+      display: flex;
+      gap: var(--space-3);
+      padding: var(--space-3);
+      border-radius: var(--radius-md);
+      transition: background var(--transition-fast);
+    }
+    .notif-item:hover {
+      background: var(--color-surface-hover);
+    }
+    .notif-item--unread {
+      background: var(--color-primary-light);
+    }
+    .notif-item__dot {
+      width: 8px;
+      height: 8px;
+      background: var(--color-primary);
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    .notif-item__content {
+      flex: 1;
+      font-size: var(--text-sm);
+      line-height: 1.5;
+    }
+    .notif-item__time {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-top: var(--space-1);
+    }
+
+    @media (max-width: 1024px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      .dashboard-hero__stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body data-user-nav="dashboard">
+  <div data-slot="header-user"></div>
+
+  <div class="user-layout">
+    <div data-slot="user-lnb"></div>
+
+    <main class="user-content">
+      <!-- Hero -->
+      <section class="dashboard-hero" data-component="DashboardHero">
+        <div class="dashboard-hero__content">
+          <div class="dashboard-hero__greeting">2026년 4월 11일 토요일</div>
+          <h1 class="dashboard-hero__title">안녕하세요, 박학생 님 👋</h1>
+          <p class="dashboard-hero__desc">
+            이번 달 4개의 지역 문제에 공감하셨고, '대전잡스' 프로젝트에 7건의 피드백을 등록하셨어요.
+          </p>
+          <div class="dashboard-hero__stats">
+            <div class="dashboard-hero__stat">
+              <div class="dashboard-hero__stat-label">참여 프로젝트</div>
+              <div class="dashboard-hero__stat-value">3개</div>
+            </div>
+            <div class="dashboard-hero__stat">
+              <div class="dashboard-hero__stat-label">제보한 문제</div>
+              <div class="dashboard-hero__stat-value">7건</div>
+            </div>
+            <div class="dashboard-hero__stat">
+              <div class="dashboard-hero__stat-label">누적 봉사시간</div>
+              <div class="dashboard-hero__stat-value">42시간</div>
+            </div>
+            <div class="dashboard-hero__stat">
+              <div class="dashboard-hero__stat-label">활동 포인트</div>
+              <div class="dashboard-hero__stat-value">1,250P</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Actions -->
+      <section style="margin-bottom: var(--space-6);">
+        <h2 style="font-size: var(--text-lg); font-weight: 700; margin-bottom: var(--space-4);">빠른 실행</h2>
+        <div class="quick-actions" style="grid-template-columns: repeat(4, 1fr);">
+          <a href="/mockup/pages/user/issue-new.html" class="quick-action">
+            <div class="quick-action__icon">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+            </div>
+            <div class="quick-action__title">문제 제보</div>
+            <div class="quick-action__desc">지역의 문제를 알려주세요</div>
+          </a>
+          <a href="/mockup/pages/user/feedback-new.html" class="quick-action">
+            <div class="quick-action__icon" style="background: var(--color-secondary-light); color: var(--color-secondary);">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+              </svg>
+            </div>
+            <div class="quick-action__title">현장 피드백</div>
+            <div class="quick-action__desc">설문·체크리스트 작성</div>
+          </a>
+          <a href="/mockup/pages/user/idea-board.html" class="quick-action">
+            <div class="quick-action__icon" style="background: #ede9fe; color: #7c3aed;">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+              </svg>
+            </div>
+            <div class="quick-action__title">아이디어 보드</div>
+            <div class="quick-action__desc">팀원과 협업</div>
+          </a>
+          <a href="/mockup/pages/user/portfolio.html" class="quick-action">
+            <div class="quick-action__icon" style="background: #ffedd5; color: #ea580c;">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+              </svg>
+            </div>
+            <div class="quick-action__title">포트폴리오</div>
+            <div class="quick-action__desc">내 사회공헌 이력</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- Grid -->
+      <div class="dashboard-grid">
+        <!-- Left Column -->
+        <div>
+          <div class="dash-card">
+            <div class="dash-card__header">
+              <h2 class="dash-card__title">최근 활동</h2>
+              <a href="#" class="dash-card__link">전체 보기 →</a>
+            </div>
+            <div class="activity">
+              <div class="activity__icon activity__icon--green">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/>
+                </svg>
+              </div>
+              <div class="activity__body">
+                <div class="activity__title">
+                  제보하신 <strong>'예산 고령자 디지털 교육 수요'</strong>가 완료 처리되었습니다.
+                </div>
+                <div class="activity__time">2시간 전</div>
+              </div>
+            </div>
+            <div class="activity">
+              <div class="activity__icon activity__icon--blue">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/>
+                </svg>
+              </div>
+              <div class="activity__body">
+                <div class="activity__title">
+                  <strong>'대전잡스'</strong> 프로젝트의 마일스톤 '플랫폼 요구사항 분석'에 피드백을 등록했습니다.
+                </div>
+                <div class="activity__time">어제</div>
+              </div>
+            </div>
+            <div class="activity">
+              <div class="activity__icon activity__icon--purple">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                  <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                </svg>
+              </div>
+              <div class="activity__body">
+                <div class="activity__title">
+                  <strong>'청년 일자리 아이디어'</strong> 보드에 3개의 카드를 추가했습니다.
+                </div>
+                <div class="activity__time">3일 전</div>
+              </div>
+            </div>
+            <div class="activity">
+              <div class="activity__icon activity__icon--orange">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+              </div>
+              <div class="activity__body">
+                <div class="activity__title">
+                  봉사활동 <strong>'지역아동센터 학습 멘토링'</strong>에 참여하여 4시간을 인정받았습니다.
+                </div>
+                <div class="activity__time">1주일 전</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dash-card">
+            <div class="dash-card__header">
+              <h2 class="dash-card__title">내가 공감한 지역 문제</h2>
+              <a href="/mockup/pages/public/issues.html" class="dash-card__link">더 보기 →</a>
+            </div>
+            <a href="/mockup/pages/public/issue-detail.html" class="my-project">
+              <div class="my-project__header">
+                <div class="my-project__title">공주캠퍼스 앞 횡단보도 신호 대기 시간</div>
+                <span class="badge badge--status-progress">처리중</span>
+              </div>
+              <div class="my-project__meta">
+                <span>👍 142 · 💬 23</span>
+                <span>공감한 지 6일 전</span>
+              </div>
+            </a>
+            <a href="/mockup/pages/public/issue-detail.html" class="my-project">
+              <div class="my-project__header">
+                <div class="my-project__title">대전캠퍼스 도서관 주변 쓰레기 무단 투기</div>
+                <span class="badge badge--status-assigned">담당 배정</span>
+              </div>
+              <div class="my-project__meta">
+                <span>👍 89 · 💬 12</span>
+                <span>공감한 지 3일 전</span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div>
+          <div class="dash-card">
+            <div class="dash-card__header">
+              <h2 class="dash-card__title">내 참여 프로젝트</h2>
+              <a href="#" class="dash-card__link">전체 →</a>
+            </div>
+            <a href="/mockup/pages/user/project-member.html" class="my-project">
+              <div class="my-project__header">
+                <div class="my-project__title">대전잡스</div>
+                <span class="badge badge--info">멤버</span>
+              </div>
+              <div style="font-size: var(--text-xs); color: var(--color-text-secondary);">실행 단계 진행중</div>
+              <div class="my-project__progress">
+                <div class="my-project__progress-fill" style="width: 35%;"></div>
+              </div>
+              <div class="my-project__meta">
+                <span>35% 진행</span>
+                <span>~2026.12</span>
+              </div>
+            </a>
+            <a href="/mockup/pages/user/project-member.html" class="my-project">
+              <div class="my-project__header">
+                <div class="my-project__title">백제문화권 청년문화기획</div>
+                <span class="badge badge--gray">관찰자</span>
+              </div>
+              <div style="font-size: var(--text-xs); color: var(--color-text-secondary);">개발 단계 진행중</div>
+              <div class="my-project__progress">
+                <div class="my-project__progress-fill" style="width: 60%; background: var(--color-secondary);"></div>
+              </div>
+              <div class="my-project__meta">
+                <span>60% 진행</span>
+                <span>~2026.11</span>
+              </div>
+            </a>
+            <a href="/mockup/pages/user/project-member.html" class="my-project">
+              <div class="my-project__header">
+                <div class="my-project__title">예산 고령자 돌봄테크</div>
+                <span class="badge badge--gray">관찰자</span>
+              </div>
+              <div style="font-size: var(--text-xs); color: var(--color-text-secondary);">검증 단계 진행중</div>
+              <div class="my-project__progress">
+                <div class="my-project__progress-fill" style="width: 80%; background: #7c3aed;"></div>
+              </div>
+              <div class="my-project__meta">
+                <span>80% 진행</span>
+                <span>~2026.10</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="dash-card">
+            <div class="dash-card__header">
+              <h2 class="dash-card__title">알림 <span style="color: var(--color-primary);">3</span></h2>
+              <a href="#" class="dash-card__link">모두 읽음 ✓</a>
+            </div>
+            <div class="notif-item notif-item--unread">
+              <div class="notif-item__dot"></div>
+              <div class="notif-item__content">
+                <strong>대전잡스</strong> 프로젝트의 새 마일스톤이 배정되었습니다.
+                <div class="notif-item__time">10분 전</div>
+              </div>
+            </div>
+            <div class="notif-item notif-item--unread">
+              <div class="notif-item__dot"></div>
+              <div class="notif-item__content">
+                제보하신 이슈에 공식 답변이 등록되었습니다.
+                <div class="notif-item__time">2시간 전</div>
+              </div>
+            </div>
+            <div class="notif-item notif-item--unread">
+              <div class="notif-item__dot"></div>
+              <div class="notif-item__content">
+                이번 주 봉사활동 <strong>'한글 교실'</strong>이 확정되었습니다.
+                <div class="notif-item__time">어제</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

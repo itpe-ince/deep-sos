@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>봉사활동 신청 - SOS랩</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    .volunteer-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: var(--space-5);
+    }
+    .volunteer-hero {
+      aspect-ratio: 21 / 9;
+      background: linear-gradient(135deg, #059669 0%, #0d9488 100%);
+      border-radius: var(--radius-xl);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      padding: var(--space-6);
+      color: white;
+      margin-bottom: var(--space-5);
+    }
+    .volunteer-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.2), transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(255,255,255,0.15), transparent 50%);
+    }
+    .volunteer-hero__inner {
+      position: relative;
+      z-index: 1;
+    }
+    .volunteer-hero__badges {
+      display: flex;
+      gap: var(--space-2);
+      margin-bottom: var(--space-3);
+    }
+    .volunteer-hero__badges .badge {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .volunteer-hero__title {
+      font-size: var(--text-2xl);
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.02em;
+    }
+    .vol-info-card {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      margin-bottom: var(--space-4);
+    }
+    .vol-info-title {
+      font-size: var(--text-md);
+      font-weight: 700;
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .vol-info-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+    .vol-info-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .vol-info-item__icon {
+      width: 36px;
+      height: 36px;
+      background: var(--color-secondary-light);
+      color: var(--color-secondary);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .vol-info-item__label {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+    .vol-info-item__value {
+      font-size: var(--text-sm);
+      font-weight: 700;
+    }
+    .vol-description {
+      font-size: var(--text-sm);
+      line-height: 1.8;
+      color: var(--color-text-secondary);
+    }
+    .vol-description p {
+      margin-bottom: var(--space-4);
+    }
+    .vol-requirements {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--color-border);
+    }
+    .vol-req {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      font-size: var(--text-sm);
+    }
+    .vol-req__icon {
+      color: var(--color-success);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* Participants */
+    .participants {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-top: var(--space-3);
+    }
+    .participant-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      border: 2px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+      margin-left: -8px;
+    }
+    .participant-avatar:first-child { margin-left: 0; }
+
+    /* Side Card */
+    .apply-card {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      position: sticky;
+      top: calc(var(--layout-gnb-height) + var(--space-6));
+    }
+    .apply-card__hours {
+      font-size: var(--text-4xl);
+      font-weight: 900;
+      color: var(--color-secondary);
+      line-height: 1;
+    }
+    .apply-card__hours-unit {
+      font-size: var(--text-md);
+      color: var(--color-text-muted);
+      font-weight: 500;
+    }
+    .apply-card__label {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-top: var(--space-2);
+    }
+    .apply-card__progress {
+      margin-top: var(--space-4);
+    }
+    .apply-card__progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--text-xs);
+      margin-bottom: var(--space-2);
+    }
+    .apply-card__progress-bar {
+      height: 8px;
+      background: var(--color-bg);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    .apply-card__progress-fill {
+      height: 100%;
+      background: var(--color-secondary);
+      border-radius: var(--radius-full);
+    }
+    .apply-card__cert {
+      margin-top: var(--space-4);
+      padding: var(--space-3);
+      background: var(--color-secondary-light);
+      border-radius: var(--radius-md);
+      font-size: var(--text-xs);
+      color: var(--color-secondary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    @media (max-width: 1024px) {
+      .volunteer-layout {
+        grid-template-columns: 1fr;
+      }
+      .apply-card {
+        position: static;
+      }
+      .vol-info-list {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body data-user-nav="dashboard">
+  <div data-slot="header-user"></div>
+
+  <div class="user-layout">
+    <div data-slot="user-lnb"></div>
+
+    <main class="user-content">
+      <nav class="breadcrumb">
+        <a href="/mockup/pages/user/dashboard.html">대시보드</a><span>/</span>
+        <a href="/mockup/pages/public/volunteers.html">봉사활동</a><span>/</span>
+        <span>지역아동센터 학습 멘토링</span>
+      </nav>
+
+      <div class="volunteer-layout">
+        <div>
+          <section class="volunteer-hero">
+            <div class="volunteer-hero__inner">
+              <div class="volunteer-hero__badges">
+                <span class="badge">교육 멘토링</span>
+                <span class="badge">대전캠퍼스</span>
+                <span class="badge">💚 VMS 자동 인증</span>
+              </div>
+              <h1 class="volunteer-hero__title">지역아동센터 학습 멘토링</h1>
+            </div>
+          </section>
+
+          <section class="vol-info-card">
+            <h2 class="vol-info-title">활동 정보</h2>
+            <div class="vol-info-list">
+              <div class="vol-info-item">
+                <div class="vol-info-item__icon">
+                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="vol-info-item__label">일시</div>
+                  <div class="vol-info-item__value">2026.04.15 (월) 14:00 ~ 18:00</div>
+                </div>
+              </div>
+              <div class="vol-info-item">
+                <div class="vol-info-item__icon">
+                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="vol-info-item__label">장소</div>
+                  <div class="vol-info-item__value">대전 서구 지역아동센터</div>
+                </div>
+              </div>
+              <div class="vol-info-item">
+                <div class="vol-info-item__icon">
+                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="vol-info-item__label">봉사 시간</div>
+                  <div class="vol-info-item__value">4시간 (VMS 인증)</div>
+                </div>
+              </div>
+              <div class="vol-info-item">
+                <div class="vol-info-item__icon">
+                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="vol-info-item__label">모집 인원</div>
+                  <div class="vol-info-item__value">12 / 15명</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="vol-info-card">
+            <h2 class="vol-info-title">활동 상세</h2>
+            <div class="vol-description">
+              <p>대전 서구 지역아동센터 초등학생 대상 학습 멘토링 봉사활동입니다. 대학생 봉사자가 1:1 또는 1:2로 아동의 학습을 도와줍니다.</p>
+              <p><strong>주요 활동 내용:</strong><br>
+                · 국어, 수학, 영어 학습 지도<br>
+                · 독서 지도 및 독후감 작성<br>
+                · 자유놀이 및 정서적 교감<br>
+                · 학습 피드백 작성 (리빙랩 프로젝트 연계)
+              </p>
+              <p>이 봉사활동은 <strong>'청년 교육 멘토링 플랫폼'</strong> 리빙랩 프로젝트의 일환으로 진행되며, 참여 데이터가 프로젝트 성과에 반영됩니다.</p>
+            </div>
+            <div class="vol-requirements">
+              <div class="vol-req">
+                <svg class="vol-req__icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/>
+                </svg>
+                교육 관련 전공자 우대 (필수 아님)
+              </div>
+              <div class="vol-req">
+                <svg class="vol-req__icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/>
+                </svg>
+                활동 1주일 전까지 신청 가능
+              </div>
+              <div class="vol-req">
+                <svg class="vol-req__icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/>
+                </svg>
+                VMS 및 1365 자원봉사포털 자동 인증
+              </div>
+            </div>
+          </section>
+
+          <section class="vol-info-card">
+            <h2 class="vol-info-title">참여자 (12)</h2>
+            <div class="participants">
+              <div class="participant-avatar">김</div>
+              <div class="participant-avatar" style="background: linear-gradient(135deg, #7c3aed, #a855f7);">이</div>
+              <div class="participant-avatar" style="background: linear-gradient(135deg, #ea580c, #fb923c);">박</div>
+              <div class="participant-avatar" style="background: linear-gradient(135deg, #059669, #10b981);">정</div>
+              <div class="participant-avatar" style="background: linear-gradient(135deg, #dc2626, #ef4444);">최</div>
+              <div class="participant-avatar" style="background: var(--color-text-muted);">+7</div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Apply Card -->
+        <aside>
+          <div class="apply-card">
+            <div class="apply-card__label">인정 봉사시간</div>
+            <div class="apply-card__hours">4<span class="apply-card__hours-unit">시간</span></div>
+
+            <div class="apply-card__progress">
+              <div class="apply-card__progress-header">
+                <span>모집 인원</span>
+                <strong>12 / 15명</strong>
+              </div>
+              <div class="apply-card__progress-bar">
+                <div class="apply-card__progress-fill" style="width: 80%;"></div>
+              </div>
+            </div>
+
+            <div style="margin-top: var(--space-5);">
+              <button class="btn btn--primary btn--block btn--lg">
+                신청하기
+              </button>
+              <button class="btn btn--secondary btn--block" style="margin-top: var(--space-2);">
+                관심 등록
+              </button>
+            </div>
+
+            <div class="apply-card__cert">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/>
+                <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 110 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+              </svg>
+              봉사활동 완료 시 VMS · 1365에 자동 인증됩니다
+            </div>
+
+            <div style="margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--color-border); font-size: var(--text-xs); color: var(--color-text-muted);">
+              <div style="margin-bottom: var(--space-2);">
+                <strong style="color: var(--color-text);">주최</strong> 지역사회특화센터
+              </div>
+              <div style="margin-bottom: var(--space-2);">
+                <strong style="color: var(--color-text);">담당자</strong> 이봉사
+              </div>
+              <div>
+                <strong style="color: var(--color-text);">문의</strong> sos-lab@univ.ac.kr
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

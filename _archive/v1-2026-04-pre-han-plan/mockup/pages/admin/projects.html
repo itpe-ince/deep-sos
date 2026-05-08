@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>프로젝트 관리 - SOS랩 관리자</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    /* Kanban Board */
+    .kanban {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--space-4);
+      overflow-x: auto;
+    }
+    .kanban-col {
+      background: #f1f5f9;
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .kanban-col__header {
+      padding-bottom: var(--space-3);
+      border-bottom: 2px solid var(--phase-color, var(--color-primary));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-2);
+    }
+    .kanban-col__title {
+      font-size: var(--text-sm);
+      font-weight: 800;
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .kanban-col__num {
+      width: 24px;
+      height: 24px;
+      background: var(--phase-color, var(--color-primary));
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+    .kanban-col__count {
+      background: white;
+      color: var(--color-text-muted);
+      padding: 2px var(--space-2);
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .kanban-card {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-3);
+      cursor: grab;
+      transition: all var(--transition-fast);
+      box-shadow: var(--shadow-sm);
+      text-decoration: none;
+      color: inherit;
+    }
+    .kanban-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-primary);
+      color: inherit;
+    }
+    .kanban-card__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-2);
+      margin-bottom: var(--space-2);
+    }
+    .kanban-card__title {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      line-height: 1.4;
+      flex: 1;
+    }
+    .kanban-card__badges {
+      display: flex;
+      gap: var(--space-1);
+      margin-bottom: var(--space-2);
+      flex-wrap: wrap;
+    }
+    .kanban-card__progress {
+      height: 4px;
+      background: #e5e7eb;
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-bottom: var(--space-2);
+    }
+    .kanban-card__progress-fill {
+      height: 100%;
+      background: var(--phase-color, var(--color-primary));
+      border-radius: var(--radius-full);
+    }
+    .kanban-card__meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+    .kanban-card__team {
+      display: flex;
+    }
+    .kanban-card__avatar {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      border: 2px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 9px;
+      font-weight: 800;
+      margin-left: -6px;
+    }
+    .kanban-card__avatar:first-child {
+      margin-left: 0;
+    }
+
+    .view-switch {
+      display: flex;
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 2px;
+    }
+    .view-switch button {
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      border-radius: var(--radius-sm);
+    }
+    .view-switch button.is-active {
+      background: var(--color-primary);
+      color: white;
+    }
+
+    @media (max-width: 1440px) {
+      .kanban {
+        grid-template-columns: repeat(3, minmax(280px, 1fr));
+        overflow-x: auto;
+      }
+      .kanban-col {
+        min-width: 280px;
+      }
+    }
+  </style>
+</head>
+<body data-admin-nav="projects">
+  <div class="admin-layout">
+    <div data-slot="admin-side"></div>
+    <div class="admin-main">
+      <div data-slot="admin-top"></div>
+
+      <main class="admin-content">
+        <div class="admin-page-header">
+          <div class="admin-page-header__breadcrumb">
+            <a href="#">관리자</a>
+            <span>/</span>
+            <span>리빙랩 프로젝트</span>
+          </div>
+          <div class="admin-page-header__flex">
+            <div>
+              <h1 class="admin-page-header__title">리빙랩 프로젝트 관리</h1>
+              <p class="admin-page-header__subtitle">5단계 프로세스를 통해 프로젝트 진행 상황을 관리합니다 (총 12개)</p>
+            </div>
+            <div style="display: flex; gap: var(--space-2); align-items: center;">
+              <div class="view-switch">
+                <button class="is-active">
+                  <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display: inline-block; vertical-align: middle;"><rect x="3" y="3" width="6" height="18"/><rect x="10" y="3" width="6" height="18"/><rect x="17" y="3" width="6" height="18"/></svg>
+                  칸반
+                </button>
+                <button>
+                  <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display: inline-block; vertical-align: middle;"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/></svg>
+                  리스트
+                </button>
+              </div>
+              <button class="btn btn--primary btn--sm">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                새 프로젝트
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar" style="margin-bottom: var(--space-4);">
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">캠퍼스</span>
+            <select class="filter-bar__select">
+              <option>전체</option><option>대전</option><option>공주</option><option>예산</option><option>세종</option>
+            </select>
+          </div>
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">상태</span>
+            <select class="filter-bar__select">
+              <option>진행중</option><option>완료</option><option>보관</option>
+            </select>
+          </div>
+          <div class="filter-bar__group">
+            <span class="filter-bar__label">리더</span>
+            <select class="filter-bar__select">
+              <option>전체</option>
+            </select>
+          </div>
+          <div class="filter-bar__spacer"></div>
+          <div class="filter-bar__group">
+            <input type="text" placeholder="프로젝트명 검색..." style="padding: var(--space-2) var(--space-3); font-size: var(--text-sm); border: 1px solid var(--color-border); border-radius: var(--radius-md); width: 220px;">
+          </div>
+        </div>
+
+        <!-- Kanban -->
+        <div class="kanban">
+          <!-- 탐색 -->
+          <div class="kanban-col" style="--phase-color: #6b7280;">
+            <div class="kanban-col__header">
+              <div class="kanban-col__title">
+                <span class="kanban-col__num">1</span>
+                탐색
+              </div>
+              <span class="kanban-col__count">2</span>
+            </div>
+            <a href="/mockup/pages/admin/project-detail.html" class="kanban-card" style="--phase-color: #6b7280;">
+              <div class="kanban-card__header">
+                <div class="kanban-card__title">세종 자율주행 모빌리티 실증</div>
+              </div>
+              <div class="kanban-card__badges">
+                <span class="badge badge--campus-sj">세종</span>
+                <span class="badge badge--gray">모빌리티</span>
+              </div>
+              <div class="kanban-card__progress">
+                <div class="kanban-card__progress-fill" style="width: 15%;"></div>
+              </div>
+              <div class="kanban-card__meta">
+                <div class="kanban-card__team">
+                  <div class="kanban-card__avatar">정</div>
+                  <div class="kanban-card__avatar" style="background: linear-gradient(135deg, #7c3aed, #a855f7);">김</div>
+                  <div class="kanban-card__avatar" style="background: linear-gradient(135deg, #059669, #10b981);">+18</div>
+                </div>
+                <span>~2027.03</span>
+              </div>
+            </a>
+
+            <a href="/mockup/pages/admin/project-detail.html" class="kanban-card" style="--phase-color: #6b7280;">
+              <div class="kanban-card__header">
+                <div class="kanban-card__title">공주 유휴공간 도시재생 리빙랩</div>
+              </div>
+              <div class="kanban-card__badges">
+                <span class="badge badge--campus-gj">공주</span>
+                <span class="badge badge--success">문화재생</span>
+              </div>
+              <div class="kanban-card__progress">
+                <div class="kanban-card__progress-fill" style="width: 8%;"></div>
+              </div>
+              <div class="kanban-card__meta">
+                <div class="kanban-card__team">
+                  <div class="kanban-card__avatar">한</div>
+                  <div class="kanban-card__avatar" style="background: linear-gradient(135deg, #ea580c, #fb923c);">+5</div>
+                </div>
+                <span>~2027.06</span>
+              </div>
+            </a>
+          </div>
+
+          <!-- 실행 -->
+          <div class="kanban-col" style="--phase-color: #2563eb;">
+            <div class="kanban-col__header">
+              <div class="kanban-col__title">
+                <span class="kanban-col__num">2</span>
+                실행
+              </div>
+              <span class="kanban-col__count">3</span>
+            </div>
+            <a href="/mockup/pages/admin/project-detail.html" class="kanban-card" style="--phase-color: #2563eb;">
+              <div class="kanban-card__header">
+                <div class="kanban-card__title">청년 일자리 경험 플랫폼 '대전잡스'</div>
+              </div>
+              <div class="kanban-card__badges">
+                <span class="badge badge--campus-dj">대전</span>
+                <span class="badge badge--info">청년정착</span>
+              </div>
+              <div class="kanban-card__progress">
+                <div class="kanban-card__progress-fill" style="width: 35%;"></div>
+              </div>
+              <div class="kanban-card__meta">
+                <div class="kanban-card__team">
+                  <div class="kanban-card__avatar">김</div>
+                  <div class="kanban-card__avatar" style="background: linear-gradient(135deg, #7c3aed, #a855f7);">이</div>
+                  <div class="kanban-card__avatar" style="background: linear-gradient(135deg, #ea580c, #fb923c);">박</div>
+                  <div class="kanban-card__avatar" style="background: linear-gradient(135deg, #059669, #10b981);">+9</div>
+                </div>
+                <span>~2026.12</span>
+              </div>
+            </a>
+
+            <a href="/mockup/pages/admin/project-detail.html" class="kanban-card" style="--phase-color: #2563eb;">
+              <div class="kanban-card__header">
+                <div class="kanban-card__title">다문화 가정 디지털 교육격차 해소</div>
+              </div>
+              <div class="kanban-card__badges">
+                <span class="badge badge--campus-gj">공주</span>
+                <span class="badge badge--success">문화재생</span>
+              </div>
+              <div class="kanban-card__progress">
+                <div class="kanban-card__progress-fill" style="width: 40%;"></div>
+              </div>
+              <div class="kanban-card__meta">
+                <div class="kanban-card__team">
+                  <div class="kanban-card__avatar">최</div>
+                  <div class="kanban-card__avatar" style="background: linear-gradient(135deg, #7c3aed, #a855f7);">+10</div>
+                </div>
+                <span>~2026.12</span>
+              </div>
+            </a>
+
+            <a href="/mockup/pages/admin/project-detail.html" class="kanban-card" style="--phase-color: #2563eb;">
+              <div class="kanban-card__header">
+                <div class="kanban-card__title">예산 지역 노인 돌봄 커뮤니티</div>
+              </div>
+              <div class="kanban-card__badges">
+                <span class="badge badge--campus-ys">예산</span>
+                <span class="badge badge--purple">고령자돌봄</span>
+              </div>
+              <div class="kanban-card__progress">
+                <div class="kanban-card__progress-fill" style="width: 28%;"></div>
+              </div>
+              <div class="kanban-card__meta">
+                <div class="kanban-card__team">
+                  <div class="kanban-card__avatar">최</div>
+                  <div class="kanban-card__avatar" style="background: linear-gradient(135deg, #ea580c, #fb923c);">+6</div>
+                </div>
+                <span>~2026.12</span>
+              </div>
+            </a>
+          </div>
+
+          <!-- 개발 -->
+          <div class="kanban-col" style="--phase-color: #f59e0b;">
+            <div class="kanban-col__header">
+              <div class="kanban-col__title">
+                <span class="kanban-col__num">3</span>
+                개발
+              </div>
+              <span class="kanban-col__count">3</span>
+            </div>
+            <a href="/mockup/pages/admin/project-detail.html" class="kanban-card" style="--phase-color: #f59e0b;">
+              <div class="kanban-card__header">
+                <div class="kanban-card__title">백제문화권 청년 문화기획자 양성</div>
+              </div>
+              <div class="kanban-card__badges">
+                <span class="badge badge--campus-gj">공주</span>
+                <span class="badge badge--success">문화재생</span>
+              </div>
+              <div class="kanban-card__progress">
+                <div class="kanban-card__progress-fill" style="width: 60%; background: #f59e0b;"></div>
+              </div>
+              <div class="kanban-card__meta">
+                <div class="kanban-card__team">
+                  <div class="kanban-card__avatar">이</div>
+                  <div class="kanban-card__avatar" style="background: linear-gradient(135deg, #7c3aed, #a855f7);">+7</div>
+                </div>
+                <span>~2026.11</span>
+              </div>
+            </a>
+            <a href="/mockup/pages/admin/project-detail.html" class="kanban-card" style="--phase-color: #f59e0b;">
+              <div class="kanban-card__header">
+                <div class="kanban-card__title">세종 실시간 대중교통 최적화</div>
+              </div>
+              <div class="kanban-card__badges">
+                <span class="badge badge--campus-sj">세종</span>
+                <span class="badge" style="background: #ffedd5; color: #ea580c;">모빌리티</span>
+              </div>
+              <div class="kanban-card__progress">
+                <div class="kanban-card__progress-fill" style="width: 55%; background: #f59e0b;"></div>
+              </div>
+              <div class="kanban-card__meta">
+                <div class="kanban-card__team">
+                  <div class="kanban-card__avatar">정</div>
+                  <div class="kanban-card__avatar" style="background: linear-gradient(135deg, #059669, #10b981);">+8</div>
+                </div>
+                <span>~2026.11</span>
+              </div>
+            </a>
+            <a href="/mockup/pages/admin/project-detail.html" class="kanban-card" style="--phase-color: #f59e0b;">
+              <div class="kanban-card__header">
+                <div class="kanban-card__title">대전 ICT 농업 실험 플랫폼</div>
+              </div>
+              <div class="kanban-card__badges">
+                <span class="badge badge--campus-dj">대전</span>
+                <span class="badge badge--info">청년정착</span>
+              </div>
+              <div class="kanban-card__progress">
+                <div class="kanban-card__progress-fill" style="width: 65%; background: #f59e0b;"></div>
+              </div>
+              <div class="kanban-card__meta">
+                <div class="kanban-card__team">
+                  <div class="kanban-card__avatar">장</div>
+                  <div class="kanban-card__avatar" style="background: linear-gradient(135deg, #ea580c, #fb923c);">+5</div>
+                </div>
+                <span>~2026.10</span>
+              </div>
+            </a>
+          </div>
+
+          <!-- 검증 -->
+          <div class="kanban-col" style="--phase-color: #7c3aed;">
+            <div class="kanban-col__header">
+              <div class="kanban-col__title">
+                <span class="kanban-col__num">4</span>
+                검증
+              </div>
+              <span class="kanban-col__count">2</span>
+            </div>
+            <a href="/mockup/pages/admin/project-detail.html" class="kanban-card" style="--phase-color: #7c3aed;">
+              <div class="kanban-card__header">
+                <div class="kanban-card__title">예산 고령자 돌봄테크 리빙랩</div>
+              </div>
+              <div class="kanban-card__badges">
+                <span class="badge badge--campus-ys">예산</span>
+                <span class="badge badge--purple">고령자돌봄</span>
+              </div>
+              <div class="kanban-card__progress">
+                <div class="kanban-card__progress-fill" style="width: 80%; background: #7c3aed;"></div>
+              </div>
+              <div class="kanban-card__meta">
+                <div class="kanban-card__team">
+                  <div class="kanban-card__avatar">박</div>
+                  <div class="kanban-card__avatar" style="background: linear-gradient(135deg, #059669, #10b981);">+14</div>
+                </div>
+                <span>~2026.10</span>
+              </div>
+            </a>
+            <a href="/mockup/pages/admin/project-detail.html" class="kanban-card" style="--phase-color: #7c3aed;">
+              <div class="kanban-card__header">
+                <div class="kanban-card__title">대전 원도심 문화 활성화</div>
+              </div>
+              <div class="kanban-card__badges">
+                <span class="badge badge--campus-dj">대전</span>
+                <span class="badge badge--info">청년정착</span>
+              </div>
+              <div class="kanban-card__progress">
+                <div class="kanban-card__progress-fill" style="width: 85%; background: #7c3aed;"></div>
+              </div>
+              <div class="kanban-card__meta">
+                <div class="kanban-card__team">
+                  <div class="kanban-card__avatar">홍</div>
+                  <div class="kanban-card__avatar" style="background: linear-gradient(135deg, #7c3aed, #a855f7);">+9</div>
+                </div>
+                <span>~2026.09</span>
+              </div>
+            </a>
+          </div>
+
+          <!-- 활용 -->
+          <div class="kanban-col" style="--phase-color: #059669;">
+            <div class="kanban-col__header">
+              <div class="kanban-col__title">
+                <span class="kanban-col__num">5</span>
+                활용
+              </div>
+              <span class="kanban-col__count">2</span>
+            </div>
+            <a href="/mockup/pages/admin/project-detail.html" class="kanban-card" style="--phase-color: #059669;">
+              <div class="kanban-card__header">
+                <div class="kanban-card__title">지역 스마트 빗물 관리 시스템</div>
+              </div>
+              <div class="kanban-card__badges">
+                <span class="badge badge--campus-dj">대전</span>
+                <span class="badge badge--success">완료</span>
+              </div>
+              <div class="kanban-card__progress">
+                <div class="kanban-card__progress-fill" style="width: 100%; background: #059669;"></div>
+              </div>
+              <div class="kanban-card__meta">
+                <div class="kanban-card__team">
+                  <div class="kanban-card__avatar">한</div>
+                  <div class="kanban-card__avatar" style="background: linear-gradient(135deg, #059669, #10b981);">+9</div>
+                </div>
+                <span>완료됨</span>
+              </div>
+            </a>
+            <a href="/mockup/pages/admin/project-detail.html" class="kanban-card" style="--phase-color: #059669;">
+              <div class="kanban-card__header">
+                <div class="kanban-card__title">공주 전통시장 디지털화</div>
+              </div>
+              <div class="kanban-card__badges">
+                <span class="badge badge--campus-gj">공주</span>
+                <span class="badge badge--success">완료</span>
+              </div>
+              <div class="kanban-card__progress">
+                <div class="kanban-card__progress-fill" style="width: 100%; background: #059669;"></div>
+              </div>
+              <div class="kanban-card__meta">
+                <div class="kanban-card__team">
+                  <div class="kanban-card__avatar">송</div>
+                  <div class="kanban-card__avatar" style="background: linear-gradient(135deg, #7c3aed, #a855f7);">+6</div>
+                </div>
+                <span>완료됨</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

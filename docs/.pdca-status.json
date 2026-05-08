@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-04-13T02:13:40.608Z",
+  "lastUpdated": "2026-04-22T01:37:24.706Z",
   "activeFeatures": [
     "uscp-v1",
     "sos-lab",
@@ -191,9 +191,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-09T05:17:50.472Z",
-        "lastUpdated": "2026-04-13T02:11:22.936Z"
+        "lastUpdated": "2026-04-22T01:37:24.706Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/mockup/scripts/app.js"
+      "lastFile": "/Users/sangincha/dev/deep-sos/mockup-core/scripts/app.js"
     },
     "tmp": {
       "phase": "do",
@@ -828,7 +828,7 @@
   "session": {
     "startedAt": "2026-04-07T07:44:19.225Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-04-13T02:13:40.608Z"
+    "lastActivity": "2026-04-22T01:37:24.706Z"
   },
   "history": [
     {
@@ -2994,6 +2994,36 @@
     {
       "timestamp": "2026-04-13T02:13:40.608Z",
       "feature": "login",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-21T06:29:36.958Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-21T23:14:19.453Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-21T23:14:49.722Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-21T23:19:51.955Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-22T01:37:24.706Z",
+      "feature": "scripts",
       "phase": "do",
       "action": "updated"
     }

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KPI · SDGs 대시보드 - SOS랩 관리자</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    /* KPI Goal Cards */
+    .kpi-goals {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+      margin-bottom: var(--space-5);
+    }
+    .goal-card {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      position: relative;
+      overflow: hidden;
+    }
+    .goal-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--accent, var(--color-primary));
+    }
+    .goal-card__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-4);
+    }
+    .goal-card__title {
+      font-size: var(--text-md);
+      font-weight: 700;
+    }
+    .goal-card__status {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px var(--space-2);
+      border-radius: var(--radius-full);
+    }
+    .goal-card__gauge {
+      height: 180px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: var(--space-4);
+      padding: var(--space-3);
+      background: var(--color-bg);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-4);
+      position: relative;
+    }
+    .goal-card__main-value {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      pointer-events: none;
+    }
+    .goal-card__main-value-num {
+      font-size: var(--text-3xl);
+      font-weight: 900;
+      color: var(--accent, var(--color-primary));
+      line-height: 1;
+    }
+    .goal-card__main-value-unit {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+      margin-top: 2px;
+    }
+    .year-bar {
+      flex: 1;
+      background: #e5e7eb;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      max-width: 44px;
+    }
+    .year-bar__fill {
+      width: 100%;
+      background: var(--accent, var(--color-primary));
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      position: absolute;
+      bottom: 0;
+    }
+    .year-bar__label {
+      position: absolute;
+      bottom: -20px;
+      font-size: 10px;
+      color: var(--color-text-muted);
+    }
+    .goal-card__meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+    }
+    .goal-card__meta strong {
+      color: var(--color-text);
+      font-weight: 700;
+    }
+
+    /* SDGs Grid */
+    .sdgs-section {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      margin-bottom: var(--space-5);
+    }
+    .sdgs-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-4);
+    }
+    .sdgs-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: var(--space-3);
+    }
+    .sdg-tile {
+      text-align: center;
+      padding: var(--space-3);
+      background: var(--color-bg);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .sdg-tile:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .sdg-tile__num {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: var(--text-md);
+      margin: 0 auto var(--space-2);
+    }
+    .sdg-tile__label {
+      font-size: 11px;
+      color: var(--color-text-secondary);
+      font-weight: 600;
+      margin-bottom: var(--space-1);
+      line-height: 1.3;
+    }
+    .sdg-tile__count {
+      font-size: var(--text-lg);
+      font-weight: 800;
+      color: var(--color-text);
+    }
+
+    /* Campus Performance */
+    .campus-perf {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+    }
+    .campus-perf__title {
+      font-size: var(--text-md);
+      font-weight: 700;
+      margin-bottom: var(--space-4);
+    }
+    .campus-row {
+      display: grid;
+      grid-template-columns: 120px 1fr auto;
+      gap: var(--space-4);
+      align-items: center;
+      padding: var(--space-3) 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .campus-row:last-child {
+      border-bottom: none;
+    }
+    .campus-row__name {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-weight: 700;
+      font-size: var(--text-sm);
+    }
+    .campus-row__dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .campus-row__bars {
+      display: flex;
+      gap: var(--space-2);
+      height: 24px;
+    }
+    .campus-row__bar {
+      background: var(--bar-color);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 var(--space-2);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .campus-row__total {
+      font-weight: 800;
+      font-size: var(--text-md);
+    }
+
+    @media (max-width: 1200px) {
+      .kpi-goals {
+        grid-template-columns: 1fr;
+      }
+      .sdgs-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
+</head>
+<body data-admin-nav="kpi">
+  <div class="admin-layout">
+    <div data-slot="admin-side"></div>
+    <div class="admin-main">
+      <div data-slot="admin-top"></div>
+
+      <main class="admin-content">
+        <div class="admin-page-header">
+          <div class="admin-page-header__breadcrumb">
+            <a href="#">관리자</a>
+            <span>/</span>
+            <span>KPI · SDGs 대시보드</span>
+          </div>
+          <div class="admin-page-header__flex">
+            <div>
+              <h1 class="admin-page-header__title">KPI · SDGs 성과 대시보드</h1>
+              <p class="admin-page-header__subtitle">글로컬대학 본지정 실행계획서 연차별 목표 및 SDGs 달성 현황</p>
+            </div>
+            <div style="display: flex; gap: var(--space-2);">
+              <select class="filter-bar__select">
+                <option>2026년</option><option>2025년</option><option>전체</option>
+              </select>
+              <button class="btn btn--secondary btn--sm">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                </svg>
+                보고서
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI Goals -->
+        <section class="kpi-goals">
+          <div class="goal-card" style="--accent: #2563eb;">
+            <div class="goal-card__header">
+              <h3 class="goal-card__title">리빙랩 지원 (누적)</h3>
+              <span class="goal-card__status" style="background: #d1fae5; color: #059669;">달성</span>
+            </div>
+            <div class="goal-card__gauge">
+              <div class="year-bar"><div class="year-bar__fill" style="height: 16%;"></div><span class="year-bar__label">'25</span></div>
+              <div class="year-bar"><div class="year-bar__fill" style="height: 33%;"></div><span class="year-bar__label">'26</span></div>
+              <div class="year-bar"><div class="year-bar__fill" style="height: 66%; opacity: 0.4;"></div><span class="year-bar__label">'27</span></div>
+              <div class="year-bar"><div class="year-bar__fill" style="height: 83%; opacity: 0.4;"></div><span class="year-bar__label">'28</span></div>
+              <div class="year-bar"><div class="year-bar__fill" style="height: 100%; opacity: 0.4;"></div><span class="year-bar__label">'29</span></div>
+            </div>
+            <div class="goal-card__meta">
+              <span>2026 목표 <strong>4건</strong></span>
+              <span>현재 <strong>4건 (100%)</strong></span>
+            </div>
+          </div>
+
+          <div class="goal-card" style="--accent: #059669;">
+            <div class="goal-card__header">
+              <h3 class="goal-card__title">SDGs 기반 ESG 프로그램</h3>
+              <span class="goal-card__status" style="background: #d1fae5; color: #059669;">순항</span>
+            </div>
+            <div class="goal-card__gauge">
+              <div class="year-bar"><div class="year-bar__fill" style="height: 33%;"></div><span class="year-bar__label">'25</span></div>
+              <div class="year-bar"><div class="year-bar__fill" style="height: 40%;"></div><span class="year-bar__label">'26</span></div>
+              <div class="year-bar"><div class="year-bar__fill" style="height: 66%; opacity: 0.4;"></div><span class="year-bar__label">'27</span></div>
+              <div class="year-bar"><div class="year-bar__fill" style="height: 83%; opacity: 0.4;"></div><span class="year-bar__label">'28</span></div>
+              <div class="year-bar"><div class="year-bar__fill" style="height: 100%; opacity: 0.4;"></div><span class="year-bar__label">'29</span></div>
+            </div>
+            <div class="goal-card__meta">
+              <span>2026 목표 <strong>12건</strong></span>
+              <span>현재 <strong>11건 (92%)</strong></span>
+            </div>
+          </div>
+
+          <div class="goal-card" style="--accent: #7c3aed;">
+            <div class="goal-card__header">
+              <h3 class="goal-card__title">국제연수 · ODA 교육</h3>
+              <span class="goal-card__status" style="background: #fef3c7; color: #d97706;">주의</span>
+            </div>
+            <div class="goal-card__gauge">
+              <div class="year-bar"><div class="year-bar__fill" style="height: 12%;"></div><span class="year-bar__label">'25</span></div>
+              <div class="year-bar"><div class="year-bar__fill" style="height: 25%;"></div><span class="year-bar__label">'26</span></div>
+              <div class="year-bar"><div class="year-bar__fill" style="height: 50%; opacity: 0.4;"></div><span class="year-bar__label">'27</span></div>
+              <div class="year-bar"><div class="year-bar__fill" style="height: 75%; opacity: 0.4;"></div><span class="year-bar__label">'28</span></div>
+              <div class="year-bar"><div class="year-bar__fill" style="height: 100%; opacity: 0.4;"></div><span class="year-bar__label">'29</span></div>
+            </div>
+            <div class="goal-card__meta">
+              <span>2026 목표 <strong>100명</strong></span>
+              <span>현재 <strong>68명 (68%)</strong></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- SDGs -->
+        <section class="sdgs-section">
+          <div class="sdgs-header">
+            <h2 style="font-size: var(--text-md); font-weight: 700;">UN-SDGs 달성 기여 현황</h2>
+            <div style="font-size: var(--text-xs); color: var(--color-text-muted);">
+              총 활동 수 · 클릭 시 상세 보기
+            </div>
+          </div>
+          <div class="sdgs-grid">
+            <div class="sdg-tile">
+              <div class="sdg-tile__num" style="background: #e5243b;">1</div>
+              <div class="sdg-tile__label">빈곤 종식</div>
+              <div class="sdg-tile__count">3</div>
+            </div>
+            <div class="sdg-tile">
+              <div class="sdg-tile__num" style="background: #dda63a;">2</div>
+              <div class="sdg-tile__label">기아 종식</div>
+              <div class="sdg-tile__count">1</div>
+            </div>
+            <div class="sdg-tile">
+              <div class="sdg-tile__num" style="background: #4c9f38;">3</div>
+              <div class="sdg-tile__label">건강과 복지</div>
+              <div class="sdg-tile__count">18</div>
+            </div>
+            <div class="sdg-tile">
+              <div class="sdg-tile__num" style="background: #c5192d;">4</div>
+              <div class="sdg-tile__label">양질의 교육</div>
+              <div class="sdg-tile__count">42</div>
+            </div>
+            <div class="sdg-tile">
+              <div class="sdg-tile__num" style="background: #ff3a21;">5</div>
+              <div class="sdg-tile__label">성평등</div>
+              <div class="sdg-tile__count">12</div>
+            </div>
+            <div class="sdg-tile">
+              <div class="sdg-tile__num" style="background: #26bde2;">6</div>
+              <div class="sdg-tile__label">물과 위생</div>
+              <div class="sdg-tile__count">8</div>
+            </div>
+            <div class="sdg-tile">
+              <div class="sdg-tile__num" style="background: #fcc30b;">7</div>
+              <div class="sdg-tile__label">에너지</div>
+              <div class="sdg-tile__count">15</div>
+            </div>
+            <div class="sdg-tile">
+              <div class="sdg-tile__num" style="background: #a21942;">8</div>
+              <div class="sdg-tile__label">일자리와 경제</div>
+              <div class="sdg-tile__count">28</div>
+            </div>
+            <div class="sdg-tile">
+              <div class="sdg-tile__num" style="background: #fd6925;">9</div>
+              <div class="sdg-tile__label">산업·혁신·인프라</div>
+              <div class="sdg-tile__count">22</div>
+            </div>
+            <div class="sdg-tile">
+              <div class="sdg-tile__num" style="background: #dd1367;">10</div>
+              <div class="sdg-tile__label">불평등 감소</div>
+              <div class="sdg-tile__count">14</div>
+            </div>
+            <div class="sdg-tile">
+              <div class="sdg-tile__num" style="background: #fd9d24;">11</div>
+              <div class="sdg-tile__label">지속가능 도시</div>
+              <div class="sdg-tile__count">35</div>
+            </div>
+            <div class="sdg-tile">
+              <div class="sdg-tile__num" style="background: #bf8b2e;">12</div>
+              <div class="sdg-tile__label">소비와 생산</div>
+              <div class="sdg-tile__count">9</div>
+            </div>
+            <div class="sdg-tile">
+              <div class="sdg-tile__num" style="background: #3f7e44;">13</div>
+              <div class="sdg-tile__label">기후변화</div>
+              <div class="sdg-tile__count">24</div>
+            </div>
+            <div class="sdg-tile">
+              <div class="sdg-tile__num" style="background: #0a97d9;">14</div>
+              <div class="sdg-tile__label">해양 생태계</div>
+              <div class="sdg-tile__count">2</div>
+            </div>
+            <div class="sdg-tile">
+              <div class="sdg-tile__num" style="background: #56c02b;">15</div>
+              <div class="sdg-tile__label">육상 생태계</div>
+              <div class="sdg-tile__count">7</div>
+            </div>
+            <div class="sdg-tile">
+              <div class="sdg-tile__num" style="background: #00689d;">16</div>
+              <div class="sdg-tile__label">평화·정의</div>
+              <div class="sdg-tile__count">5</div>
+            </div>
+            <div class="sdg-tile">
+              <div class="sdg-tile__num" style="background: #19486a;">17</div>
+              <div class="sdg-tile__label">파트너십</div>
+              <div class="sdg-tile__count">31</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Campus Performance -->
+        <section class="campus-perf">
+          <h2 class="campus-perf__title">캠퍼스별 성과 비교</h2>
+          <div class="campus-row">
+            <div class="campus-row__name">
+              <span class="campus-row__dot" style="background: #2563eb;"></span>
+              대전
+            </div>
+            <div class="campus-row__bars">
+              <div class="campus-row__bar" style="width: 35%; --bar-color: #2563eb;">프로젝트 4</div>
+              <div class="campus-row__bar" style="width: 22%; --bar-color: #60a5fa;">봉사 820h</div>
+              <div class="campus-row__bar" style="width: 28%; --bar-color: #93c5fd;">참여 438명</div>
+            </div>
+            <div class="campus-row__total">92점</div>
+          </div>
+          <div class="campus-row">
+            <div class="campus-row__name">
+              <span class="campus-row__dot" style="background: #059669;"></span>
+              공주
+            </div>
+            <div class="campus-row__bars">
+              <div class="campus-row__bar" style="width: 26%; --bar-color: #059669;">프로젝트 3</div>
+              <div class="campus-row__bar" style="width: 18%; --bar-color: #34d399;">봉사 680h</div>
+              <div class="campus-row__bar" style="width: 22%; --bar-color: #6ee7b7;">참여 352명</div>
+            </div>
+            <div class="campus-row__total">85점</div>
+          </div>
+          <div class="campus-row">
+            <div class="campus-row__name">
+              <span class="campus-row__dot" style="background: #7c3aed;"></span>
+              예산
+            </div>
+            <div class="campus-row__bars">
+              <div class="campus-row__bar" style="width: 28%; --bar-color: #7c3aed;">프로젝트 3</div>
+              <div class="campus-row__bar" style="width: 25%; --bar-color: #a78bfa;">봉사 920h</div>
+              <div class="campus-row__bar" style="width: 26%; --bar-color: #c4b5fd;">참여 410명</div>
+            </div>
+            <div class="campus-row__total">95점</div>
+          </div>
+          <div class="campus-row">
+            <div class="campus-row__name">
+              <span class="campus-row__dot" style="background: #ea580c;"></span>
+              세종
+            </div>
+            <div class="campus-row__bars">
+              <div class="campus-row__bar" style="width: 18%; --bar-color: #ea580c;">프로젝트 2</div>
+              <div class="campus-row__bar" style="width: 12%; --bar-color: #fb923c;">봉사 425h</div>
+              <div class="campus-row__bar" style="width: 15%; --bar-color: #fdba74;">참여 238명</div>
+            </div>
+            <div class="campus-row__total">72점</div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

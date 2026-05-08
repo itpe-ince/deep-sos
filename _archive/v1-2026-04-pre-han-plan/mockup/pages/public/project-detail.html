@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>청년 일자리 경험 플랫폼 '대전잡스' - SOS랩</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    .project-hero {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+      padding: var(--space-12) 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,0.3), transparent 50%),
+        radial-gradient(circle at 85% 80%, rgba(255,255,255,0.2), transparent 50%);
+    }
+    .project-hero__inner {
+      position: relative;
+      z-index: 1;
+    }
+    .project-hero__badges {
+      display: flex;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+    }
+    .project-hero__title {
+      font-size: var(--text-3xl);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+      color: var(--color-text);
+      max-width: 800px;
+      margin-bottom: var(--space-4);
+    }
+    .project-hero__desc {
+      font-size: var(--text-md);
+      color: var(--color-text-secondary);
+      line-height: 1.7;
+      max-width: 720px;
+      margin-bottom: var(--space-6);
+    }
+    .project-hero__stats {
+      display: flex;
+      gap: var(--space-8);
+      padding-top: var(--space-6);
+      border-top: 1px solid rgba(255, 255, 255, 0.5);
+    }
+    .project-hero__stat-label {
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-1);
+    }
+    .project-hero__stat-value {
+      font-size: var(--text-xl);
+      font-weight: 800;
+      color: var(--color-text);
+    }
+
+    /* 5-Phase Visualization */
+    .phase-viz {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      margin: var(--space-8) 0;
+    }
+    .phase-viz__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-6);
+    }
+    .phase-viz__title {
+      font-size: var(--text-lg);
+      font-weight: 700;
+    }
+    .phase-viz__current {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+    }
+    .phase-viz__current strong {
+      color: var(--color-primary);
+      font-weight: 700;
+    }
+    .phase-track {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      position: relative;
+    }
+    .phase-track::before {
+      content: '';
+      position: absolute;
+      top: 24px;
+      left: 10%;
+      right: 10%;
+      height: 3px;
+      background: var(--color-border);
+      z-index: 0;
+    }
+    .phase-step {
+      position: relative;
+      text-align: center;
+      z-index: 1;
+    }
+    .phase-step__dot {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--color-surface);
+      border: 3px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: var(--text-md);
+      color: var(--color-text-muted);
+      margin: 0 auto var(--space-3);
+      position: relative;
+    }
+    .phase-step--done .phase-step__dot {
+      background: var(--color-success);
+      border-color: var(--color-success);
+      color: white;
+    }
+    .phase-step--done .phase-step__dot::after {
+      content: '✓';
+    }
+    .phase-step--done .phase-step__dot span {
+      display: none;
+    }
+    .phase-step--active .phase-step__dot {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: white;
+      box-shadow: 0 0 0 6px var(--color-primary-light);
+    }
+    .phase-step__name {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: var(--space-1);
+    }
+    .phase-step--done .phase-step__name,
+    .phase-step--active .phase-step__name {
+      color: var(--color-text);
+    }
+    .phase-step__desc {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 2px;
+      border-bottom: 1px solid var(--color-border);
+      margin-bottom: var(--space-6);
+      overflow-x: auto;
+    }
+    .tabs button {
+      padding: var(--space-4) var(--space-5);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: all var(--transition-fast);
+    }
+    .tabs button:hover {
+      color: var(--color-text);
+    }
+    .tabs button.is-active {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+    }
+
+    /* Two-col Layout */
+    .project-layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: var(--space-8);
+    }
+
+    .project-section {
+      margin-bottom: var(--space-8);
+    }
+    .project-section__title {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      margin-bottom: var(--space-4);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    /* Members */
+    .member-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-3);
+    }
+    .member-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+    }
+    .member-item__avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: var(--text-sm);
+      flex-shrink: 0;
+    }
+    .member-item__name {
+      font-size: var(--text-sm);
+      font-weight: 600;
+    }
+    .member-item__role {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+
+    /* Milestones */
+    .milestone {
+      display: flex;
+      gap: var(--space-4);
+      padding: var(--space-4) 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .milestone:last-child { border-bottom: none; }
+    .milestone__icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--color-surface-hover);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--color-text-muted);
+    }
+    .milestone--done .milestone__icon {
+      background: var(--color-secondary-light);
+      color: var(--color-secondary);
+    }
+    .milestone--active .milestone__icon {
+      background: var(--color-primary-light);
+      color: var(--color-primary);
+    }
+    .milestone__title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      margin-bottom: var(--space-1);
+    }
+    .milestone__meta {
+      font-size: var(--text-xs);
+      color: var(--color-text-muted);
+    }
+    .milestone__badge {
+      margin-left: auto;
+    }
+
+    /* Organization list */
+    .org-chip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+    .org-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      font-weight: 500;
+    }
+
+    @media (max-width: 1024px) {
+      .project-layout {
+        grid-template-columns: 1fr;
+      }
+      .phase-track::before {
+        display: none;
+      }
+      .phase-track {
+        grid-template-columns: 1fr;
+        gap: var(--space-3);
+      }
+      .phase-step {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        text-align: left;
+      }
+      .phase-step__dot {
+        margin: 0;
+      }
+      .member-list {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body data-nav="projects">
+  <div data-slot="header"></div>
+
+  <main class="page">
+    <section class="project-hero">
+      <div class="container project-hero__inner">
+        <nav class="breadcrumb">
+          <a href="/mockup/pages/index.html">홈</a>
+          <span>/</span>
+          <a href="/mockup/pages/public/projects.html">리빙랩 프로젝트</a>
+          <span>/</span>
+          <span>상세</span>
+        </nav>
+        <div class="project-hero__badges" style="margin-top: var(--space-4);">
+          <span class="badge badge--campus-dj">대전캠퍼스</span>
+          <span class="badge badge--info">청년정착 리빙랩</span>
+          <span class="badge badge--status-progress">실행 단계 진행 중</span>
+        </div>
+        <h1 class="project-hero__title">청년 일자리 경험 플랫폼 '대전잡스'</h1>
+        <p class="project-hero__desc">
+          ICT 기반 청년 일자리 실험 및 농촌형 주거·일·경험 플랫폼 개발.
+          지역 청년들이 다양한 일 경험을 통해 진로를 탐색할 수 있도록 지원합니다.
+        </p>
+        <div class="project-hero__stats">
+          <div>
+            <div class="project-hero__stat-label">프로젝트 기간</div>
+            <div class="project-hero__stat-value">2026.03 ~ 2026.12</div>
+          </div>
+          <div>
+            <div class="project-hero__stat-label">예산</div>
+            <div class="project-hero__stat-value">4,500만원</div>
+          </div>
+          <div>
+            <div class="project-hero__stat-label">참여 인원</div>
+            <div class="project-hero__stat-value">12명</div>
+          </div>
+          <div>
+            <div class="project-hero__stat-label">협력 기관</div>
+            <div class="project-hero__stat-value">4기관</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container">
+      <!-- 5-Phase Visualization -->
+      <div class="phase-viz">
+        <div class="phase-viz__header">
+          <h2 class="phase-viz__title">리빙랩 5단계 프로세스</h2>
+          <div class="phase-viz__current">
+            현재 단계: <strong>2. 실행</strong> · 진행률 35%
+          </div>
+        </div>
+        <div class="phase-track">
+          <div class="phase-step phase-step--done">
+            <div class="phase-step__dot"><span>1</span></div>
+            <div class="phase-step__name">탐색</div>
+            <div class="phase-step__desc">완료 · 2026.03.15</div>
+          </div>
+          <div class="phase-step phase-step--active">
+            <div class="phase-step__dot"><span>2</span></div>
+            <div class="phase-step__name">실행</div>
+            <div class="phase-step__desc">진행중 · 35%</div>
+          </div>
+          <div class="phase-step">
+            <div class="phase-step__dot"><span>3</span></div>
+            <div class="phase-step__name">개발</div>
+            <div class="phase-step__desc">대기중</div>
+          </div>
+          <div class="phase-step">
+            <div class="phase-step__dot"><span>4</span></div>
+            <div class="phase-step__name">검증</div>
+            <div class="phase-step__desc">대기중</div>
+          </div>
+          <div class="phase-step">
+            <div class="phase-step__dot"><span>5</span></div>
+            <div class="phase-step__name">활용</div>
+            <div class="phase-step__desc">대기중</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <nav class="tabs">
+        <button class="is-active">개요</button>
+        <button>마일스톤</button>
+        <button>멤버 (12)</button>
+        <button>산출물</button>
+        <button>현장 피드백</button>
+        <button>아이디어 보드</button>
+        <button>KPI</button>
+      </nav>
+
+      <!-- Two Column -->
+      <div class="project-layout">
+        <div>
+          <!-- 문제 정의 -->
+          <section class="project-section">
+            <h3 class="project-section__title">
+              🎯 문제 정의
+            </h3>
+            <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-5); line-height: 1.8;">
+              <p style="margin-bottom: var(--space-3);">
+                대전 지역 청년 인구 유출이 심각합니다. 통계청 자료에 따르면 최근 5년간 20-34세 청년 인구가 약 12% 감소했으며,
+                이는 <strong>양질의 일자리 부족</strong>과 <strong>일·생활 경험 기회 부족</strong>이 주된 원인으로 분석됩니다.
+              </p>
+              <p>
+                특히 농촌 지역의 경우 청년 인력이 필요한 반면, 청년들은 경험 기회와 생활 인프라 부족으로 진입을 꺼리는 미스매치가 발생하고 있습니다.
+              </p>
+            </div>
+          </section>
+
+          <!-- 해결 방안 -->
+          <section class="project-section">
+            <h3 class="project-section__title">
+              💡 해결 방안
+            </h3>
+            <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-5); line-height: 1.8;">
+              <p style="margin-bottom: var(--space-3);">
+                <strong>ICT 기반 청년 일자리 경험 플랫폼 '대전잡스'</strong>를 구축하여,
+                청년들이 1~3개월 단기 일 경험을 통해 다양한 직무와 지역을 탐색할 수 있도록 지원합니다.
+              </p>
+              <p style="margin-bottom: var(--space-3);">핵심 기능:</p>
+              <ul style="padding-left: var(--space-5); color: var(--color-text-secondary);">
+                <li style="margin-bottom: var(--space-2);">· 농촌형 주거 + 일 + 경험을 패키지로 제공</li>
+                <li style="margin-bottom: var(--space-2);">· ICT 매칭 알고리즘으로 청년-일자리 매칭 최적화</li>
+                <li style="margin-bottom: var(--space-2);">· 경험 기록 및 포트폴리오 자동 생성</li>
+                <li>· 지역 기업-청년 네트워킹 이벤트 운영</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- 최근 마일스톤 -->
+          <section class="project-section">
+            <h3 class="project-section__title">
+              📅 최근 마일스톤
+            </h3>
+            <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 0 var(--space-5);">
+              <div class="milestone milestone--done">
+                <div class="milestone__icon">✓</div>
+                <div>
+                  <div class="milestone__title">청년 인구 유출 실태 조사 완료</div>
+                  <div class="milestone__meta">탐색 단계 · 2026.03.20 완료</div>
+                </div>
+                <span class="badge badge--success milestone__badge">완료</span>
+              </div>
+              <div class="milestone milestone--done">
+                <div class="milestone__icon">✓</div>
+                <div>
+                  <div class="milestone__title">대전시 일자리정책과 협의 MOU 체결</div>
+                  <div class="milestone__meta">탐색 단계 · 2026.03.28 완료</div>
+                </div>
+                <span class="badge badge--success milestone__badge">완료</span>
+              </div>
+              <div class="milestone milestone--active">
+                <div class="milestone__icon">●</div>
+                <div>
+                  <div class="milestone__title">플랫폼 요구사항 분석 및 설계</div>
+                  <div class="milestone__meta">실행 단계 · 진행중 (70%)</div>
+                </div>
+                <span class="badge badge--status-progress milestone__badge">진행중</span>
+              </div>
+              <div class="milestone">
+                <div class="milestone__icon">○</div>
+                <div>
+                  <div class="milestone__title">지역 기업 5개사 파일럿 참여 확정</div>
+                  <div class="milestone__meta">실행 단계 · 2026.05.10 예정</div>
+                </div>
+                <span class="badge badge--gray milestone__badge">대기</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- 협력 기관 -->
+          <section class="project-section">
+            <h3 class="project-section__title">
+              🏢 협력 기관
+            </h3>
+            <div class="org-chip-list">
+              <div class="org-chip">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-primary);"></span>
+                대전광역시
+              </div>
+              <div class="org-chip">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-secondary);"></span>
+                대전일자리경제진흥원
+              </div>
+              <div class="org-chip">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #7c3aed;"></span>
+                한국전력연구원
+              </div>
+              <div class="org-chip">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #ea580c;"></span>
+                LS엠트론
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Sidebar -->
+        <aside>
+          <!-- KPI Card -->
+          <div class="sidebar-card" style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-5); margin-bottom: var(--space-4);">
+            <h3 style="font-size: var(--text-sm); font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-4);">프로젝트 KPI</h3>
+            <div style="margin-bottom: var(--space-4);">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-2);">
+                <span style="font-size: var(--text-sm);">참여 청년 수</span>
+                <span style="font-size: var(--text-md); font-weight: 700;">23 <span style="color: var(--color-text-muted); font-weight: 400; font-size: var(--text-xs);">/ 50명</span></span>
+              </div>
+              <div style="height: 6px; background: var(--color-surface-hover); border-radius: var(--radius-full); overflow: hidden;">
+                <div style="height: 100%; width: 46%; background: var(--color-primary);"></div>
+              </div>
+            </div>
+            <div style="margin-bottom: var(--space-4);">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-2);">
+                <span style="font-size: var(--text-sm);">매칭 일자리 수</span>
+                <span style="font-size: var(--text-md); font-weight: 700;">8 <span style="color: var(--color-text-muted); font-weight: 400; font-size: var(--text-xs);">/ 30건</span></span>
+              </div>
+              <div style="height: 6px; background: var(--color-surface-hover); border-radius: var(--radius-full); overflow: hidden;">
+                <div style="height: 100%; width: 27%; background: var(--color-secondary);"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-2);">
+                <span style="font-size: var(--text-sm);">참여자 만족도</span>
+                <span style="font-size: var(--text-md); font-weight: 700;">4.2 <span style="color: var(--color-text-muted); font-weight: 400; font-size: var(--text-xs);">/ 5.0</span></span>
+              </div>
+              <div style="height: 6px; background: var(--color-surface-hover); border-radius: var(--radius-full); overflow: hidden;">
+                <div style="height: 100%; width: 84%; background: #f59e0b;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SDGs Card -->
+          <div class="sidebar-card" style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-5); margin-bottom: var(--space-4);">
+            <h3 style="font-size: var(--text-sm); font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-4);">연계 SDGs</h3>
+            <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+              <div style="display: flex; align-items: center; gap: var(--space-3);">
+                <div style="width: 36px; height: 36px; background: #c5192d; color: white; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-weight: 800;">4</div>
+                <span style="font-size: var(--text-sm); font-weight: 600;">양질의 교육</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: var(--space-3);">
+                <div style="width: 36px; height: 36px; background: #a21942; color: white; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-weight: 800;">8</div>
+                <span style="font-size: var(--text-sm); font-weight: 600;">양질의 일자리와 경제성장</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: var(--space-3);">
+                <div style="width: 36px; height: 36px; background: #fd9d24; color: white; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-weight: 800;">11</div>
+                <span style="font-size: var(--text-sm); font-weight: 600;">지속가능한 도시와 공동체</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Leader Card -->
+          <div class="sidebar-card" style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-5);">
+            <h3 style="font-size: var(--text-sm); font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-4);">프로젝트 리더</h3>
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+              <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 800;">김</div>
+              <div>
+                <div style="font-weight: 700;">김교수</div>
+                <div style="font-size: var(--text-xs); color: var(--color-text-muted);">경영학과 · 대전캠퍼스</div>
+              </div>
+            </div>
+            <button class="btn btn--secondary btn--block" style="margin-top: var(--space-4);">문의하기</button>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <div style="height: var(--space-12);"></div>
+  </main>
+
+  <div data-slot="footer"></div>
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>
