@@ -1,10 +1,110 @@
 {
-  "sessionCount": 20,
+  "sessionCount": 22,
   "lastSession": {
-    "startedAt": "2026-05-14T01:05:12.469Z",
+    "startedAt": "2026-05-17T04:36:25.620Z",
     "platform": "claude",
     "level": "Enterprise"
   },
   "currentFeature": "uscp-v2",
-  "currentPhase": "design"
+  "currentPhase": "completed",
+  "planCreatedAt": "2026-05-14T15:17:00.000Z",
+  "planDocument": "docs/01-plan/features/uscp-v2.plan.md",
+  "designCreatedAt": "2026-05-14T15:30:00.000Z",
+  "designDocument": "docs/02-design/features/uscp-v2.design.md",
+  "doCreatedAt": "2026-05-14T16:00:00.000Z",
+  "doOutputs": [
+    "docs/00-discovery/estimate-v2.md",
+    "docs/00-discovery/uscp-proposal-v2.md",
+    "docs/00-discovery/uscp-rfi-response-v2.md"
+  ],
+  "checkCreatedAt": "2026-05-14T16:30:00.000Z",
+  "analysisDocument": "docs/03-analysis/uscp-v2.analysis.md",
+  "matchRate": 97,
+  "gapDetectorScore": 97,
+  "designValidatorScore": 96,
+  "criticalIssuesInitial": 3,
+  "criticalIssuesResolved": 3,
+  "majorIssuesInitial": 2,
+  "majorIssuesResolved": 1,
+  "minorIssuesInitial": 2,
+  "minorIssuesResolved": 1,
+  "fixCommittedAt": "2026-05-14T16:45:00.000Z",
+  "reportCreatedAt": "2026-05-14T17:00:00.000Z",
+  "reportDocument": "docs/04-report/features/uscp-v2.report.md",
+  "completedAt": "2026-05-14T17:00:00.000Z",
+  "totalArtifacts": 7,
+  "totalLines": 3265,
+  "postCompletionRevisions": [
+    {
+      "version": "V2.1",
+      "revisedAt": "2026-05-14T18:00:00.000Z",
+      "trigger": "2026-05-14 발주처 추가 결정 (5,000만 원 한도 통합 견적 + 봉사활동 기능 전면 제외)",
+      "changedDocuments": [
+        "docs/00-discovery/estimate-v2.md",
+        "docs/00-discovery/uscp-proposal-v2.md",
+        "docs/00-discovery/uscp-rfi-response-v2.md"
+      ],
+      "majorChanges": [
+        "구축비 5,000~8,500만 → 3,800만 (시나리오 B' → C-1)",
+        "3년 통합 합계 = 5,000만 원 (구축 + 1년차 무상 + 2~3년차 Basic)",
+        "봉사활동 기능 일체 (VMS·1365 자원봉사포털 연계 포함) 전면 제외",
+        "화면 수 25개 → 15~18개",
+        "시범운영 3개월 → 2개월",
+        "협의 결정 항목 39행 → 41행 (B.4 추가 결정 2건)"
+      ]
+    },
+    {
+      "version": "V2.2",
+      "revisedAt": "2026-05-15T10:00:00.000Z",
+      "trigger": "2026-05-15 발주처 추가 결정 (1) 5,000만 원 한도 = 공급가 기준 (VAT 별도) (2) 5,000만 원 이하 허용 (3) Function Point 기반 실 산정 적용",
+      "changedDocuments": [
+        "docs/00-discovery/estimate-v2.md",
+        "docs/00-discovery/uscp-proposal-v2.md",
+        "docs/00-discovery/uscp-rfi-response-v2.md"
+      ],
+      "majorChanges": [
+        "산정 방법론: 단계별 합계 추정 → Function Point 기반 실 산정 (NIPA SW사업 대가산정 가이드 2024 + IFPUG 4.3)",
+        "FP 산정 결과: 363 UFP → 보정계수 0.94 → 341 FP",
+        "FP 단가: 약 111,500원/FP (NIPA 표준 553,114원의 약 20%, 한도 제약 + 효율화 압축)",
+        "VAT 처리: 견적 포함 → 별도 (공급가 기준 5,000만 한도, VAT 500만 별도)",
+        "부가세 포함 환산: 5,500만 원",
+        "분배 옵션 C-FP-3 신규 추가 (감액 안, 공급가 4,500만 / 부가세 포함 4,950만)",
+        "협의 결정 항목 41행 → 45행 (B.5 추가 결정 4건: 공급가 한도 + 한도 이하 허용 + FP 산정 + 인프라 미정)",
+        "인프라 옵션 §6.2 신설: A. 대학 전산실 온프레미스 (본 견적 기준 0원) / B. 클라우드 (1,640~2,920만) / C. 상용 호스팅 (280~740만) / D. 당사 IDC 임대 위탁 (2,100~4,100만), 모두 3년 공급가",
+        "기술 환경 (파일 저장소·배포): 인프라 결정 따라 옵션화",
+        "§12 기능 단위 견적 산출표 신설: 12.1 M/M 기반 (10.5 M/M 구축 + 2.4 M/M MA = 12.9 M/M × 평균 단가 ≈ 5,000만) + 12.2 FP 기반 (개발 343 FP × 82,000원/FP ≈ 2,800만 + 분석설계·시범운영 직접비 1,000만 + MA 1,200만 = 5,000만) + 12.3 환산 정합성 표"
+      ],
+      "fpBreakdown": {
+        "ILF": {
+          "count": 20,
+          "ufp": 161
+        },
+        "EIF": {
+          "count": 2,
+          "ufp": 10
+        },
+        "EI": {
+          "count": 31,
+          "ufp": 108
+        },
+        "EO": {
+          "count": 6,
+          "ufp": 28
+        },
+        "EQ": {
+          "count": 16,
+          "ufp": 56
+        },
+        "UFP_total": 363,
+        "adjustment_factor": 0.94,
+        "final_FP": 341,
+        "unit_price_KRW_per_FP": 111500,
+        "construction_cost_supply_KRW": 38000000,
+        "ma_2y_3y_supply_KRW": 12000000,
+        "supply_total_KRW": 50000000,
+        "vat_10pct_KRW": 5000000,
+        "vat_included_total_KRW": 55000000
+      }
+    }
+  ]
 }
