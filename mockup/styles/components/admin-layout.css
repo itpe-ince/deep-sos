@@ -19,12 +19,98 @@
 }
 
 .admin-side__brand {
-  padding: var(--space-5);
+  padding: var(--space-4) var(--space-5);
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: var(--space-3);
   color: white;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 지역사회특화센터 로고 + 기관명 2줄 (외부 링크 → 공주대, 다크 배경) */
+.admin-side__brand-center {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  padding: 4px 0;
+  transition: opacity var(--transition-base);
+  align-self: flex-start;
+}
+.admin-side__brand-center:hover { opacity: 0.85; }
+.admin-side__brand-center-logo {
+  width: 36px;
+  height: 36px;
+  display: block;
+  flex-shrink: 0;
+}
+.admin-side__brand-center-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  gap: 1px;
+}
+.admin-side__brand-center-univ {
+  font-size: 10px;
+  font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: 0.02em;
+}
+.admin-side__brand-center-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -0.01em;
+}
+
+/* 가로 구분선 (다크) */
+.admin-side__brand-rule {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  align-self: stretch;
+}
+
+/* 센터 + USCP 관리자 (내부 링크) */
+.admin-side__brand-platform {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  line-height: 1.2;
+  padding: 2px 0;
+  transition: opacity var(--transition-base);
+}
+.admin-side__brand-platform:hover { opacity: 0.85; }
+
+.admin-side__brand-center {
+  font-size: 10px;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.04em;
+  margin-bottom: 3px;
+}
+
+.admin-side__brand-line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.admin-side__brand-uscp {
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: white;
+  line-height: 1;
+}
+
+.admin-side__brand-role {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
 }
 
 .admin-side__logo {

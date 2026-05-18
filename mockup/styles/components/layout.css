@@ -23,9 +23,101 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
+}
+
+/* 지역사회특화센터 로고 + 기관명 2줄 (외부 링크 → 공주대 홈) */
+.gnb__brand-center {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  padding: 4px 0;
+  transition: opacity var(--transition-base);
+}
+.gnb__brand-center:hover { opacity: 0.8; }
+.gnb__brand-center:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+.gnb__brand-center-logo {
+  width: 40px;
+  height: 40px;
+  display: block;
+  flex-shrink: 0;
+}
+.gnb__brand-center-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  gap: 1px;
+}
+.gnb__brand-center-univ {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.02em;
+}
+.gnb__brand-center-name {
+  font-size: 14px;
   font-weight: 800;
-  font-size: var(--text-lg);
   color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+
+/* 세로 구분선 */
+.gnb__brand-divider {
+  width: 1px;
+  height: 32px;
+  background: var(--color-border);
+}
+
+/* 지역사회특화센터 + USCP (내부 링크) */
+.gnb__brand-platform {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  line-height: 1.15;
+  padding: 4px 0;
+  transition: opacity var(--transition-base);
+}
+.gnb__brand-platform:hover { opacity: 0.85; }
+.gnb__brand-platform:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
+.gnb__brand-center {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.04em;
+  margin-bottom: 3px;
+}
+
+.gnb__brand-platform-line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.gnb__brand-uscp {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.gnb__brand-subtitle {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.04em;
 }
 
 .gnb__logo {
@@ -105,9 +197,86 @@
   align-items: center;
   gap: var(--space-3);
   color: white;
-  font-weight: 800;
-  font-size: var(--text-lg);
   margin-bottom: var(--space-4);
+}
+
+/* 푸터 — 지역사회특화센터 로고 + 기관명 2줄 (외부 링크 → 공주대, 다크 배경) */
+.footer__brand-center {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  transition: opacity var(--transition-base);
+}
+.footer__brand-center:hover { opacity: 0.85; }
+.footer__brand-center-logo {
+  width: 38px;
+  height: 38px;
+  display: block;
+  flex-shrink: 0;
+}
+.footer__brand-center-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  gap: 1px;
+}
+.footer__brand-center-univ {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.02em;
+}
+.footer__brand-center-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -0.01em;
+}
+
+.footer__brand-divider {
+  width: 1px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* 푸터 — 센터 + USCP (내부 링크, 다크 배경) */
+.footer__brand-platform {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  line-height: 1.2;
+  transition: opacity var(--transition-base);
+}
+.footer__brand-platform:hover { opacity: 0.85; }
+
+.footer__brand-center {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.04em;
+  margin-bottom: 3px;
+}
+
+.footer__brand-line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.footer__brand-uscp {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: white;
+  line-height: 1;
+}
+
+.footer__brand-subtitle {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.04em;
 }
 
 .footer__desc {
@@ -423,6 +592,15 @@
   .gnb__inner {
     padding: 0 var(--space-4);
   }
+  /* 모바일에서 브랜드 영역 압축 */
+  .gnb__brand { gap: var(--space-2); }
+  .gnb__brand-center { gap: 6px; }
+  .gnb__brand-center-logo { width: 32px; height: 32px; }
+  .gnb__brand-center-univ { display: none; }
+  .gnb__brand-center-name { font-size: 12px; }
+  .gnb__brand-divider { height: 24px; }
+  .gnb__brand-subtitle { display: none; }
+  .gnb__brand-uscp { font-size: 18px; }
   .footer__grid {
     grid-template-columns: 1fr;
   }

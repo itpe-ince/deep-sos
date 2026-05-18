@@ -17,12 +17,23 @@
 const COMMON_HEADER_PUBLIC = `
 <header class="gnb" data-component="Header">
   <div class="gnb__inner">
-    <a href="/mockup/pages/index.html" class="gnb__brand">
-      <div style="display:flex;flex-direction:column;line-height:1.2;">
-        <span style="font-size:20px;font-weight:900;letter-spacing:-0.02em;background:linear-gradient(135deg,var(--color-primary),var(--color-secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">USCP</span>
-        <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;color:var(--color-text-secondary);">온라인 사회공헌 플랫폼</span>
-      </div>
-    </a>
+    <div class="gnb__brand">
+      <a href="https://www.kongju.ac.kr" target="_blank" rel="noopener noreferrer"
+         class="gnb__brand-center" title="국립공주대학교 홈페이지 (새 창)">
+        <img src="/mockup/images/center-logo.svg" alt="" class="gnb__brand-center-logo" aria-hidden="true">
+        <div class="gnb__brand-center-text">
+          <div class="gnb__brand-center-univ">국립공주대학교</div>
+          <div class="gnb__brand-center-name">지역사회특화센터</div>
+        </div>
+      </a>
+      <div class="gnb__brand-divider" aria-hidden="true"></div>
+      <a href="/mockup/pages/index.html" class="gnb__brand-platform" title="USCP 홈으로 이동">
+        <div class="gnb__brand-platform-line">
+          <span class="gnb__brand-uscp">USCP</span>
+          <span class="gnb__brand-subtitle">온라인 사회공헌 플랫폼</span>
+        </div>
+      </a>
+    </div>
     <nav class="gnb__menu" data-component="Navigation">
       <a href="/mockup/pages/public/about.html" data-nav="about">USCP 소개</a>
       <a href="/mockup/pages/public/issues.html" data-nav="issues">지역문제 광장</a>
@@ -47,12 +58,23 @@ const COMMON_HEADER_PUBLIC = `
 const COMMON_HEADER_USER = `
 <header class="gnb" data-component="Header">
   <div class="gnb__inner">
-    <a href="/mockup/pages/index.html" class="gnb__brand">
-      <div style="display:flex;flex-direction:column;line-height:1.2;">
-        <span style="font-size:20px;font-weight:900;letter-spacing:-0.02em;background:linear-gradient(135deg,var(--color-primary),var(--color-secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">USCP</span>
-        <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;color:var(--color-text-secondary);">온라인 사회공헌 플랫폼</span>
-      </div>
-    </a>
+    <div class="gnb__brand">
+      <a href="https://www.kongju.ac.kr" target="_blank" rel="noopener noreferrer"
+         class="gnb__brand-center" title="국립공주대학교 홈페이지 (새 창)">
+        <img src="/mockup/images/center-logo.svg" alt="" class="gnb__brand-center-logo" aria-hidden="true">
+        <div class="gnb__brand-center-text">
+          <div class="gnb__brand-center-univ">국립공주대학교</div>
+          <div class="gnb__brand-center-name">지역사회특화센터</div>
+        </div>
+      </a>
+      <div class="gnb__brand-divider" aria-hidden="true"></div>
+      <a href="/mockup/pages/index.html" class="gnb__brand-platform" title="USCP 홈으로 이동">
+        <div class="gnb__brand-platform-line">
+          <span class="gnb__brand-uscp">USCP</span>
+          <span class="gnb__brand-subtitle">온라인 사회공헌 플랫폼</span>
+        </div>
+      </a>
+    </div>
     <nav class="gnb__menu" data-component="Navigation">
       <a href="/mockup/pages/public/about.html" data-nav="about">USCP 소개</a>
       <a href="/mockup/pages/public/issues.html" data-nav="issues">지역문제 광장</a>
@@ -95,10 +117,21 @@ const COMMON_HEADER_USER = `
 const ADMIN_SIDE = `
 <aside class="admin-side" data-component="AdminSidebar">
   <div class="admin-side__brand">
-    <div>
-      <div class="admin-side__title">USCP 관리자</div>
-      <div class="admin-side__subtitle" style="font-size:11px;color:var(--color-text-secondary);margin-top:2px;">지역사회특화센터</div>
-    </div>
+    <a href="https://www.kongju.ac.kr" target="_blank" rel="noopener noreferrer"
+       class="admin-side__brand-center" title="국립공주대학교 홈페이지 (새 창)">
+      <img src="/mockup/images/center-logo.svg" alt="" class="admin-side__brand-center-logo" aria-hidden="true">
+      <div class="admin-side__brand-center-text">
+        <div class="admin-side__brand-center-univ">국립공주대학교</div>
+        <div class="admin-side__brand-center-name">지역사회특화센터</div>
+      </div>
+    </a>
+    <div class="admin-side__brand-rule" aria-hidden="true"></div>
+    <a href="/mockup/pages/admin/dashboard.html" class="admin-side__brand-platform" title="관리자 대시보드로 이동">
+      <div class="admin-side__brand-line">
+        <span class="admin-side__brand-uscp">USCP</span>
+        <span class="admin-side__brand-role">관리자</span>
+      </div>
+    </a>
   </div>
   <nav class="admin-side__nav">
     <div class="admin-side__section">대시보드</div>
@@ -275,10 +308,24 @@ const COMMON_FOOTER = `
     <div class="footer__grid">
       <div>
         <div class="footer__brand">
-          <span style="font-size:24px;font-weight:900;color:#fff;letter-spacing:-0.02em;">USCP</span>
+          <a href="https://www.kongju.ac.kr" target="_blank" rel="noopener noreferrer"
+             class="footer__brand-center" title="국립공주대학교 홈페이지 (새 창)">
+            <img src="/mockup/images/center-logo.svg" alt="" class="footer__brand-center-logo" aria-hidden="true">
+            <div class="footer__brand-center-text">
+              <div class="footer__brand-center-univ">국립공주대학교</div>
+              <div class="footer__brand-center-name">지역사회특화센터</div>
+            </div>
+          </a>
+          <div class="footer__brand-divider" aria-hidden="true"></div>
+          <a href="/mockup/pages/index.html" class="footer__brand-platform" title="USCP 홈으로 이동">
+            <div class="footer__brand-line">
+              <span class="footer__brand-uscp">USCP</span>
+              <span class="footer__brand-subtitle">온라인 사회공헌 플랫폼</span>
+            </div>
+          </a>
         </div>
         <p class="footer__desc">
-          국립공주대학교 글로컬사업단 지역사회특화센터<br>
+          글로컬사업단 지역사회특화센터 · 2025 글로컬대학 본지정 사업 (추진과제 4-3-1)<br>
           5개 지역(대전·공주·예산·천안·세종) 시민·대학·지자체·기업이 함께하는 온라인 사회공헌 플랫폼
         </p>
       </div>
