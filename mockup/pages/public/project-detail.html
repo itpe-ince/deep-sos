@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>대전 보행자 안전 개선 리빙랩 - USCP</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <link rel="stylesheet" href="/mockup/styles/pages/home.css">
+  <style>
+    .project-hero { background: linear-gradient(135deg, var(--color-region-dj), #1d4ed8); color: #fff; padding: var(--space-12) var(--space-4); }
+    .project-hero__inner { max-width: var(--layout-content-max); margin: 0 auto; }
+    .project-hero__badges { display: flex; gap: var(--space-2); margin-bottom: var(--space-4); }
+    .project-hero__badge { background: rgba(255,255,255,0.2); color: #fff; padding: 4px 12px; border-radius: var(--radius-full); font-size: var(--text-xs); font-weight: 700; }
+    .project-hero__title { font-size: var(--text-4xl); font-weight: 800; line-height: 1.2; margin-bottom: var(--space-3); }
+    .project-hero__desc { font-size: var(--text-md); opacity: 0.95; line-height: 1.7; max-width: 760px; margin-bottom: var(--space-6); }
+    .project-hero__stats { display: flex; gap: var(--space-6); flex-wrap: wrap; }
+    .project-hero__stat { background: rgba(255,255,255,0.15); padding: var(--space-3) var(--space-5); border-radius: var(--radius-lg); }
+    .project-hero__stat-value { font-size: var(--text-2xl); font-weight: 800; }
+    .project-hero__stat-label { font-size: var(--text-xs); opacity: 0.85; margin-top: 2px; }
+
+    .project-layout { max-width: var(--layout-content-max); margin: 0 auto; padding: var(--space-8) var(--space-4); display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-6); }
+    .panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-6); margin-bottom: var(--space-5); }
+    .panel h3 { font-size: var(--text-lg); font-weight: 700; margin-bottom: var(--space-4); }
+
+    .stage-flow { display: flex; gap: var(--space-2); margin-bottom: var(--space-4); }
+    .stage-pill { flex: 1; text-align: center; padding: var(--space-3) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: 700; background: var(--color-bg); color: var(--color-text-muted); }
+    .stage-pill.is-done { background: var(--color-secondary-light); color: var(--color-secondary); }
+    .stage-pill.is-current { background: var(--color-status-progress); color: #fff; }
+
+    .timeline { display: flex; flex-direction: column; gap: var(--space-3); border-left: 2px solid var(--color-border); padding-left: var(--space-5); margin-left: var(--space-2); }
+    .timeline-event { position: relative; }
+    .timeline-event::before { content: ''; position: absolute; left: -27px; top: 6px; width: 12px; height: 12px; border-radius: 999px; background: var(--color-primary); }
+    .timeline-event__date { font-size: var(--text-xs); color: var(--color-text-secondary); font-weight: 600; }
+    .timeline-event__title { font-weight: 700; font-size: var(--text-sm); margin-top: 2px; }
+    .timeline-event__desc { font-size: var(--text-xs); color: var(--color-text-secondary); margin-top: 4px; line-height: 1.6; }
+
+    .deliverable-list { display: flex; flex-direction: column; gap: var(--space-2); }
+    .deliverable-item { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); background: var(--color-bg); border-radius: var(--radius-md); }
+    .deliverable-item__icon { width: 36px; height: 36px; background: var(--color-primary-light); color: var(--color-primary); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .deliverable-item__title { font-weight: 600; font-size: var(--text-sm); }
+    .deliverable-item__meta { font-size: var(--text-xs); color: var(--color-text-secondary); margin-top: 2px; }
+
+    .sidebar-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-5); margin-bottom: var(--space-4); }
+    .sidebar-card h4 { font-size: var(--text-md); font-weight: 700; margin-bottom: var(--space-3); }
+    .member-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) 0; }
+    .member-row__avatar { width: 36px; height: 36px; border-radius: 999px; background: var(--color-primary-light); color: var(--color-primary); font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .member-row__info { flex: 1; }
+    .member-row__name { font-weight: 600; font-size: var(--text-sm); }
+    .member-row__role { font-size: var(--text-xs); color: var(--color-text-secondary); }
+
+    @media (max-width: 1024px) { .project-layout { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body data-nav="projects">
+  <div data-slot="header"></div>
+
+  <main class="page">
+    <section class="project-hero">
+      <div class="project-hero__inner">
+        <div class="project-hero__badges">
+          <span class="project-hero__badge">대전 · 보행자 안전</span>
+          <span class="project-hero__badge">5. 처리중</span>
+          <span class="project-hero__badge">2026-05-15 ~ 2026-07-15</span>
+        </div>
+        <h1 class="project-hero__title">대전 보행자 안전 개선 리빙랩</h1>
+        <p class="project-hero__desc">반석동·둔산동·노은동 일대 보행자 안전 의제를 종합 진단하고, 신호등 시간 조정·CCTV 사각지대 해소·음성 안내 시스템 도입 등의 정책 제안을 도출합니다.</p>
+        <div class="project-hero__stats">
+          <div class="project-hero__stat">
+            <div class="project-hero__stat-value">2</div>
+            <div class="project-hero__stat-label">멘토</div>
+          </div>
+          <div class="project-hero__stat">
+            <div class="project-hero__stat-value">5</div>
+            <div class="project-hero__stat-label">학생팀</div>
+          </div>
+          <div class="project-hero__stat">
+            <div class="project-hero__stat-value">3</div>
+            <div class="project-hero__stat-label">관련 의제</div>
+          </div>
+          <div class="project-hero__stat">
+            <div class="project-hero__stat-value">3</div>
+            <div class="project-hero__stat-label">산출물</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="project-layout">
+      <div>
+        <div class="panel">
+          <h3>6단계 진행 상태</h3>
+          <div class="stage-flow">
+            <div class="stage-pill is-done">1. 제보</div>
+            <div class="stage-pill is-done">2. 검토중</div>
+            <div class="stage-pill is-done">3. 공개등록</div>
+            <div class="stage-pill is-done">4. 멘토배정</div>
+            <div class="stage-pill is-current">5. 처리중</div>
+            <div class="stage-pill">6. 해결완료</div>
+          </div>
+          <p style="font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.7;">
+            현재 멘토단과 학생팀이 협력하여 현장 조사 → 신호 측정 → 정책 제안서 작성을 진행하고 있습니다.
+            예상 완료 시점은 <strong>2026년 7월 중순</strong>으로, 정책 반영 후 4단계 성공사례 스토리(문제→과정→결과→정책반영)로 아카이빙됩니다.
+          </p>
+        </div>
+
+        <div class="panel">
+          <h3>활동 타임라인</h3>
+          <div class="timeline">
+            <div class="timeline-event">
+              <div class="timeline-event__date">2026-05-15</div>
+              <div class="timeline-event__title">리빙랩 발족 · 킥오프 미팅</div>
+              <div class="timeline-event__desc">대전시 교통정책과 김멘토·공주대 도시공학과 박교수 + 학생팀 5명 첫 미팅. 현장 조사 일정 협의.</div>
+            </div>
+            <div class="timeline-event">
+              <div class="timeline-event__date">2026-05-18</div>
+              <div class="timeline-event__title">반석동 현장 조사 1차</div>
+              <div class="timeline-event__desc">반석초등학교 인근 횡단보도 4곳 신호 시간 측정. 등하교 시간대 보행자 흐름 카운트.</div>
+            </div>
+            <div class="timeline-event">
+              <div class="timeline-event__date">2026-05-22</div>
+              <div class="timeline-event__title">둔산동·노은동 비교 조사</div>
+              <div class="timeline-event__desc">유사 환경(학교·노인시설 인근) 횡단보도 비교 조사로 표준 시간 산정.</div>
+            </div>
+            <div class="timeline-event">
+              <div class="timeline-event__date">2026-06-05</div>
+              <div class="timeline-event__title">중간 보고서 작성</div>
+              <div class="timeline-event__desc">3개 지역 조사 데이터를 종합한 중간 보고서 제출. 음성 안내 시스템 도입 비용 추정 포함.</div>
+            </div>
+            <div class="timeline-event">
+              <div class="timeline-event__date">2026-06-15 (예정)</div>
+              <div class="timeline-event__title">대전시 교통과 협의 미팅</div>
+              <div class="timeline-event__desc">정책 제안서 사전 협의 및 행정 절차 점검.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>산출물 (3건)</h3>
+          <div class="deliverable-list">
+            <div class="deliverable-item">
+              <div class="deliverable-item__icon">📄</div>
+              <div style="flex:1;">
+                <div class="deliverable-item__title">반석동 횡단보도 신호 시간 측정 데이터</div>
+                <div class="deliverable-item__meta">2026-05-19 · CSV 12KB · 학생팀 작성</div>
+              </div>
+              <button class="btn btn--secondary btn--sm">다운로드</button>
+            </div>
+            <div class="deliverable-item">
+              <div class="deliverable-item__icon">📊</div>
+              <div style="flex:1;">
+                <div class="deliverable-item__title">3개 지역 비교 분석 슬라이드</div>
+                <div class="deliverable-item__meta">2026-05-25 · PDF 3.2MB · 박교수 검토</div>
+              </div>
+              <button class="btn btn--secondary btn--sm">다운로드</button>
+            </div>
+            <div class="deliverable-item">
+              <div class="deliverable-item__icon">📝</div>
+              <div style="flex:1;">
+                <div class="deliverable-item__title">중간 보고서 v1.0</div>
+                <div class="deliverable-item__meta">2026-06-05 · PDF 1.8MB · 멘토 승인</div>
+              </div>
+              <button class="btn btn--secondary btn--sm">다운로드</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside>
+        <div class="sidebar-card">
+          <h4>멘토단 (2명)</h4>
+          <div class="member-row">
+            <div class="member-row__avatar" style="background:#ede9fe;color:#7c3aed;">김</div>
+            <div class="member-row__info">
+              <div class="member-row__name">김멘토</div>
+              <div class="member-row__role">대전시 교통정책과 (관)</div>
+            </div>
+          </div>
+          <div class="member-row">
+            <div class="member-row__avatar" style="background:#dbeafe;color:#1d4ed8;">박</div>
+            <div class="member-row__info">
+              <div class="member-row__name">박교수</div>
+              <div class="member-row__role">공주대 도시공학과 (학)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <h4>학생팀 (5명)</h4>
+          <div class="member-row">
+            <div class="member-row__avatar">최</div>
+            <div class="member-row__info">
+              <div class="member-row__name">최리더</div>
+              <div class="member-row__role">사회혁신가 양성과정 3기</div>
+            </div>
+          </div>
+          <div class="member-row">
+            <div class="member-row__avatar">정</div>
+            <div class="member-row__info">
+              <div class="member-row__name">정학생 외 3명</div>
+              <div class="member-row__role">현장 조사 · 데이터 분석</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <h4>연결된 의제 (3건)</h4>
+          <a href="/mockup/pages/public/issue-detail.html" style="display:block;padding:var(--space-2) 0;font-size:var(--text-sm);color:var(--color-text);text-decoration:none;">· 반석동 횡단보도 신호 시간 부족</a>
+          <a href="#" style="display:block;padding:var(--space-2) 0;font-size:var(--text-sm);color:var(--color-text);text-decoration:none;border-top:1px solid var(--color-border);">· 둔산동 어린이보호구역 표지판</a>
+          <a href="#" style="display:block;padding:var(--space-2) 0;font-size:var(--text-sm);color:var(--color-text);text-decoration:none;border-top:1px solid var(--color-border);">· 유성 노은동 횡단보도 가시성</a>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div data-slot="footer"></div>
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

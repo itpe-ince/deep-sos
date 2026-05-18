@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>성과자료 - USCP</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <link rel="stylesheet" href="/mockup/styles/pages/home.css">
+  <style>
+    .kpi-public-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-5); margin-bottom: var(--space-8); }
+    .kpi-public-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-5); text-align: center; }
+    .kpi-public-card__value { font-size: var(--text-4xl); font-weight: 900; color: var(--color-primary); line-height: 1; }
+    .kpi-public-card__label { font-size: var(--text-sm); color: var(--color-text-secondary); margin-top: var(--space-2); font-weight: 600; }
+    .kpi-public-card__sub { font-size: var(--text-xs); color: var(--color-text-muted); margin-top: 4px; }
+
+    .indicator-row { display: grid; grid-template-columns: 2fr 1fr 1fr 2fr; gap: var(--space-3); padding: var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); margin-bottom: var(--space-2); align-items: center; }
+    .indicator-row__name { font-weight: 600; font-size: var(--text-sm); }
+    .indicator-row__source { font-size: var(--text-xs); color: var(--color-text-secondary); margin-top: 2px; }
+    .indicator-progress { width: 100%; height: 8px; background: var(--color-bg); border-radius: 999px; overflow: hidden; }
+    .indicator-progress__fill { height: 100%; background: linear-gradient(90deg, var(--color-primary), var(--color-secondary)); }
+
+    .notice-row { display: flex; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border); align-items: center; font-size: var(--text-sm); }
+    .notice-row:last-child { border-bottom: none; }
+    .notice-row__title { flex: 1; color: var(--color-text); text-decoration: none; }
+    .notice-row__title:hover { color: var(--color-primary); }
+    .notice-row__date { font-size: var(--text-xs); color: var(--color-text-muted); }
+
+    .resource-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-4); display: flex; gap: var(--space-3); align-items: center; }
+    .resource-card__icon { width: 44px; height: 44px; border-radius: var(--radius-md); background: var(--color-primary-light); color: var(--color-primary); display: flex; align-items: center; justify-content: center; font-size: var(--text-xl); flex-shrink: 0; }
+    .resource-card__title { font-weight: 600; font-size: var(--text-sm); }
+    .resource-card__meta { font-size: var(--text-xs); color: var(--color-text-secondary); margin-top: 2px; }
+  </style>
+</head>
+<body data-nav="performance">
+  <div data-slot="header"></div>
+
+  <main class="page">
+    <section class="hero hero--compact">
+      <div class="hero__inner">
+        <div class="hero__eyebrow">Performance · Notices · Resources</div>
+        <h1 class="hero__title">USCP의 성과지표와<br><em>공지·자료실</em></h1>
+        <p class="hero__desc">글로컬대학 성과지표와 연동된 USCP 운영 성과를 공개하고, 시민·운영자를 위한 공지·자료실을 제공합니다.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section__inner">
+        <div class="section__header">
+          <div class="section__eyebrow">핵심 성과지표</div>
+          <h2 class="section__title">2026년 상반기 누적 성과</h2>
+          <p class="section__desc">글로컬대학 본지정 사업 추진과제 4-3-1 성과지표와 연동된 4대 핵심 지표입니다.</p>
+        </div>
+
+        <div class="kpi-public-grid">
+          <div class="kpi-public-card">
+            <div class="kpi-public-card__value">42</div>
+            <div class="kpi-public-card__label">해결완료 의제 (건)</div>
+            <div class="kpi-public-card__sub">목표 100건의 42%</div>
+          </div>
+          <div class="kpi-public-card">
+            <div class="kpi-public-card__value" style="color:var(--color-secondary);">17</div>
+            <div class="kpi-public-card__label">진행 리빙랩 (개)</div>
+            <div class="kpi-public-card__sub">5개 지역 전체</div>
+          </div>
+          <div class="kpi-public-card">
+            <div class="kpi-public-card__value" style="color:#7c3aed;">1,284</div>
+            <div class="kpi-public-card__label">등록 회원 (명)</div>
+            <div class="kpi-public-card__sub">시민·멘토·학생팀 누적</div>
+          </div>
+          <div class="kpi-public-card">
+            <div class="kpi-public-card__value" style="color:#d97706;">38</div>
+            <div class="kpi-public-card__label">협력기관 (개)</div>
+            <div class="kpi-public-card__sub">지·산·학·관 전체</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--alt">
+      <div class="section__inner">
+        <div class="section__header section__header--row">
+          <div>
+            <div class="section__eyebrow">글로컬대학 성과지표 연동</div>
+            <h2 class="section__title">추진과제 4-3-1 세부 지표</h2>
+          </div>
+          <button class="btn btn--secondary btn--sm">CSV 다운로드</button>
+        </div>
+
+        <div>
+          <div class="indicator-row">
+            <div>
+              <div class="indicator-row__name">시민 참여 의제 건수</div>
+              <div class="indicator-row__source">글로컬대학 본지정 핵심지표 KPI-01</div>
+            </div>
+            <div style="text-align:center;font-size:var(--text-sm);font-weight:700;">58 / 100</div>
+            <div style="font-size:var(--text-xs);color:var(--color-text-secondary);text-align:center;">2026.06 기준</div>
+            <div>
+              <div style="font-size:var(--text-xs);margin-bottom:4px;text-align:right;color:var(--color-text-secondary);">58%</div>
+              <div class="indicator-progress"><div class="indicator-progress__fill" style="width:58%;"></div></div>
+            </div>
+          </div>
+
+          <div class="indicator-row">
+            <div>
+              <div class="indicator-row__name">리빙랩 운영 건수</div>
+              <div class="indicator-row__source">글로컬대학 본지정 핵심지표 KPI-02</div>
+            </div>
+            <div style="text-align:center;font-size:var(--text-sm);font-weight:700;">17 / 30</div>
+            <div style="font-size:var(--text-xs);color:var(--color-text-secondary);text-align:center;">진행+완료</div>
+            <div>
+              <div style="font-size:var(--text-xs);margin-bottom:4px;text-align:right;color:var(--color-text-secondary);">57%</div>
+              <div class="indicator-progress"><div class="indicator-progress__fill" style="width:57%;"></div></div>
+            </div>
+          </div>
+
+          <div class="indicator-row">
+            <div>
+              <div class="indicator-row__name">정책 반영 사례</div>
+              <div class="indicator-row__source">글로컬대학 본지정 핵심지표 KPI-03</div>
+            </div>
+            <div style="text-align:center;font-size:var(--text-sm);font-weight:700;">11 / 20</div>
+            <div style="font-size:var(--text-xs);color:var(--color-text-secondary);text-align:center;">정책 채택</div>
+            <div>
+              <div style="font-size:var(--text-xs);margin-bottom:4px;text-align:right;color:var(--color-text-secondary);">55%</div>
+              <div class="indicator-progress"><div class="indicator-progress__fill" style="width:55%;"></div></div>
+            </div>
+          </div>
+
+          <div class="indicator-row">
+            <div>
+              <div class="indicator-row__name">참여기관 네트워크 확장</div>
+              <div class="indicator-row__source">글로컬대학 본지정 핵심지표 KPI-04</div>
+            </div>
+            <div style="text-align:center;font-size:var(--text-sm);font-weight:700;">38 / 50</div>
+            <div style="font-size:var(--text-xs);color:var(--color-text-secondary);text-align:center;">지·산·학·관</div>
+            <div>
+              <div style="font-size:var(--text-xs);margin-bottom:4px;text-align:right;color:var(--color-text-secondary);">76%</div>
+              <div class="indicator-progress"><div class="indicator-progress__fill" style="width:76%;"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section__inner section__inner--row">
+        <div class="notice-panel">
+          <div class="notice-panel__header">
+            <h3>공지사항</h3>
+            <a href="#" class="btn btn--ghost btn--sm">더보기 →</a>
+          </div>
+          <div>
+            <div class="notice-row">
+              <span class="badge badge--accent">필독</span>
+              <a class="notice-row__title">개인정보처리방침 v2.1 개정 안내 (2026-05-15 적용)</a>
+              <span class="notice-row__date">3일 전</span>
+            </div>
+            <div class="notice-row">
+              <span class="badge">이벤트</span>
+              <a class="notice-row__title">2026 상반기 리빙랩 우수사례 공모전 안내</a>
+              <span class="notice-row__date">1주 전</span>
+            </div>
+            <div class="notice-row">
+              <span class="badge">공지</span>
+              <a class="notice-row__title">공주대-충남대 MOU 체결 안내 (천안캠퍼스 협력 시작)</a>
+              <span class="notice-row__date">2주 전</span>
+            </div>
+            <div class="notice-row">
+              <span class="badge">안내</span>
+              <a class="notice-row__title">USCP 플랫폼 베타 운영 시작 (5개 지역 동시 오픈)</a>
+              <span class="notice-row__date">3주 전</span>
+            </div>
+            <div class="notice-row">
+              <span class="badge">시스템</span>
+              <a class="notice-row__title">이용약관 v1.3 개정 안내 (만 14세 표기 명확화)</a>
+              <span class="notice-row__date">1개월 전</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="sidebar-card" style="margin-bottom:var(--space-4);">
+            <h4 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-3);">자료실 (인기)</h4>
+            <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+              <div class="resource-card">
+                <div class="resource-card__icon">📘</div>
+                <div style="flex:1;">
+                  <div class="resource-card__title">USCP 시민 가이드북</div>
+                  <div class="resource-card__meta">PDF · 4.2MB · 다운로드 384</div>
+                </div>
+              </div>
+              <div class="resource-card">
+                <div class="resource-card__icon">📊</div>
+                <div style="flex:1;">
+                  <div class="resource-card__title">리빙랩 운영 매뉴얼 v2.0</div>
+                  <div class="resource-card__meta">PDF · 2.8MB · 다운로드 217</div>
+                </div>
+              </div>
+              <div class="resource-card">
+                <div class="resource-card__icon">📋</div>
+                <div style="flex:1;">
+                  <div class="resource-card__title">의제 제보 가이드라인</div>
+                  <div class="resource-card__meta">PDF · 1.1MB · 다운로드 192</div>
+                </div>
+              </div>
+            </div>
+            <a href="#" style="display:block;text-align:center;margin-top:var(--space-3);font-size:var(--text-sm);color:var(--color-primary);text-decoration:none;font-weight:600;">전체 자료실 →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-slot="footer"></div>
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

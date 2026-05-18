@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>약관 관리 - USCP 관리자</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    body { background: var(--color-bg); }
+    .admin-shell { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+    .admin-main { padding: var(--space-6); }
+    .layout { display: grid; grid-template-columns: 260px 1fr; gap: var(--space-4); }
+    .panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-5); margin-bottom: var(--space-4); }
+    .term-tab { padding: var(--space-3); background: var(--color-bg); border-radius: var(--radius-md); margin-bottom: var(--space-2); cursor: pointer; }
+    .term-tab.is-active { background: var(--color-primary); color: #fff; }
+    .term-tab__title { font-weight: 700; font-size: var(--text-sm); }
+    .term-tab__meta { font-size: var(--text-xs); opacity: 0.85; margin-top: 2px; }
+    .version-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: var(--space-3); padding: var(--space-3); background: var(--color-bg); border-radius: var(--radius-md); margin-bottom: var(--space-2); align-items: center; font-size: var(--text-sm); }
+    .wysiwyg-toolbar { display: flex; gap: var(--space-2); padding: var(--space-2); background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md) var(--radius-md) 0 0; }
+    .wysiwyg-toolbar button { padding: 4px 8px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-sm); cursor: pointer; font-size: var(--text-xs); }
+  </style>
+</head>
+<body data-admin-nav="terms">
+  <div class="admin-shell">
+    <div data-slot="admin-side"></div>
+    <div>
+      <div data-slot="admin-top"></div>
+      <main class="admin-main">
+        <div style="margin-bottom:var(--space-5);">
+          <h1 style="font-size:var(--text-2xl);font-weight:800;">약관 관리 <span class="badge" style="background:#dbeafe;color:#1d4ed8;margin-left:var(--space-2);font-size:var(--text-xs);">V2.2 신규</span></h1>
+          <p style="font-size:var(--text-sm);color:var(--color-text-secondary);">개인정보처리방침·이용약관·만 14세 안내 등을 WYSIWYG 편집기로 작성하고 버전 관리합니다 (2026-05-07 사전 협의).</p>
+        </div>
+
+        <div class="layout">
+          <div>
+            <div class="panel">
+              <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-3);">약관 종류</h3>
+              <div class="term-tab is-active">
+                <div class="term-tab__title">개인정보처리방침</div>
+                <div class="term-tab__meta">v2.1 · 2026-05-15 적용</div>
+              </div>
+              <div class="term-tab">
+                <div class="term-tab__title">이용약관</div>
+                <div class="term-tab__meta">v1.3 · 2026-04-10 적용</div>
+              </div>
+              <div class="term-tab">
+                <div class="term-tab__title">만 14세 이용 안내</div>
+                <div class="term-tab__meta">v1.0 · 2026-03-01 적용</div>
+              </div>
+              <div class="term-tab">
+                <div class="term-tab__title">광고성 정보 정책</div>
+                <div class="term-tab__meta">v1.0 · 발송 없음 명시</div>
+              </div>
+              <button class="btn btn--ghost btn--sm" style="width:100%;margin-top:var(--space-2);">+ 새 약관 종류</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel">
+              <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-3);">개인정보처리방침 · 버전 이력</h3>
+              <div class="version-row" style="border-left:3px solid var(--color-primary);">
+                <div><strong>v2.1</strong></div>
+                <div>2026-05-15</div>
+                <div>운영자 (관리자)</div>
+                <div><span class="badge" style="background:#d1fae5;color:#047857;">현재 적용</span></div>
+                <div><button class="btn btn--ghost btn--sm">보기</button></div>
+              </div>
+              <div class="version-row">
+                <div>v2.0</div>
+                <div>2026-03-01</div>
+                <div>운영자</div>
+                <div><span class="badge">아카이브</span></div>
+                <div><button class="btn btn--ghost btn--sm">보기</button></div>
+              </div>
+              <div class="version-row">
+                <div>v1.5</div>
+                <div>2025-12-15</div>
+                <div>운영자</div>
+                <div><span class="badge">아카이브</span></div>
+                <div><button class="btn btn--ghost btn--sm">보기</button></div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-3);">새 버전 작성 (WYSIWYG)</h3>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--space-2);margin-bottom:var(--space-3);">
+                <input type="text" placeholder="버전 (v2.2)" style="padding:8px 12px;border:1px solid var(--color-border);border-radius:var(--radius-md);font-size:var(--text-sm);">
+                <input type="date" style="padding:8px 12px;border:1px solid var(--color-border);border-radius:var(--radius-md);font-size:var(--text-sm);">
+                <select style="padding:8px 12px;border:1px solid var(--color-border);border-radius:var(--radius-md);font-size:var(--text-sm);">
+                  <option>적용일 자동 통보 (이메일)</option>
+                  <option>임시저장만</option>
+                </select>
+              </div>
+              <div class="wysiwyg-toolbar">
+                <button><strong>B</strong></button><button><em>I</em></button><button><u>U</u></button>
+                <button>H1</button><button>H2</button><button>· 목록</button><button>1. 번호</button>
+                <button>🔗</button><button>📋 표</button>
+              </div>
+              <textarea style="width:100%;padding:var(--space-3);border:1px solid var(--color-border);border-top:none;border-radius:0 0 var(--radius-md) var(--radius-md);font-family:inherit;font-size:var(--text-sm);min-height:240px;" placeholder="개인정보처리방침 본문 작성 (WYSIWYG · 풀 기능 대비 단순 적용)
+
+1. 개인정보 수집 항목
+2. 이용 목적
+3. 보유 기간
+4. 제3자 제공 (해당 없음)
+5. 처리자 (공주대학교 단독)
+..."></textarea>
+              <div style="margin-top:var(--space-3);padding:var(--space-3);background:#fef3c7;border-left:3px solid var(--color-accent);border-radius:var(--radius-md);font-size:var(--text-xs);color:#92400e;">
+                <strong>안내</strong> · 약관 신규 버전 발행 시 모든 회원에게 이메일이 자동 발송됩니다 (법적 의무). 발송 후 동의 이력이 회원별 프로필에 기록됩니다.
+              </div>
+              <div style="display:flex;justify-content:flex-end;gap:var(--space-2);margin-top:var(--space-3);">
+                <button class="btn btn--secondary">임시저장</button>
+                <button class="btn btn--primary">새 버전 발행 + 전회원 이메일 발송</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

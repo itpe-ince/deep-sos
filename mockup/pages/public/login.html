@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>로그인 · 회원가입 - USCP</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    body { background: linear-gradient(135deg, #eff6ff, #f0fdf4); min-height: 100vh; }
+    .auth-wrap { min-height: calc(100vh - 64px); display: flex; align-items: center; justify-content: center; padding: var(--space-8) var(--space-4); }
+    .auth-card { background: var(--color-surface); border-radius: var(--radius-2xl); box-shadow: var(--shadow-xl); width: 100%; max-width: 460px; padding: var(--space-8); }
+    .auth-header { text-align: center; margin-bottom: var(--space-6); }
+    .auth-header__logo { font-size: var(--text-3xl); font-weight: 900; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: var(--space-2); }
+    .auth-header__subtitle { font-size: var(--text-sm); color: var(--color-text-secondary); }
+
+    .auth-tabs { display: flex; gap: 0; margin-bottom: var(--space-6); border-bottom: 1px solid var(--color-border); }
+    .auth-tab { flex: 1; padding: var(--space-3); background: transparent; border: 0; border-bottom: 2px solid transparent; cursor: pointer; font-weight: 700; font-size: var(--text-base); color: var(--color-text-secondary); }
+    .auth-tab.is-active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
+
+    .form-field { margin-bottom: var(--space-4); }
+    .form-field__label { display: block; font-size: var(--text-sm); font-weight: 600; margin-bottom: 6px; color: var(--color-text); }
+    .form-field__label--required::after { content: ' *'; color: var(--color-danger); }
+    .form-field__input { width: 100%; padding: 12px 14px; border: 1px solid var(--color-border); border-radius: var(--radius-md); font-size: var(--text-sm); transition: all var(--transition-base); }
+    .form-field__input:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+    .form-field__hint { font-size: var(--text-xs); color: var(--color-text-secondary); margin-top: 4px; }
+
+    .consent-box { background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); margin-bottom: var(--space-4); }
+    .consent-row { display: flex; align-items: start; gap: var(--space-2); padding: var(--space-2) 0; }
+    .consent-row input[type="checkbox"] { margin-top: 3px; cursor: pointer; }
+    .consent-row label { flex: 1; font-size: var(--text-sm); color: var(--color-text); cursor: pointer; }
+    .consent-row label strong { color: var(--color-danger); }
+    .consent-row a { color: var(--color-primary); text-decoration: underline; font-size: var(--text-xs); }
+    .consent-row--master { border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-3); margin-bottom: var(--space-2); font-weight: 700; }
+
+    .auth-divider { display: flex; align-items: center; gap: var(--space-3); margin: var(--space-5) 0; color: var(--color-text-muted); font-size: var(--text-xs); }
+    .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--color-border); }
+
+    .auth-options { display: flex; justify-content: space-between; align-items: center; font-size: var(--text-xs); margin-bottom: var(--space-4); }
+    .auth-options a { color: var(--color-primary); text-decoration: none; }
+
+    .auth-notice { padding: var(--space-3); background: #fef3c7; border-left: 3px solid var(--color-accent); border-radius: var(--radius-md); font-size: var(--text-xs); color: #92400e; line-height: 1.6; margin-bottom: var(--space-4); }
+  </style>
+</head>
+<body>
+  <div data-slot="header"></div>
+
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-header__logo">USCP</div>
+        <div class="auth-header__subtitle">5개 지역 시민이 함께하는 사회공헌 플랫폼</div>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab is-active" data-tab="login">로그인</button>
+        <button class="auth-tab" data-tab="signup">회원가입</button>
+      </div>
+
+      <!-- 로그인 폼 -->
+      <form data-form="login">
+        <div class="form-field">
+          <label class="form-field__label">이메일</label>
+          <input type="email" class="form-field__input" placeholder="example@email.com">
+        </div>
+        <div class="form-field">
+          <label class="form-field__label">비밀번호</label>
+          <input type="password" class="form-field__input" placeholder="비밀번호 입력">
+        </div>
+        <div class="auth-options">
+          <label style="display:flex;gap:6px;align-items:center;cursor:pointer;">
+            <input type="checkbox"> 자동 로그인
+          </label>
+          <a href="#">비밀번호 재설정</a>
+        </div>
+        <button type="submit" class="btn btn--primary btn--lg" style="width:100%;">
+          로그인
+        </button>
+
+        <div class="auth-divider">SSO·소셜 로그인은 제공되지 않습니다</div>
+        <div style="text-align:center;font-size:var(--text-xs);color:var(--color-text-secondary);">
+          USCP는 이메일 기반 자체 로그인만 지원합니다.<br>
+          충남대 학생·교수도 별도 회원가입 후 이용 가능합니다.
+        </div>
+      </form>
+
+      <!-- 회원가입 폼 -->
+      <form data-form="signup" style="display:none;">
+        <div class="auth-notice">
+          <strong>USCP 회원가입 안내</strong><br>
+          만 14세 이상만 이용 가능합니다. 광고성 정보 발송은 없으며, 모든 알림은 의제 진행 상황 이메일로만 전달됩니다.
+        </div>
+
+        <div class="form-field">
+          <label class="form-field__label form-field__label--required">이메일</label>
+          <input type="email" class="form-field__input" placeholder="example@email.com">
+          <div class="form-field__hint">의제 진행 상황 알림을 이 이메일로 받습니다.</div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-field__label form-field__label--required">비밀번호</label>
+          <input type="password" class="form-field__input" placeholder="8자 이상, 영문+숫자 조합">
+          <div class="form-field__hint">최소 8자 · 영문+숫자 조합 · 재사용 금지</div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-field__label form-field__label--required">비밀번호 확인</label>
+          <input type="password" class="form-field__input" placeholder="비밀번호 다시 입력">
+        </div>
+
+        <div class="form-field">
+          <label class="form-field__label form-field__label--required">이름</label>
+          <input type="text" class="form-field__input" placeholder="실명 입력">
+        </div>
+
+        <div class="form-field">
+          <label class="form-field__label form-field__label--required">활동 지역</label>
+          <select class="form-field__input">
+            <option value="">지역을 선택해주세요</option>
+            <option>대전</option>
+            <option>공주</option>
+            <option>예산</option>
+            <option>천안</option>
+            <option>세종</option>
+            <option>기타 (선택 없음)</option>
+          </select>
+        </div>
+
+        <div class="consent-box">
+          <div class="consent-row consent-row--master">
+            <input type="checkbox" id="agree-all">
+            <label for="agree-all">모두 동의합니다 (필수 항목 일괄 동의)</label>
+          </div>
+          <div class="consent-row">
+            <input type="checkbox" id="agree-age">
+            <label for="agree-age"><strong>[필수]</strong> 만 14세 이상입니다</label>
+          </div>
+          <div class="consent-row">
+            <input type="checkbox" id="agree-tos">
+            <label for="agree-tos"><strong>[필수]</strong> 이용약관에 동의합니다 <a href="#">[전문 보기]</a></label>
+          </div>
+          <div class="consent-row">
+            <input type="checkbox" id="agree-privacy">
+            <label for="agree-privacy"><strong>[필수]</strong> 개인정보 수집·이용에 동의합니다 <a href="#">[전문 보기]</a></label>
+          </div>
+        </div>
+
+        <div style="font-size:var(--text-xs);color:var(--color-text-secondary);line-height:1.6;margin-bottom:var(--space-4);padding:var(--space-3);background:#f9fafb;border-radius:var(--radius-md);">
+          <strong>안내</strong><br>
+          · 필수 항목에 동의하지 않으면 회원가입이 제한됩니다.<br>
+          · 광고성 정보 발송 동의 항목은 별도 제공하지 않습니다.<br>
+          · 회원가입 완료 후 이메일 인증 절차가 진행됩니다.
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--lg" style="width:100%;">
+          회원가입 신청 → 이메일 인증
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div data-slot="footer"></div>
+
+  <script src="/mockup/scripts/app.js"></script>
+  <script>
+    // 탭 전환
+    document.querySelectorAll('.auth-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('is-active'));
+        tab.classList.add('is-active');
+        const target = tab.dataset.tab;
+        document.querySelectorAll('[data-form]').forEach(f => {
+          f.style.display = f.dataset.form === target ? '' : 'none';
+        });
+      });
+    });
+
+    // URL ?mode=signup 진입 시 회원가입 탭 활성
+    if (new URLSearchParams(location.search).get('mode') === 'signup') {
+      document.querySelector('[data-tab="signup"]').click();
+    }
+
+    // 일괄 동의 체크박스
+    document.getElementById('agree-all').addEventListener('change', (e) => {
+      ['agree-age', 'agree-tos', 'agree-privacy'].forEach(id => {
+        document.getElementById(id).checked = e.target.checked;
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>공지·이벤트·자료실·배너 - USCP 관리자</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    body { background: var(--color-bg); }
+    .admin-shell { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+    .admin-main { padding: var(--space-6); }
+    .panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-5); margin-bottom: var(--space-4); }
+    .tab-bar { display: flex; gap: 0; border-bottom: 1px solid var(--color-border); margin-bottom: var(--space-4); }
+    .tab-bar button { padding: var(--space-3) var(--space-4); background: transparent; border: 0; border-bottom: 2px solid transparent; cursor: pointer; font-weight: 600; font-size: var(--text-sm); color: var(--color-text-secondary); }
+    .tab-bar button.is-active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
+    .data-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+    .data-table th { background: var(--color-bg); padding: var(--space-3); text-align: left; font-weight: 700; font-size: var(--text-xs); }
+    .data-table td { padding: var(--space-3); border-bottom: 1px solid var(--color-border); }
+    .banner-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
+    .banner-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+    .banner-card__preview { height: 140px; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .wysiwyg-toolbar { display: flex; gap: var(--space-2); padding: var(--space-2); background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md) var(--radius-md) 0 0; }
+    .wysiwyg-toolbar button { padding: 4px 8px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-sm); cursor: pointer; font-size: var(--text-xs); }
+  </style>
+</head>
+<body data-admin-nav="cms-banners">
+  <div class="admin-shell">
+    <div data-slot="admin-side"></div>
+    <div>
+      <div data-slot="admin-top"></div>
+      <main class="admin-main">
+        <div style="margin-bottom:var(--space-5);">
+          <h1 style="font-size:var(--text-2xl);font-weight:800;">콘텐츠 관리 (CMS 부분 도입)</h1>
+          <p style="font-size:var(--text-sm);color:var(--color-text-secondary);">공지·이벤트는 WYSIWYG, 자료실은 파일 업로드, 배너는 단순 관리 도구로 운영. 소개 페이지는 정적 HTML이라 별도 편집 도구 없음 (1차 미팅 결정).</p>
+        </div>
+
+        <div class="panel">
+          <div class="tab-bar">
+            <button class="is-active">공지사항 (12)</button>
+            <button>이벤트 (4)</button>
+            <button>자료실 (38)</button>
+            <button>메인 배너 (3)</button>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;margin-bottom:var(--space-3);">
+            <input type="text" placeholder="검색..." style="padding:8px 12px;border:1px solid var(--color-border);border-radius:var(--radius-md);font-size:var(--text-sm);width:280px;">
+            <button class="btn btn--primary">+ 새 공지 작성 (WYSIWYG)</button>
+          </div>
+
+          <table class="data-table">
+            <thead><tr><th>제목</th><th>유형</th><th>작성일</th><th>게시 기간</th><th>조회</th><th>상태</th><th>액션</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>개인정보처리방침 v2.1 개정 안내</strong></td>
+                <td><span class="badge" style="background:#fef3c7;color:#92400e;">필독</span></td>
+                <td>2026-05-13</td>
+                <td>2026-05-13 ~ 상시</td>
+                <td>423</td>
+                <td><span class="badge" style="background:#d1fae5;color:#047857;">공개</span></td>
+                <td><button class="btn btn--ghost btn--sm">수정</button></td>
+              </tr>
+              <tr>
+                <td><strong>2026 상반기 리빙랩 우수사례 공모전</strong></td>
+                <td><span class="badge" style="background:#dbeafe;color:#1d4ed8;">이벤트</span></td>
+                <td>2026-05-09</td>
+                <td>2026-05-09 ~ 06-30</td>
+                <td>287</td>
+                <td><span class="badge" style="background:#d1fae5;color:#047857;">공개</span></td>
+                <td><button class="btn btn--ghost btn--sm">수정</button></td>
+              </tr>
+              <tr>
+                <td><strong>공주대-충남대 MOU 체결 안내</strong></td>
+                <td><span class="badge">공지</span></td>
+                <td>2026-05-02</td>
+                <td>상시</td>
+                <td>512</td>
+                <td><span class="badge" style="background:#d1fae5;color:#047857;">공개</span></td>
+                <td><button class="btn btn--ghost btn--sm">수정</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel">
+          <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-3);">메인 배너 (단순 관리)</h3>
+          <div class="banner-grid">
+            <div class="banner-card">
+              <div class="banner-card__preview">[배너 1] 회원가입 캠페인</div>
+              <div style="padding:var(--space-3);">
+                <div style="font-weight:600;font-size:var(--text-sm);">5개 지역 시민 회원가입 캠페인</div>
+                <div style="font-size:var(--text-xs);color:var(--color-text-secondary);margin-top:4px;">2026-05-01 ~ 06-30 · 게시 중</div>
+                <div style="display:flex;gap:var(--space-2);margin-top:var(--space-3);">
+                  <button class="btn btn--secondary btn--sm">교체</button>
+                  <button class="btn btn--ghost btn--sm">비공개</button>
+                </div>
+              </div>
+            </div>
+            <div class="banner-card">
+              <div class="banner-card__preview" style="background:linear-gradient(135deg,var(--color-secondary),#047857);">[배너 2] 우수사례 공모전</div>
+              <div style="padding:var(--space-3);">
+                <div style="font-weight:600;font-size:var(--text-sm);">2026 상반기 리빙랩 공모전</div>
+                <div style="font-size:var(--text-xs);color:var(--color-text-secondary);margin-top:4px;">2026-05-09 ~ 06-30 · 게시 중</div>
+                <div style="display:flex;gap:var(--space-2);margin-top:var(--space-3);">
+                  <button class="btn btn--secondary btn--sm">교체</button>
+                  <button class="btn btn--ghost btn--sm">비공개</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn--primary btn--sm" style="margin-top:var(--space-3);">+ 새 배너 등록</button>
+        </div>
+
+        <div class="panel">
+          <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-3);">새 공지 작성 (WYSIWYG)</h3>
+          <input type="text" placeholder="공지 제목" style="width:100%;padding:10px 14px;border:1px solid var(--color-border);border-radius:var(--radius-md);font-size:var(--text-base);margin-bottom:var(--space-3);">
+          <div class="wysiwyg-toolbar">
+            <button><strong>B</strong></button>
+            <button><em>I</em></button>
+            <button><u>U</u></button>
+            <button>H1</button>
+            <button>H2</button>
+            <button>· 목록</button>
+            <button>1. 번호</button>
+            <button>🔗 링크</button>
+            <button>📷 이미지</button>
+          </div>
+          <textarea style="width:100%;padding:var(--space-3);border:1px solid var(--color-border);border-top:none;border-radius:0 0 var(--radius-md) var(--radius-md);font-family:inherit;font-size:var(--text-sm);min-height:200px;resize:vertical;" placeholder="공지 내용을 작성하세요 (WYSIWYG 편집기 · 풀 기능 대비 단순 적용)"></textarea>
+          <div style="display:flex;justify-content:flex-end;gap:var(--space-2);margin-top:var(--space-3);">
+            <button class="btn btn--secondary btn--sm">임시저장</button>
+            <button class="btn btn--primary btn--sm">발행</button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>내 활동 - USCP</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <link rel="stylesheet" href="/mockup/styles/pages/home.css">
+  <style>
+    .user-layout { display: grid; grid-template-columns: 240px 1fr; gap: var(--space-6); max-width: var(--layout-content-max); margin: 0 auto; padding: var(--space-6) var(--space-4); }
+    .panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-6); margin-bottom: var(--space-5); }
+    .panel h3 { font-size: var(--text-lg); font-weight: 700; margin-bottom: var(--space-4); }
+    .activity-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: var(--space-3); padding: var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius-md); margin-bottom: var(--space-2); align-items: center; }
+    .activity-row__title { font-weight: 600; font-size: var(--text-sm); cursor: pointer; }
+    .activity-row__title:hover { color: var(--color-primary); }
+    .activity-row__meta { font-size: var(--text-xs); color: var(--color-text-secondary); margin-top: 2px; }
+    .notification-row { display: flex; gap: var(--space-3); padding: var(--space-3); border-bottom: 1px solid var(--color-border); align-items: center; }
+    .notification-row__icon { width: 36px; height: 36px; border-radius: var(--radius-md); background: var(--color-primary-light); color: var(--color-primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .notification-row__content { flex: 1; }
+    .notification-row__title { font-weight: 600; font-size: var(--text-sm); }
+    .notification-row__time { font-size: var(--text-xs); color: var(--color-text-muted); }
+    .stat-mini { padding: var(--space-3); background: var(--color-bg); border-radius: var(--radius-md); text-align: center; }
+    .stat-mini__value { font-size: var(--text-2xl); font-weight: 800; color: var(--color-primary); }
+    .stat-mini__label { font-size: var(--text-xs); color: var(--color-text-secondary); margin-top: 2px; }
+    @media (max-width: 1024px) { .user-layout { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body data-user-nav="my-activities">
+  <div data-slot="header-user"></div>
+
+  <div class="user-layout">
+    <div data-slot="user-lnb"></div>
+
+    <main>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-5);">
+        <div>
+          <h1 style="font-size:var(--text-2xl);font-weight:800;margin-bottom:4px;">내 활동</h1>
+          <p style="font-size:var(--text-sm);color:var(--color-text-secondary);">제보 진행 상황과 이메일 알림 이력을 확인합니다.</p>
+        </div>
+        <a href="/mockup/pages/user/issue-new.html" class="btn btn--primary">
+          + 새 문제 제보
+        </a>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-3);margin-bottom:var(--space-5);">
+        <div class="stat-mini"><div class="stat-mini__value">3</div><div class="stat-mini__label">진행 중 의제</div></div>
+        <div class="stat-mini"><div class="stat-mini__value" style="color:var(--color-secondary);">1</div><div class="stat-mini__label">해결완료</div></div>
+        <div class="stat-mini"><div class="stat-mini__value" style="color:#7c3aed;">12</div><div class="stat-mini__label">공감투표 수신</div></div>
+        <div class="stat-mini"><div class="stat-mini__value" style="color:#d97706;">8</div><div class="stat-mini__label">받은 이메일</div></div>
+      </div>
+
+      <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-4);">
+          <h3>내 제보 의제</h3>
+          <div style="display:flex;gap:var(--space-2);">
+            <span style="padding:6px 12px;background:var(--color-primary);color:#fff;border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:700;">전체 (4)</span>
+            <span style="padding:6px 12px;background:var(--color-bg);color:var(--color-text-secondary);border-radius:var(--radius-full);font-size:var(--text-xs);border:1px solid var(--color-border);">진행 중 (3)</span>
+            <span style="padding:6px 12px;background:var(--color-bg);color:var(--color-text-secondary);border-radius:var(--radius-full);font-size:var(--text-xs);border:1px solid var(--color-border);">완료 (1)</span>
+          </div>
+        </div>
+
+        <div class="activity-row">
+          <div>
+            <div class="activity-row__title">반석동 인근 횡단보도 신호등 시간 부족</div>
+            <div class="activity-row__meta">대전 · 교통·보행 · 제보 2일 전</div>
+          </div>
+          <span class="badge" style="background:#fef3c7;color:#92400e;">5. 처리중</span>
+          <div style="font-size:var(--text-xs);color:var(--color-text-secondary);">공감 42 · 댓글 8</div>
+          <a href="/mockup/pages/public/issue-detail.html" style="font-size:var(--text-xs);color:var(--color-primary);text-decoration:none;">상세 보기 →</a>
+        </div>
+
+        <div class="activity-row">
+          <div>
+            <div class="activity-row__title">대전 둔산동 어린이보호구역 표지판 부족</div>
+            <div class="activity-row__meta">대전 · 교통·보행 · 제보 1주 전</div>
+          </div>
+          <span class="badge" style="background:#cffafe;color:#0e7490;">3. 공개등록</span>
+          <div style="font-size:var(--text-xs);color:var(--color-text-secondary);">공감 18 · 댓글 3</div>
+          <a href="#" style="font-size:var(--text-xs);color:var(--color-primary);text-decoration:none;">상세 보기 →</a>
+        </div>
+
+        <div class="activity-row">
+          <div>
+            <div class="activity-row__title">유성 노은동 횡단보도 가시성 개선 제안</div>
+            <div class="activity-row__meta">대전 · 교통·보행 · 제보 2주 전</div>
+          </div>
+          <span class="badge" style="background:#dbeafe;color:#1d4ed8;">2. 검토중</span>
+          <div style="font-size:var(--text-xs);color:var(--color-text-secondary);">공감 7 · 댓글 0</div>
+          <a href="#" style="font-size:var(--text-xs);color:var(--color-primary);text-decoration:none;">상세 보기 →</a>
+        </div>
+
+        <div class="activity-row" style="opacity:0.7;">
+          <div>
+            <div class="activity-row__title">대덕구 송촌동 보행자 안전 종합 점검</div>
+            <div class="activity-row__meta">대전 · 교통·보행 · 제보 2개월 전</div>
+          </div>
+          <span class="badge" style="background:#d1fae5;color:#047857;">6. 해결완료</span>
+          <div style="font-size:var(--text-xs);color:var(--color-text-secondary);">공감 56 · 댓글 12</div>
+          <a href="#" style="font-size:var(--text-xs);color:var(--color-primary);text-decoration:none;">성공사례 보기 →</a>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>이메일 알림 이력 (최근 8건)</h3>
+        <div>
+          <div class="notification-row">
+            <div class="notification-row__icon">📧</div>
+            <div class="notification-row__content">
+              <div class="notification-row__title">"반석동 횡단보도" 의제가 <strong>5. 처리중</strong>으로 전환되었습니다</div>
+              <div style="font-size:var(--text-xs);color:var(--color-text-secondary);margin-top:2px;">대전시 교통정책과 김멘토 + 공주대 도시공학과 학생팀이 배정되었습니다.</div>
+            </div>
+            <div class="notification-row__time">2일 전</div>
+          </div>
+          <div class="notification-row">
+            <div class="notification-row__icon">📧</div>
+            <div class="notification-row__content">
+              <div class="notification-row__title">"둔산동 어린이보호구역" 의제가 <strong>3. 공개등록</strong>으로 전환되었습니다</div>
+              <div style="font-size:var(--text-xs);color:var(--color-text-secondary);margin-top:2px;">광장에 공개되어 공감투표·댓글이 활성화되었습니다.</div>
+            </div>
+            <div class="notification-row__time">5일 전</div>
+          </div>
+          <div class="notification-row">
+            <div class="notification-row__icon">📧</div>
+            <div class="notification-row__content">
+              <div class="notification-row__title">"유성 노은동" 의제가 <strong>2. 검토중</strong>으로 전환되었습니다</div>
+              <div style="font-size:var(--text-xs);color:var(--color-text-secondary);margin-top:2px;">지역사회특화센터 운영자가 게이트키핑 중입니다.</div>
+            </div>
+            <div class="notification-row__time">1주 전</div>
+          </div>
+          <div class="notification-row">
+            <div class="notification-row__icon">📧</div>
+            <div class="notification-row__content">
+              <div class="notification-row__title">"대덕구 송촌동" 의제가 <strong>6. 해결완료</strong>되었습니다</div>
+              <div style="font-size:var(--text-xs);color:var(--color-text-secondary);margin-top:2px;">성공사례 4단계 스토리가 작성되었습니다.</div>
+            </div>
+            <div class="notification-row__time">3주 전</div>
+          </div>
+          <div class="notification-row">
+            <div class="notification-row__icon">📧</div>
+            <div class="notification-row__content">
+              <div class="notification-row__title">개인정보처리방침 v2.1 개정 안내</div>
+              <div style="font-size:var(--text-xs);color:var(--color-text-secondary);margin-top:2px;">2026-05-15부터 신규 약관이 적용됩니다.</div>
+            </div>
+            <div class="notification-row__time">3일 전</div>
+          </div>
+        </div>
+        <div style="margin-top:var(--space-3);font-size:var(--text-xs);color:var(--color-text-muted);text-align:center;">
+          이메일 알림 이력은 1년간 보관됩니다. 광고성 정보는 발송되지 않습니다.
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

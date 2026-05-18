@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>게이트키핑 처리 - USCP 관리자</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    body { background: var(--color-bg); }
+    .admin-shell { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+    .admin-main { padding: var(--space-6); }
+    .layout { display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-4); }
+    .panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-5); margin-bottom: var(--space-4); }
+    .stage-flow { display: flex; gap: var(--space-2); margin-bottom: var(--space-3); }
+    .stage-pill { flex: 1; padding: var(--space-2); text-align: center; border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: 700; background: var(--color-bg); color: var(--color-text-muted); cursor: pointer; }
+    .stage-pill.is-done { background: var(--color-secondary-light); color: var(--color-secondary); }
+    .stage-pill.is-current { background: var(--color-status-progress); color: #fff; }
+    .form-field { margin-bottom: var(--space-4); }
+    .form-field label { display: block; font-weight: 600; font-size: var(--text-sm); margin-bottom: 6px; }
+    .form-field textarea, .form-field input, .form-field select { width: 100%; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-md); font-family: inherit; font-size: var(--text-sm); }
+    .history-row { padding: var(--space-3); border-left: 2px solid var(--color-border); margin-bottom: var(--space-2); }
+    .history-row__time { font-size: var(--text-xs); color: var(--color-text-secondary); }
+    .history-row__action { font-weight: 600; font-size: var(--text-sm); margin: 2px 0; }
+    .history-row__detail { font-size: var(--text-xs); color: var(--color-text-secondary); }
+  </style>
+</head>
+<body data-admin-nav="issues">
+  <div class="admin-shell">
+    <div data-slot="admin-side"></div>
+    <div>
+      <div data-slot="admin-top"></div>
+      <main class="admin-main">
+        <div style="margin-bottom:var(--space-4);font-size:var(--text-xs);color:var(--color-text-secondary);">
+          <a href="/mockup/pages/admin/issues.html" style="color:var(--color-primary);">게이트키핑</a> / 의제 #2026-058 / 검토중
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:var(--space-5);">
+          <div>
+            <h1 style="font-size:var(--text-2xl);font-weight:800;margin-bottom:4px;">반석동 인근 횡단보도 신호등 시간 부족</h1>
+            <div style="display:flex;gap:var(--space-2);">
+              <span class="badge" style="background:#dbeafe;color:#1d4ed8;">대전 · 반석동</span>
+              <span class="badge" style="background:#f3f4f6;color:#374151;">교통·보행</span>
+              <span class="badge" style="background:#fef3c7;color:#92400e;">5. 처리중</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:var(--space-2);">
+            <button class="btn btn--secondary btn--sm">제보자 연락</button>
+            <button class="btn btn--secondary btn--sm">감사 로그</button>
+          </div>
+        </div>
+
+        <div class="layout">
+          <div>
+            <div class="panel">
+              <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-3);">의제 진행 (6단계)</h3>
+              <div class="stage-flow">
+                <div class="stage-pill is-done">1. 제보</div>
+                <div class="stage-pill is-done">2. 검토중</div>
+                <div class="stage-pill is-done">3. 공개등록</div>
+                <div class="stage-pill is-done">4. 멘토배정</div>
+                <div class="stage-pill is-current">5. 처리중</div>
+                <div class="stage-pill">6. 해결완료</div>
+              </div>
+              <p style="font-size:var(--text-xs);color:var(--color-text-secondary);">현재 단계: 리빙랩 처리중 · 단계 전환 시 제보자에게 이메일 자동 발송</p>
+            </div>
+
+            <div class="panel">
+              <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-3);">제보 본문</h3>
+              <p style="font-size:var(--text-sm);line-height:1.7;">대전광역시 유성구 반석동 반석초등학교 인근 횡단보도의 신호등 시간이 너무 짧아 노인과 어린이 보행자가 횡단을 완료하지 못하는 경우가 빈번합니다. 녹색 신호 12초+점멸 5초로 25m 횡단보도에 부족합니다.</p>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-2);margin-top:var(--space-3);">
+                <div style="aspect-ratio:4/3;background:linear-gradient(135deg,#e5e7eb,#d1d5db);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;color:var(--color-text-muted);font-size:var(--text-xs);">사진 1</div>
+                <div style="aspect-ratio:4/3;background:linear-gradient(135deg,#e5e7eb,#d1d5db);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;color:var(--color-text-muted);font-size:var(--text-xs);">사진 2</div>
+                <div style="aspect-ratio:4/3;background:linear-gradient(135deg,#e5e7eb,#d1d5db);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;color:var(--color-text-muted);font-size:var(--text-xs);">사진 3</div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-3);">게이트키핑 의견 · 단계 전환</h3>
+              <div class="form-field">
+                <label>현재 단계 → 다음 단계</label>
+                <select>
+                  <option>5. 처리중 (유지)</option>
+                  <option>6. 해결완료로 전환</option>
+                  <option>4. 멘토배정으로 되돌리기</option>
+                  <option>반려 처리</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label>운영자 검토 의견 (감사 로그 기록)</label>
+                <textarea rows="4" placeholder="검토 사유·정책 연계 가능성·연결된 리빙랩 등을 기록합니다.">현장 확인 완료. 대전시 교통정책과와 협의 시작. 5월 말까지 신호 측정 및 정책 제안서 작성 예정.</textarea>
+              </div>
+              <div class="form-field">
+                <label><input type="checkbox" checked> 단계 전환 시 제보자에게 이메일 자동 발송 (필수)</label>
+              </div>
+              <div style="display:flex;gap:var(--space-2);justify-content:flex-end;">
+                <button class="btn btn--secondary">임시저장</button>
+                <button class="btn btn--primary">단계 전환 + 이메일 발송</button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel">
+              <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-3);">제보자 정보</h3>
+              <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-3);">
+                <div style="width:48px;height:48px;border-radius:999px;background:var(--color-primary-light);color:var(--color-primary);display:flex;align-items:center;justify-content:center;font-weight:800;">김</div>
+                <div>
+                  <div style="font-weight:700;font-size:var(--text-sm);">김시민</div>
+                  <div style="font-size:var(--text-xs);color:var(--color-text-secondary);">kimcitizen@email.com · 대전</div>
+                </div>
+              </div>
+              <div style="font-size:var(--text-xs);color:var(--color-text-secondary);line-height:1.7;">
+                · 가입일: 2026-03-12<br>
+                · 총 제보 4건 · 해결 1건<br>
+                · 약관 동의: v2.1 / v1.3 (만 14세 이상)
+              </div>
+            </div>
+
+            <div class="panel">
+              <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-3);">연결 리빙랩</h3>
+              <a href="/mockup/pages/admin/project-detail.html" style="display:block;padding:var(--space-3);background:var(--color-bg);border-radius:var(--radius-md);text-decoration:none;color:var(--color-text);">
+                <div style="font-size:var(--text-xs);color:var(--color-text-secondary);">대전 · 5. 처리중</div>
+                <div style="font-weight:700;font-size:var(--text-sm);margin-top:2px;">대전 보행자 안전 개선 리빙랩</div>
+                <div style="font-size:var(--text-xs);color:var(--color-text-muted);margin-top:4px;">멘토 2명 · 학생팀 5명</div>
+              </a>
+            </div>
+
+            <div class="panel">
+              <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-3);">처리 이력</h3>
+              <div class="history-row" style="border-color:var(--color-status-progress);">
+                <div class="history-row__time">2026-05-16 ·  지금</div>
+                <div class="history-row__action">5. 처리중 (대기)</div>
+                <div class="history-row__detail">멘토단·학생팀 활동 진행</div>
+              </div>
+              <div class="history-row" style="border-color:var(--color-status-assigned);">
+                <div class="history-row__time">2026-05-15 16:20</div>
+                <div class="history-row__action">4. 멘토배정 → 5. 처리중</div>
+                <div class="history-row__detail">대전 보행자 안전 리빙랩 발족 · 이메일 발송됨</div>
+              </div>
+              <div class="history-row" style="border-color:var(--color-status-registered);">
+                <div class="history-row__time">2026-05-15 10:00</div>
+                <div class="history-row__action">3. 공개등록 → 4. 멘토배정</div>
+                <div class="history-row__detail">김멘토(대전시) + 박교수(공주대) + 학생팀 5명 배정</div>
+              </div>
+              <div class="history-row" style="border-color:var(--color-status-reviewing);">
+                <div class="history-row__time">2026-05-14 14:30</div>
+                <div class="history-row__action">2. 검토중 → 3. 공개등록</div>
+                <div class="history-row__detail">광장 공개 승인 · 이메일 발송됨</div>
+              </div>
+              <div class="history-row">
+                <div class="history-row__time">2026-05-14 09:23</div>
+                <div class="history-row__action">제보 등록</div>
+                <div class="history-row__detail">김시민 회원 (대전)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

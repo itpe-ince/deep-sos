@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 대시보드 - USCP</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    body { background: var(--color-bg); }
+    .admin-shell { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+    .admin-main { padding: var(--space-6); overflow-x: auto; }
+    .panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-5); margin-bottom: var(--space-4); }
+    .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); margin-bottom: var(--space-4); }
+    .stat-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-4); }
+    .stat-card__label { font-size: var(--text-xs); color: var(--color-text-secondary); font-weight: 600; }
+    .stat-card__value { font-size: var(--text-3xl); font-weight: 800; margin-top: 6px; }
+    .stat-card__delta { font-size: var(--text-xs); color: var(--color-secondary); margin-top: 4px; font-weight: 600; }
+    .stat-card__delta--down { color: var(--color-danger); }
+    .stage-flow { display: flex; gap: var(--space-2); }
+    .stage-pill { flex: 1; padding: var(--space-3) var(--space-2); border-radius: var(--radius-md); text-align: center; font-weight: 700; font-size: var(--text-xs); color: #fff; }
+    .pending-row { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: var(--space-3); padding: var(--space-3); background: var(--color-bg); border-radius: var(--radius-md); margin-bottom: var(--space-2); align-items: center; }
+    .pending-row__title { font-weight: 600; font-size: var(--text-sm); cursor: pointer; }
+    .pending-row__meta { font-size: var(--text-xs); color: var(--color-text-secondary); margin-top: 2px; }
+    .chart-bar-row { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2); }
+    .chart-bar-row__label { width: 80px; font-size: var(--text-xs); }
+    .chart-bar-row__bar { flex: 1; height: 24px; background: var(--color-bg); border-radius: var(--radius-md); overflow: hidden; position: relative; }
+    .chart-bar-row__fill { height: 100%; display: flex; align-items: center; padding: 0 8px; color: #fff; font-weight: 700; font-size: var(--text-xs); }
+    .chart-bar-row__value { width: 50px; text-align: right; font-size: var(--text-sm); font-weight: 700; }
+  </style>
+</head>
+<body data-admin-nav="dashboard">
+  <div class="admin-shell">
+    <div data-slot="admin-side"></div>
+    <div>
+      <div data-slot="admin-top"></div>
+      <main class="admin-main">
+        <div style="margin-bottom:var(--space-5);">
+          <h1 style="font-size:var(--text-2xl);font-weight:800;">통합 대시보드</h1>
+          <p style="font-size:var(--text-sm);color:var(--color-text-secondary);">2026-05-16 · 5개 지역 동시 운영 · 일평균 트래픽 78명</p>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-card__label">전체 의제</div>
+            <div class="stat-card__value">58</div>
+            <div class="stat-card__delta">+12 (이번 달)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__label">처리 대기 (게이트키핑)</div>
+            <div class="stat-card__value" style="color:var(--color-danger);">7</div>
+            <div class="stat-card__delta stat-card__delta--down">SLA 임박 2건</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__label">진행 중 리빙랩</div>
+            <div class="stat-card__value">17</div>
+            <div class="stat-card__delta">5개 지역 분산</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__label">해결완료</div>
+            <div class="stat-card__value" style="color:var(--color-secondary);">42</div>
+            <div class="stat-card__delta">+8 (이번 달)</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-4);">6단계 의제 분포</h3>
+          <div class="stage-flow">
+            <div class="stage-pill" style="background:var(--color-status-submitted);">1. 제보<br><strong style="font-size:var(--text-md);">7</strong></div>
+            <div class="stage-pill" style="background:var(--color-status-reviewing);">2. 검토중<br><strong style="font-size:var(--text-md);">5</strong></div>
+            <div class="stage-pill" style="background:var(--color-status-registered);">3. 공개등록<br><strong style="font-size:var(--text-md);">9</strong></div>
+            <div class="stage-pill" style="background:var(--color-status-assigned);">4. 멘토배정<br><strong style="font-size:var(--text-md);">8</strong></div>
+            <div class="stage-pill" style="background:var(--color-status-progress);">5. 처리중<br><strong style="font-size:var(--text-md);">11</strong></div>
+            <div class="stage-pill" style="background:var(--color-status-resolved);">6. 해결완료<br><strong style="font-size:var(--text-md);">18</strong></div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:var(--space-4);">
+          <div class="panel">
+            <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-4);">처리 대기 의제 (즉시 검토 필요)</h3>
+            <div class="pending-row">
+              <div>
+                <div class="pending-row__title">공주 시내버스 노선 부족 (산성동·중학동)</div>
+                <div class="pending-row__meta">박시민 · 오늘 09:23 제보</div>
+              </div>
+              <span class="badge" style="background:#d1fae5;color:#047857;">공주</span>
+              <span style="font-size:var(--text-xs);color:var(--color-danger);font-weight:600;">SLA 6시간 남음</span>
+              <a href="/mockup/pages/admin/issue-detail.html" class="btn btn--primary btn--sm">검토 시작</a>
+            </div>
+            <div class="pending-row">
+              <div>
+                <div class="pending-row__title">예산 빈집 정비 의제</div>
+                <div class="pending-row__meta">김시민 · 어제 16:45 제보</div>
+              </div>
+              <span class="badge" style="background:#ede9fe;color:#7c3aed;">예산</span>
+              <span style="font-size:var(--text-xs);color:var(--color-text-secondary);">SLA 18시간</span>
+              <a href="#" class="btn btn--secondary btn--sm">검토</a>
+            </div>
+            <div class="pending-row">
+              <div>
+                <div class="pending-row__title">세종 어진동 자전거 보관소 신설</div>
+                <div class="pending-row__meta">최시민 · 2일 전</div>
+              </div>
+              <span class="badge" style="background:#fed7aa;color:#9a3412;">세종</span>
+              <span style="font-size:var(--text-xs);color:var(--color-text-secondary);">SLA 36시간</span>
+              <a href="#" class="btn btn--secondary btn--sm">검토</a>
+            </div>
+          </div>
+          <div class="panel">
+            <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-4);">지역별 의제 분포</h3>
+            <div class="chart-bar-row">
+              <div class="chart-bar-row__label">대전</div>
+              <div class="chart-bar-row__bar"><div class="chart-bar-row__fill" style="width:60%;background:var(--color-region-dj);">12</div></div>
+              <div class="chart-bar-row__value">20.7%</div>
+            </div>
+            <div class="chart-bar-row">
+              <div class="chart-bar-row__label">공주</div>
+              <div class="chart-bar-row__bar"><div class="chart-bar-row__fill" style="width:90%;background:var(--color-region-gj);">18</div></div>
+              <div class="chart-bar-row__value">31.0%</div>
+            </div>
+            <div class="chart-bar-row">
+              <div class="chart-bar-row__label">예산</div>
+              <div class="chart-bar-row__bar"><div class="chart-bar-row__fill" style="width:40%;background:var(--color-region-ys);">8</div></div>
+              <div class="chart-bar-row__value">13.8%</div>
+            </div>
+            <div class="chart-bar-row">
+              <div class="chart-bar-row__label">천안</div>
+              <div class="chart-bar-row__bar"><div class="chart-bar-row__fill" style="width:45%;background:var(--color-region-ca);">9</div></div>
+              <div class="chart-bar-row__value">15.5%</div>
+            </div>
+            <div class="chart-bar-row">
+              <div class="chart-bar-row__label">세종</div>
+              <div class="chart-bar-row__bar"><div class="chart-bar-row__fill" style="width:55%;background:var(--color-region-sj);">11</div></div>
+              <div class="chart-bar-row__value">19.0%</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+          <div class="panel">
+            <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-3);">월별 의제 추이</h3>
+            <div style="height:160px;background:linear-gradient(180deg,var(--color-primary-light),transparent);border-radius:var(--radius-md);display:flex;align-items:end;justify-content:space-around;padding:var(--space-3);">
+              <div style="width:30px;height:40%;background:var(--color-primary);border-radius:4px;"></div>
+              <div style="width:30px;height:55%;background:var(--color-primary);border-radius:4px;"></div>
+              <div style="width:30px;height:70%;background:var(--color-primary);border-radius:4px;"></div>
+              <div style="width:30px;height:60%;background:var(--color-primary);border-radius:4px;"></div>
+              <div style="width:30px;height:85%;background:var(--color-primary);border-radius:4px;"></div>
+              <div style="width:30px;height:90%;background:var(--color-primary);border-radius:4px;"></div>
+            </div>
+            <div style="display:flex;justify-content:space-around;margin-top:var(--space-2);font-size:var(--text-xs);color:var(--color-text-secondary);">
+              <span>12월</span><span>1월</span><span>2월</span><span>3월</span><span>4월</span><span>5월</span>
+            </div>
+          </div>
+          <div class="panel">
+            <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-3);">멘토단·학생팀 현황</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-2);">
+              <div style="padding:var(--space-3);background:var(--color-bg);border-radius:var(--radius-md);">
+                <div style="font-size:var(--text-xs);color:var(--color-text-secondary);">활동 멘토</div>
+                <div style="font-size:var(--text-2xl);font-weight:800;color:#7c3aed;">24</div>
+                <div style="font-size:var(--text-xs);color:var(--color-text-muted);">지자체 8 · 기업 6 · 출연연 10</div>
+              </div>
+              <div style="padding:var(--space-3);background:var(--color-bg);border-radius:var(--radius-md);">
+                <div style="font-size:var(--text-xs);color:var(--color-text-secondary);">활동 학생팀</div>
+                <div style="font-size:var(--text-2xl);font-weight:800;color:#047857;">31</div>
+                <div style="font-size:var(--text-xs);color:var(--color-text-muted);">사회혁신가 양성과정 2·3기</div>
+              </div>
+            </div>
+            <a href="/mockup/pages/admin/mentors.html" style="display:block;text-align:center;margin-top:var(--space-3);font-size:var(--text-sm);color:var(--color-primary);text-decoration:none;font-weight:600;">멘토단 운영 →</a>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

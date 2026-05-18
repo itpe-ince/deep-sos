@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>감사 로그 - USCP 관리자</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    body { background: var(--color-bg); }
+    .admin-shell { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+    .admin-main { padding: var(--space-6); }
+    .panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-5); margin-bottom: var(--space-4); }
+    .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); margin-bottom: var(--space-4); }
+    .stat-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-4); }
+    .filter-row { display: flex; gap: var(--space-2); margin-bottom: var(--space-3); flex-wrap: wrap; }
+    .filter-row select, .filter-row input { padding: 8px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-md); font-size: var(--text-sm); }
+    .data-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+    .data-table th { background: var(--color-bg); padding: var(--space-3); text-align: left; font-weight: 700; font-size: var(--text-xs); }
+    .data-table td { padding: var(--space-3); border-bottom: 1px solid var(--color-border); font-family: var(--font-mono); font-size: var(--text-xs); }
+    .data-table td.normal { font-family: var(--font-sans); font-size: var(--text-sm); }
+  </style>
+</head>
+<body data-admin-nav="audit">
+  <div class="admin-shell">
+    <div data-slot="admin-side"></div>
+    <div>
+      <div data-slot="admin-top"></div>
+      <main class="admin-main">
+        <div style="display:flex;justify-content:space-between;margin-bottom:var(--space-5);">
+          <div>
+            <h1 style="font-size:var(--text-2xl);font-weight:800;">감사 로그 <span class="badge" style="background:#dbeafe;color:#1d4ed8;margin-left:var(--space-2);font-size:var(--text-xs);">V2.2 신규</span></h1>
+            <p style="font-size:var(--text-sm);color:var(--color-text-secondary);">게이트키핑·로그인·개인정보 조회·약관 발행 등 시스템 활동을 <strong>1년 이상 보관</strong>합니다 (2026-05-07 사전 협의).</p>
+          </div>
+          <div style="display:flex;gap:var(--space-2);">
+            <button class="btn btn--secondary">CSV 다운로드</button>
+            <button class="btn btn--secondary">보관 정책 설정</button>
+          </div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card"><div style="font-size:var(--text-xs);color:var(--color-text-secondary);">오늘 발생 로그</div><div style="font-size:var(--text-2xl);font-weight:800;">128</div></div>
+          <div class="stat-card"><div style="font-size:var(--text-xs);color:var(--color-text-secondary);">게이트키핑 활동</div><div style="font-size:var(--text-2xl);font-weight:800;color:var(--color-primary);">42</div></div>
+          <div class="stat-card"><div style="font-size:var(--text-xs);color:var(--color-text-secondary);">로그인 시도</div><div style="font-size:var(--text-2xl);font-weight:800;color:var(--color-secondary);">76</div></div>
+          <div class="stat-card"><div style="font-size:var(--text-xs);color:var(--color-text-secondary);">개인정보 조회</div><div style="font-size:var(--text-2xl);font-weight:800;color:#7c3aed;">10</div></div>
+        </div>
+
+        <div class="panel">
+          <div class="filter-row">
+            <select>
+              <option>전체 카테고리</option>
+              <option>게이트키핑</option>
+              <option>로그인</option>
+              <option>개인정보 조회</option>
+              <option>약관 발행</option>
+              <option>회원 활동</option>
+              <option>시스템 변경</option>
+            </select>
+            <select>
+              <option>전체 사용자</option>
+              <option>운영자</option>
+              <option>시민 회원</option>
+              <option>멘토</option>
+            </select>
+            <input type="date" value="2026-05-15">
+            <input type="date" value="2026-05-16">
+            <input type="text" placeholder="이메일·IP·이벤트 검색" style="flex:1;min-width:200px;">
+            <button class="btn btn--secondary btn--sm">필터 적용</button>
+          </div>
+
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>발생 시각</th>
+                <th>카테고리</th>
+                <th>이벤트</th>
+                <th>사용자</th>
+                <th>대상</th>
+                <th>IP</th>
+                <th>상세</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2026-05-16 14:32:18</td>
+                <td><span class="badge" style="background:#dbeafe;color:#1d4ed8;">게이트키핑</span></td>
+                <td class="normal">의제 단계 전환 (4 → 5)</td>
+                <td class="normal">운영자 (admin@kongju.ac.kr)</td>
+                <td class="normal">의제 #2026-058 반석동 횡단보도</td>
+                <td>10.0.x.x</td>
+                <td><button class="btn btn--ghost btn--sm">보기</button></td>
+              </tr>
+              <tr>
+                <td>2026-05-16 14:30:05</td>
+                <td><span class="badge" style="background:#d1fae5;color:#047857;">로그인</span></td>
+                <td class="normal">로그인 성공</td>
+                <td class="normal">운영자 (admin@kongju.ac.kr)</td>
+                <td class="normal">-</td>
+                <td>10.0.x.x</td>
+                <td><button class="btn btn--ghost btn--sm">보기</button></td>
+              </tr>
+              <tr>
+                <td>2026-05-16 13:55:42</td>
+                <td><span class="badge" style="background:#ede9fe;color:#7c3aed;">개인정보 조회</span></td>
+                <td class="normal">회원 상세 조회</td>
+                <td class="normal">운영자 (admin@kongju.ac.kr)</td>
+                <td class="normal">회원 김시민 (kimcitizen@email.com)</td>
+                <td>10.0.x.x</td>
+                <td><button class="btn btn--ghost btn--sm">보기</button></td>
+              </tr>
+              <tr>
+                <td>2026-05-16 11:20:31</td>
+                <td><span class="badge" style="background:#fef3c7;color:#92400e;">약관 발행</span></td>
+                <td class="normal">개인정보처리방침 v2.1 발행 + 전회원 이메일 발송</td>
+                <td class="normal">운영자 (admin@kongju.ac.kr)</td>
+                <td class="normal">1,284명 회원 전체</td>
+                <td>10.0.x.x</td>
+                <td><button class="btn btn--ghost btn--sm">보기</button></td>
+              </tr>
+              <tr>
+                <td>2026-05-16 10:45:12</td>
+                <td><span class="badge" style="background:#dbeafe;color:#1d4ed8;">게이트키핑</span></td>
+                <td class="normal">제보 승인 (2 → 3)</td>
+                <td class="normal">운영자 (admin@kongju.ac.kr)</td>
+                <td class="normal">의제 #2026-057 둔산동 어린이보호구역</td>
+                <td>10.0.x.x</td>
+                <td><button class="btn btn--ghost btn--sm">보기</button></td>
+              </tr>
+              <tr>
+                <td>2026-05-16 09:23:54</td>
+                <td><span class="badge" style="background:#f3f4f6;color:#374151;">회원 활동</span></td>
+                <td class="normal">신규 제보 등록</td>
+                <td class="normal">박시민 (parkcitizen@email.com)</td>
+                <td class="normal">의제 #2026-058 (대전)</td>
+                <td>175.x.x.x</td>
+                <td><button class="btn btn--ghost btn--sm">보기</button></td>
+              </tr>
+              <tr>
+                <td>2026-05-16 09:20:08</td>
+                <td><span class="badge" style="background:#d1fae5;color:#047857;">로그인</span></td>
+                <td class="normal">로그인 성공</td>
+                <td class="normal">박시민 (parkcitizen@email.com)</td>
+                <td class="normal">-</td>
+                <td>175.x.x.x</td>
+                <td><button class="btn btn--ghost btn--sm">보기</button></td>
+              </tr>
+              <tr>
+                <td>2026-05-15 18:42:15</td>
+                <td><span class="badge" style="background:#fef2f2;color:#991b1b;">로그인 실패</span></td>
+                <td class="normal">비밀번호 오류 (3회 누적)</td>
+                <td class="normal">unknown@email.com</td>
+                <td class="normal">-</td>
+                <td>211.x.x.x</td>
+                <td><button class="btn btn--ghost btn--sm">보기</button></td>
+              </tr>
+              <tr>
+                <td>2026-05-15 16:20:32</td>
+                <td><span class="badge" style="background:#dbeafe;color:#1d4ed8;">게이트키핑</span></td>
+                <td class="normal">멘토 매칭 (수동)</td>
+                <td class="normal">운영자 (admin@kongju.ac.kr)</td>
+                <td class="normal">대전 보행자 안전 리빙랩 ← 김멘토·박교수</td>
+                <td>10.0.x.x</td>
+                <td><button class="btn btn--ghost btn--sm">보기</button></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="margin-top:var(--space-3);padding:var(--space-3);background:#dbeafe;border-left:3px solid var(--color-primary);border-radius:var(--radius-md);font-size:var(--text-xs);color:#1e3a8a;">
+            <strong>로그 보관 정책</strong> · 모든 감사 로그는 정보통신망법 의무에 따라 <strong>최소 1년</strong> 보관됩니다. 게이트키핑·약관 발행 로그는 <strong>3년 이상 보관</strong> 가능. 로그 삭제는 운영자 단일 권한이며 삭제 행위 자체도 감사 로그에 기록됩니다.
+          </div>
+
+          <div style="display:flex;justify-content:center;gap:var(--space-2);margin-top:var(--space-4);">
+            <button class="btn btn--ghost btn--sm">‹</button>
+            <button class="btn btn--primary btn--sm">1</button>
+            <button class="btn btn--ghost btn--sm">2</button>
+            <button class="btn btn--ghost btn--sm">...</button>
+            <button class="btn btn--ghost btn--sm">87</button>
+            <button class="btn btn--ghost btn--sm">›</button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

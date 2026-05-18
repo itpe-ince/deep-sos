@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>성공 사례 관리 - USCP 관리자</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    body { background: var(--color-bg); }
+    .admin-shell { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+    .admin-main { padding: var(--space-6); }
+    .panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-5); margin-bottom: var(--space-4); }
+    .case-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
+    .case-row { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-4); }
+    .story-pills { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-2); margin-top: var(--space-3); }
+    .story-pill { padding: var(--space-2); background: var(--color-bg); border-radius: var(--radius-md); text-align: center; font-size: var(--text-xs); }
+    .story-pill__step { font-weight: 700; color: var(--color-primary); margin-bottom: 2px; }
+    .story-pill.is-empty { background: #fef2f2; color: var(--color-danger); }
+  </style>
+</head>
+<body data-admin-nav="success-cases">
+  <div class="admin-shell">
+    <div data-slot="admin-side"></div>
+    <div>
+      <div data-slot="admin-top"></div>
+      <main class="admin-main">
+        <div style="display:flex;justify-content:space-between;margin-bottom:var(--space-5);">
+          <div>
+            <h1 style="font-size:var(--text-2xl);font-weight:800;">성공 사례 관리</h1>
+            <p style="font-size:var(--text-sm);color:var(--color-text-secondary);">해결완료 의제를 4단계 스토리(문제→과정→결과→정책반영)로 아카이빙합니다.</p>
+          </div>
+          <button class="btn btn--primary">+ 새 사례 작성</button>
+        </div>
+
+        <div class="panel">
+          <div style="display:flex;gap:var(--space-2);margin-bottom:var(--space-3);">
+            <span style="padding:6px 12px;background:var(--color-primary);color:#fff;border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:700;">전체 (42)</span>
+            <span style="padding:6px 12px;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-full);font-size:var(--text-xs);">공개 (38)</span>
+            <span style="padding:6px 12px;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-full);font-size:var(--text-xs);">초안 (3)</span>
+            <span style="padding:6px 12px;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-full);font-size:var(--text-xs);">비공개 (1)</span>
+          </div>
+
+          <div class="case-grid">
+            <div class="case-row">
+              <div style="display:flex;gap:var(--space-2);margin-bottom:var(--space-2);">
+                <span class="badge" style="background:#fed7aa;color:#9a3412;">세종</span>
+                <span class="badge" style="background:#d1fae5;color:#047857;">공개</span>
+                <span class="badge" style="background:#dbeafe;color:#1d4ed8;">Featured</span>
+              </div>
+              <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-2);">세종 어진동 자전거 도로 연결</h3>
+              <div style="font-size:var(--text-xs);color:var(--color-text-secondary);">완료: 2026-04-30 · 3개월</div>
+              <div class="story-pills">
+                <div class="story-pill"><div class="story-pill__step">1. 문제</div>작성됨</div>
+                <div class="story-pill"><div class="story-pill__step">2. 과정</div>작성됨</div>
+                <div class="story-pill"><div class="story-pill__step">3. 결과</div>작성됨</div>
+                <div class="story-pill"><div class="story-pill__step">4. 정책반영</div>작성됨</div>
+              </div>
+              <div style="display:flex;gap:var(--space-2);margin-top:var(--space-3);">
+                <button class="btn btn--secondary btn--sm" style="flex:1;">수정</button>
+                <button class="btn btn--ghost btn--sm">비공개</button>
+              </div>
+            </div>
+
+            <div class="case-row">
+              <div style="display:flex;gap:var(--space-2);margin-bottom:var(--space-2);">
+                <span class="badge" style="background:#d1fae5;color:#047857;">공주</span>
+                <span class="badge" style="background:#d1fae5;color:#047857;">공개</span>
+              </div>
+              <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-2);">공주 시내 보행로 정비 + 빈 점포 활용</h3>
+              <div style="font-size:var(--text-xs);color:var(--color-text-secondary);">완료: 2026-04-15 · 3개월</div>
+              <div class="story-pills">
+                <div class="story-pill"><div class="story-pill__step">1. 문제</div>작성됨</div>
+                <div class="story-pill"><div class="story-pill__step">2. 과정</div>작성됨</div>
+                <div class="story-pill"><div class="story-pill__step">3. 결과</div>작성됨</div>
+                <div class="story-pill"><div class="story-pill__step">4. 정책반영</div>작성됨</div>
+              </div>
+              <div style="display:flex;gap:var(--space-2);margin-top:var(--space-3);">
+                <button class="btn btn--secondary btn--sm" style="flex:1;">수정</button>
+              </div>
+            </div>
+
+            <div class="case-row">
+              <div style="display:flex;gap:var(--space-2);margin-bottom:var(--space-2);">
+                <span class="badge" style="background:#dbeafe;color:#1d4ed8;">대전</span>
+                <span class="badge" style="background:#fef3c7;color:#92400e;">초안</span>
+              </div>
+              <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-2);">대전 청년 일자리 매칭 시범 운영</h3>
+              <div style="font-size:var(--text-xs);color:var(--color-text-secondary);">완료: 2026-03-22 · 5개월</div>
+              <div class="story-pills">
+                <div class="story-pill"><div class="story-pill__step">1. 문제</div>작성됨</div>
+                <div class="story-pill"><div class="story-pill__step">2. 과정</div>작성됨</div>
+                <div class="story-pill is-empty"><div class="story-pill__step">3. 결과</div>미작성</div>
+                <div class="story-pill is-empty"><div class="story-pill__step">4. 정책반영</div>미작성</div>
+              </div>
+              <div style="display:flex;gap:var(--space-2);margin-top:var(--space-3);">
+                <button class="btn btn--primary btn--sm" style="flex:1;">초안 완성</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

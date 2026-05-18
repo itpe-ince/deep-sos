@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>지역문제 제보 - USCP</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <link rel="stylesheet" href="/mockup/styles/pages/home.css">
+  <style>
+    .user-layout { display: grid; grid-template-columns: 240px 1fr; gap: var(--space-6); max-width: var(--layout-content-max); margin: 0 auto; padding: var(--space-6) var(--space-4); }
+    .panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-6); margin-bottom: var(--space-5); }
+    .form-field { margin-bottom: var(--space-5); }
+    .form-field__label { display: block; font-size: var(--text-sm); font-weight: 700; margin-bottom: 8px; }
+    .form-field__label--required::after { content: ' *'; color: var(--color-danger); }
+    .form-field__hint { font-size: var(--text-xs); color: var(--color-text-secondary); margin-top: 6px; }
+    .form-field__input { width: 100%; padding: 12px 14px; border: 1px solid var(--color-border); border-radius: var(--radius-md); font-size: var(--text-sm); font-family: inherit; }
+    .form-field__input:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+    textarea.form-field__input { min-height: 140px; resize: vertical; }
+    .region-radio-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-2); }
+    .region-radio { padding: var(--space-3); border: 2px solid var(--color-border); border-radius: var(--radius-md); text-align: center; cursor: pointer; font-weight: 600; font-size: var(--text-sm); transition: all var(--transition-base); }
+    .region-radio.is-selected { border-color: var(--color-primary); background: var(--color-primary-light); color: var(--color-primary); }
+    .photo-upload { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2); }
+    .photo-upload__slot { aspect-ratio: 4/3; border: 2px dashed var(--color-border); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); cursor: pointer; font-size: var(--text-xs); }
+    .photo-upload__slot:hover { border-color: var(--color-primary); color: var(--color-primary); background: var(--color-primary-light); }
+    .preview-panel { background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); font-size: var(--text-xs); }
+    @media (max-width: 1024px) {
+      .user-layout { grid-template-columns: 1fr; }
+      .region-radio-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body data-user-nav="issue-new">
+  <div data-slot="header-user"></div>
+
+  <div class="user-layout">
+    <div data-slot="user-lnb"></div>
+
+    <main>
+      <div style="margin-bottom:var(--space-5);">
+        <h1 style="font-size:var(--text-2xl);font-weight:800;margin-bottom:4px;">지역문제 제보</h1>
+        <p style="font-size:var(--text-sm);color:var(--color-text-secondary);">발견하신 지역문제를 제보해주세요. 등록 즉시 1단계 "제보" 상태로 광장에 등록됩니다.</p>
+      </div>
+
+      <div style="padding:var(--space-4);background:#dbeafe;border-left:3px solid var(--color-primary);border-radius:var(--radius-md);margin-bottom:var(--space-5);font-size:var(--text-sm);color:#1d4ed8;line-height:1.6;">
+        <strong>제보 흐름 안내</strong><br>
+        제보 → 운영자 검토중 → 광장 공개등록 → 멘토배정 → 리빙랩 처리중 → 해결완료. 단계 변경 시마다 이메일로 알림이 전송됩니다.
+      </div>
+
+      <form>
+        <div class="panel">
+          <h3 style="font-size:var(--text-lg);font-weight:700;margin-bottom:var(--space-4);">기본 정보</h3>
+
+          <div class="form-field">
+            <label class="form-field__label form-field__label--required">지역 선택</label>
+            <div class="region-radio-grid">
+              <label class="region-radio" style="border-color:var(--color-region-dj);" data-region="dj">대전</label>
+              <label class="region-radio" data-region="gj">공주</label>
+              <label class="region-radio" data-region="ys">예산</label>
+              <label class="region-radio" data-region="ca">천안</label>
+              <label class="region-radio" data-region="sj">세종</label>
+            </div>
+            <div class="form-field__hint">제보 의제가 발생한 지역을 선택해주세요. 5개 지역(대전·공주·예산·천안·세종) 중 하나만 가능합니다.</div>
+          </div>
+
+          <div class="form-field">
+            <label class="form-field__label form-field__label--required">제목</label>
+            <input type="text" class="form-field__input" placeholder="예: 반석동 인근 횡단보도 신호등 시간 부족 — 노인·어린이 보행자 안전 우려" maxlength="80">
+            <div class="form-field__hint">최대 80자, 문제 상황을 한 줄로 명확하게 표현해주세요.</div>
+          </div>
+
+          <div class="form-field">
+            <label class="form-field__label form-field__label--required">상세 내용</label>
+            <textarea class="form-field__input" placeholder="문제 상황·위치·영향받는 사람들·제안 등을 자유롭게 작성해주세요." maxlength="2000"></textarea>
+            <div class="form-field__hint">최대 2,000자. 구체적인 상황·시간·인원·제안 등을 포함하시면 운영자의 게이트키핑 판단에 도움이 됩니다.</div>
+          </div>
+
+          <div class="form-field">
+            <label class="form-field__label">카테고리 (선택)</label>
+            <select class="form-field__input">
+              <option value="">선택 안 함</option>
+              <option>교통·보행</option>
+              <option>복지·돌봄</option>
+              <option>환경·에너지</option>
+              <option>도시재생</option>
+              <option>청년·일자리</option>
+              <option>문화·관광</option>
+              <option>교육·학습</option>
+              <option>스마트시티</option>
+              <option>기타</option>
+            </select>
+            <div class="form-field__hint">의제 분류에 도움이 됩니다. 미선택 시 운영자가 자동 분류합니다.</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3 style="font-size:var(--text-lg);font-weight:700;margin-bottom:var(--space-4);">사진 첨부 (선택)</h3>
+          <div class="photo-upload">
+            <label class="photo-upload__slot">+ 사진 추가<br>(최대 5MB)</label>
+            <label class="photo-upload__slot">+ 사진 추가</label>
+            <label class="photo-upload__slot">+ 사진 추가</label>
+          </div>
+          <div class="form-field__hint" style="margin-top:var(--space-3);">최대 3장 · 장당 5MB 이하 · JPG/PNG. 현장 사진은 운영자 검토와 시민 공감에 큰 도움이 됩니다.</div>
+        </div>
+
+        <div class="panel">
+          <h3 style="font-size:var(--text-lg);font-weight:700;margin-bottom:var(--space-4);">위치 (선택)</h3>
+          <div class="regions-map" style="height:240px;margin-bottom:var(--space-3);">
+            <div class="regions-map__placeholder">
+              <div style="font-size:13px;">카카오맵 위치 선택</div>
+              <div style="font-size:11px;margin-top:4px;">지도를 클릭하여 정확한 위치를 표시할 수 있습니다.</div>
+            </div>
+          </div>
+          <input type="text" class="form-field__input" placeholder="주소를 직접 입력하거나 지도에서 선택해주세요.">
+        </div>
+
+        <div class="preview-panel">
+          <strong>제보 전 확인 사항</strong>
+          <ul style="margin-top:var(--space-2);padding-left:20px;line-height:1.7;">
+            <li>본인의 실제 거주·생활 지역 의제를 제보해주세요.</li>
+            <li>타인의 명예·사생활을 침해하지 않는 범위에서 작성해주세요.</li>
+            <li>제보된 내용은 운영자 게이트키핑 검토 후 광장에 공개됩니다.</li>
+            <li>모든 단계 변경 시 회원가입 시 등록한 이메일로 알림이 발송됩니다.</li>
+            <li>제보·댓글·공감투표 활동은 감사 로그에 1년간 기록됩니다.</li>
+          </ul>
+        </div>
+
+        <div style="display:flex;gap:var(--space-3);justify-content:flex-end;margin-top:var(--space-5);">
+          <button type="button" class="btn btn--secondary">임시저장</button>
+          <button type="submit" class="btn btn--primary btn--lg">
+            제보 등록 → 운영자 검토 대기
+          </button>
+        </div>
+      </form>
+    </main>
+  </div>
+
+  <script src="/mockup/scripts/app.js"></script>
+  <script>
+    // 지역 선택 토글
+    document.querySelectorAll('.region-radio').forEach(el => {
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.region-radio').forEach(e => e.classList.remove('is-selected'));
+        el.classList.add('is-selected');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>협력 네트워크 - USCP</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <link rel="stylesheet" href="/mockup/styles/pages/home.css">
+  <style>
+    .org-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-5); transition: all var(--transition-base); }
+    .org-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .org-card__header { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }
+    .org-card__logo { width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--color-primary-light); color: var(--color-primary); font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .org-card__title { font-weight: 700; font-size: var(--text-md); }
+    .org-card__type { font-size: var(--text-xs); color: var(--color-text-secondary); margin-top: 2px; }
+    .org-card__meta { display: flex; gap: var(--space-3); font-size: var(--text-xs); color: var(--color-text-secondary); padding-top: var(--space-3); border-top: 1px solid var(--color-border); margin-top: var(--space-3); }
+    .mou-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: var(--space-3); padding: var(--space-4); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); margin-bottom: var(--space-2); align-items: center; }
+    .mou-row__title { font-weight: 600; font-size: var(--text-sm); }
+    .mou-row__type { font-size: var(--text-xs); color: var(--color-text-secondary); }
+    .mou-progress { width: 100%; height: 6px; background: var(--color-bg); border-radius: 999px; overflow: hidden; }
+    .mou-progress__fill { height: 100%; background: var(--color-secondary); }
+    .community-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-4); cursor: pointer; }
+    .community-card:hover { background: var(--color-surface-hover); }
+  </style>
+</head>
+<body data-nav="network">
+  <div data-slot="header"></div>
+
+  <main class="page">
+    <section class="hero hero--compact">
+      <div class="hero__inner">
+        <div class="hero__eyebrow">Collaboration Network</div>
+        <h1 class="hero__title">지·산·학·관이 함께하는<br><em>USCP 협력 네트워크</em></h1>
+        <p class="hero__desc">현재 <strong>38개 협력기관</strong>이 USCP에 참여하고 있으며, <strong>12건의 MOU</strong>가 체결되어 있습니다.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section__inner">
+        <div class="section__header section__header--row">
+          <div>
+            <div class="section__eyebrow">참여 기관</div>
+            <h2 class="section__title">38개 협력기관 (지·산·학·관)</h2>
+          </div>
+          <div style="display:flex;gap:var(--space-2);">
+            <span style="padding:6px 12px;background:var(--color-primary);color:#fff;border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:700;">전체 (38)</span>
+            <span style="padding:6px 12px;background:#dbeafe;color:#1d4ed8;border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:700;">지자체 (12)</span>
+            <span style="padding:6px 12px;background:#fef3c7;color:#92400e;border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:700;">기업 (9)</span>
+            <span style="padding:6px 12px;background:#d1fae5;color:#047857;border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:700;">대학 (5)</span>
+            <span style="padding:6px 12px;background:#ede9fe;color:#7c3aed;border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:700;">출연연 (12)</span>
+          </div>
+        </div>
+
+        <div class="card-grid card-grid--3">
+          <div class="org-card">
+            <div class="org-card__header">
+              <div class="org-card__logo" style="background:#d1fae5;color:#047857;">공</div>
+              <div>
+                <div class="org-card__title">국립공주대학교</div>
+                <div class="org-card__type">학(學) · 주관 기관</div>
+              </div>
+            </div>
+            <p style="font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.6;">2025 글로컬대학 본지정 사업 주관. 지역사회특화센터가 USCP를 운영하며 데이터를 단독 소유합니다.</p>
+            <div class="org-card__meta"><span>참여 의제 18</span><span>·</span><span>리빙랩 6</span></div>
+          </div>
+
+          <div class="org-card">
+            <div class="org-card__header">
+              <div class="org-card__logo" style="background:#fce7f3;color:#be185d;">충</div>
+              <div>
+                <div class="org-card__title">충남대학교 (천안캠퍼스)</div>
+                <div class="org-card__type">학(學) · MOU 단순 협력</div>
+              </div>
+            </div>
+            <p style="font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.6;">2026년 MOU 체결된 협력 대학. <strong>특별한 시스템 권한·연동 없이</strong> 단순 협력 기관으로 참여하며, 충남대 학생·교수도 일반 회원과 동일하게 가입합니다.</p>
+            <div class="org-card__meta"><span>참여 의제 9</span><span>·</span><span>리빙랩 3</span></div>
+          </div>
+
+          <div class="org-card">
+            <div class="org-card__header">
+              <div class="org-card__logo" style="background:#dbeafe;color:#1d4ed8;">대</div>
+              <div>
+                <div class="org-card__title">대전광역시청</div>
+                <div class="org-card__type">관(官) · 지자체</div>
+              </div>
+            </div>
+            <p style="font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.6;">대전 지역 의제 정책 연계 협력. 교통정책과·청년정책과 멘토 참여.</p>
+            <div class="org-card__meta"><span>참여 의제 12</span><span>·</span><span>리빙랩 4</span></div>
+          </div>
+
+          <div class="org-card">
+            <div class="org-card__header">
+              <div class="org-card__logo" style="background:#dbeafe;color:#1d4ed8;">공</div>
+              <div>
+                <div class="org-card__title">공주시청</div>
+                <div class="org-card__type">관(官) · 지자체</div>
+              </div>
+            </div>
+            <p style="font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.6;">공주 도시재생·문화관광 협력. 공주대 본교 인근 의제 다수 처리.</p>
+            <div class="org-card__meta"><span>참여 의제 14</span><span>·</span><span>리빙랩 5</span></div>
+          </div>
+
+          <div class="org-card">
+            <div class="org-card__header">
+              <div class="org-card__logo" style="background:#ede9fe;color:#7c3aed;">E</div>
+              <div>
+                <div class="org-card__title">한국전자통신연구원 (ETRI)</div>
+                <div class="org-card__type">관(官) · 출연연</div>
+              </div>
+            </div>
+            <p style="font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.6;">ICT·스마트시티 기술 자문. 세종 스마트 모빌리티 사례 멘토 참여.</p>
+            <div class="org-card__meta"><span>참여 의제 7</span><span>·</span><span>멘토 4명</span></div>
+          </div>
+
+          <div class="org-card">
+            <div class="org-card__header">
+              <div class="org-card__logo" style="background:#fef3c7;color:#92400e;">L</div>
+              <div>
+                <div class="org-card__title">LG화학 대전R&D센터</div>
+                <div class="org-card__type">산(産) · 기업</div>
+              </div>
+            </div>
+            <p style="font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.6;">대전 청년 일자리·R&D 인력 멘토링 협력. 산학협력 프로그램 운영.</p>
+            <div class="org-card__meta"><span>참여 의제 5</span><span>·</span><span>멘토 6명</span></div>
+          </div>
+        </div>
+
+        <div style="text-align:center;margin-top:var(--space-6);">
+          <a href="#" class="btn btn--secondary">전체 38개 기관 보기 →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--alt">
+      <div class="section__inner">
+        <div class="section__header">
+          <div class="section__eyebrow">MOU 체결 현황</div>
+          <h2 class="section__title">12건의 협력 협약</h2>
+          <p class="section__desc">USCP에 참여하는 기관과 체결된 MOU 현황입니다. 협약 기간·진행률을 확인할 수 있습니다.</p>
+        </div>
+
+        <div class="mou-row">
+          <div>
+            <div class="mou-row__title">충남대학교 - 공주대 MOU (5개 지역 협력)</div>
+            <div class="mou-row__type">학·학 협력</div>
+          </div>
+          <div class="mou-row__type">2026.03 ~ 2029.02</div>
+          <div>
+            <div style="font-size:var(--text-xs);margin-bottom:4px;color:var(--color-text-secondary);">진행률 12%</div>
+            <div class="mou-progress"><div class="mou-progress__fill" style="width:12%;"></div></div>
+          </div>
+          <span class="badge" style="background:#d1fae5;color:#047857;">활성</span>
+        </div>
+
+        <div class="mou-row">
+          <div>
+            <div class="mou-row__title">대전광역시 - 글로컬사업 협력 협약</div>
+            <div class="mou-row__type">관·학 협력</div>
+          </div>
+          <div class="mou-row__type">2025.09 ~ 2028.08</div>
+          <div>
+            <div style="font-size:var(--text-xs);margin-bottom:4px;color:var(--color-text-secondary);">진행률 24%</div>
+            <div class="mou-progress"><div class="mou-progress__fill" style="width:24%;"></div></div>
+          </div>
+          <span class="badge" style="background:#d1fae5;color:#047857;">활성</span>
+        </div>
+
+        <div class="mou-row">
+          <div>
+            <div class="mou-row__title">세종시 - 스마트시티 데이터 협력</div>
+            <div class="mou-row__type">관·학 협력</div>
+          </div>
+          <div class="mou-row__type">2025.11 ~ 2027.10</div>
+          <div>
+            <div style="font-size:var(--text-xs);margin-bottom:4px;color:var(--color-text-secondary);">진행률 26%</div>
+            <div class="mou-progress"><div class="mou-progress__fill" style="width:26%;"></div></div>
+          </div>
+          <span class="badge" style="background:#d1fae5;color:#047857;">활성</span>
+        </div>
+
+        <div class="mou-row">
+          <div>
+            <div class="mou-row__title">ETRI - 사회혁신 R&D 협력</div>
+            <div class="mou-row__type">관·학 협력</div>
+          </div>
+          <div class="mou-row__type">2026.01 ~ 2027.12</div>
+          <div>
+            <div style="font-size:var(--text-xs);margin-bottom:4px;color:var(--color-text-secondary);">진행률 19%</div>
+            <div class="mou-progress"><div class="mou-progress__fill" style="width:19%;"></div></div>
+          </div>
+          <span class="badge" style="background:#d1fae5;color:#047857;">활성</span>
+        </div>
+
+        <div style="text-align:center;margin-top:var(--space-6);">
+          <a href="#" class="btn btn--secondary">전체 12건 MOU 보기 →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section__inner">
+        <div class="section__header section__header--row">
+          <div>
+            <div class="section__eyebrow">프로그램 · 커뮤니티</div>
+            <h2 class="section__title">통합 운영 프로그램</h2>
+          </div>
+          <a href="#" class="btn btn--ghost btn--sm">전체 보기 →</a>
+        </div>
+        <div class="card-grid card-grid--3">
+          <div class="community-card">
+            <div style="font-size:var(--text-xs);font-weight:700;color:var(--color-primary);margin-bottom:4px;">사회혁신가 양성과정</div>
+            <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-2);">3기 학생팀 모집 안내</h3>
+            <p style="font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.6;">공주대·충남대 사회혁신가 양성과정 3기 학생팀을 모집합니다. 리빙랩 실행자로 참여 예정.</p>
+            <div style="font-size:var(--text-xs);color:var(--color-text-muted);margin-top:var(--space-3);">2026-06-01 ~ 06-15</div>
+          </div>
+          <div class="community-card">
+            <div style="font-size:var(--text-xs);font-weight:700;color:var(--color-primary);margin-bottom:4px;">시민 워크숍</div>
+            <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-2);">5개 지역 시민 라운드테이블</h3>
+            <p style="font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.6;">대전·공주·예산·천안·세종 5개 지역 시민·운영자가 모이는 분기별 라운드테이블.</p>
+            <div style="font-size:var(--text-xs);color:var(--color-text-muted);margin-top:var(--space-3);">분기별 · 다음 일정 2026-07-10</div>
+          </div>
+          <div class="community-card">
+            <div style="font-size:var(--text-xs);font-weight:700;color:var(--color-primary);margin-bottom:4px;">멘토 네트워킹</div>
+            <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-2);">분야별 멘토단 정기 미팅</h3>
+            <p style="font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.6;">교통·도시재생·복지·환경·스마트시티 등 분야별 멘토단 정기 모임 및 경험 공유.</p>
+            <div style="font-size:var(--text-xs);color:var(--color-text-muted);margin-top:var(--space-3);">월간 · 분야별 별도 일정</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-slot="footer"></div>
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

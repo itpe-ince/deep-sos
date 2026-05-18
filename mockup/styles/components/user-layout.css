@@ -1,0 +1,208 @@
+/* User Area Layout — LNB 좌측 고정 + 콘텐츠 영역 */
+
+.user-layout {
+  display: grid;
+  grid-template-columns: var(--layout-lnb-width) 1fr;
+  min-height: calc(100vh - var(--layout-gnb-height));
+}
+
+.lnb {
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  position: sticky;
+  top: var(--layout-gnb-height);
+  height: calc(100vh - var(--layout-gnb-height));
+  overflow-y: auto;
+  z-index: var(--z-lnb);
+}
+
+.lnb__profile {
+  padding: var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.lnb__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: var(--text-md);
+  flex-shrink: 0;
+}
+
+.lnb__profile-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.lnb__profile-name {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lnb__profile-role {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.lnb__nav {
+  padding: var(--space-3) 0;
+}
+
+.lnb__section {
+  padding: var(--space-2) var(--space-5) var(--space-1);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: var(--space-2);
+}
+
+.lnb__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  border-left: 3px solid transparent;
+}
+
+.lnb__item:hover {
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  border-left-color: var(--color-primary);
+}
+
+.lnb__item.is-active {
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  border-left-color: var(--color-primary);
+  font-weight: 700;
+}
+
+.lnb__item svg {
+  flex-shrink: 0;
+}
+
+.lnb__item-badge {
+  margin-left: auto;
+  padding: 2px var(--space-2);
+  background: var(--color-primary);
+  color: white;
+  border-radius: var(--radius-full);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* User content area */
+.user-content {
+  padding: var(--space-8);
+  max-width: 100%;
+  min-width: 0;
+}
+
+.user-page-header {
+  margin-bottom: var(--space-6);
+}
+
+.user-page-header__title {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-2);
+}
+
+.user-page-header__subtitle {
+  font-size: var(--text-md);
+  color: var(--color-text-secondary);
+}
+
+.user-page-header__flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: var(--space-4);
+}
+
+/* Logged-in GNB profile button */
+.gnb__user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.gnb__user:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-text-muted);
+}
+
+.gnb__user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: var(--text-xs);
+}
+
+.gnb__user-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  padding-right: var(--space-2);
+}
+
+.gnb__notify {
+  position: relative;
+}
+
+.gnb__notify-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-danger);
+  border: 2px solid var(--color-surface);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .user-layout {
+    grid-template-columns: 1fr;
+  }
+  .lnb {
+    display: none;
+  }
+  .user-content {
+    padding: var(--space-5);
+  }
+}

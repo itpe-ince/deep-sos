@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>게이트키핑 목록 - USCP 관리자</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    body { background: var(--color-bg); }
+    .admin-shell { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+    .admin-main { padding: var(--space-6); }
+    .panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-5); }
+    .tab-bar { display: flex; gap: 0; border-bottom: 1px solid var(--color-border); margin-bottom: var(--space-4); }
+    .tab-bar button { padding: var(--space-3) var(--space-4); background: transparent; border: 0; border-bottom: 2px solid transparent; cursor: pointer; font-weight: 600; font-size: var(--text-sm); color: var(--color-text-secondary); }
+    .tab-bar button.is-active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
+    .filter-row { display: flex; gap: var(--space-2); margin-bottom: var(--space-4); flex-wrap: wrap; align-items: center; }
+    .filter-row select, .filter-row input { padding: 8px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-md); font-size: var(--text-sm); }
+    .data-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+    .data-table th { background: var(--color-bg); padding: var(--space-3); text-align: left; font-weight: 700; font-size: var(--text-xs); color: var(--color-text-secondary); border-bottom: 1px solid var(--color-border); }
+    .data-table td { padding: var(--space-3); border-bottom: 1px solid var(--color-border); }
+    .data-table tr:hover { background: var(--color-bg); }
+    .data-table input[type="checkbox"] { cursor: pointer; }
+  </style>
+</head>
+<body data-admin-nav="issues">
+  <div class="admin-shell">
+    <div data-slot="admin-side"></div>
+    <div>
+      <div data-slot="admin-top"></div>
+      <main class="admin-main">
+        <div style="margin-bottom:var(--space-5);">
+          <h1 style="font-size:var(--text-2xl);font-weight:800;">게이트키핑</h1>
+          <p style="font-size:var(--text-sm);color:var(--color-text-secondary);">시민 제보를 검토하고 6단계 라이프사이클로 전환합니다. 단계 변경 시 자동 이메일 알림 발송.</p>
+        </div>
+
+        <div class="panel">
+          <div class="tab-bar">
+            <button class="is-active">전체 (58)</button>
+            <button>1. 제보 (7)</button>
+            <button>2. 검토중 (5)</button>
+            <button>3. 공개등록 (9)</button>
+            <button>4. 멘토배정 (8)</button>
+            <button>5. 처리중 (11)</button>
+            <button>6. 해결완료 (18)</button>
+          </div>
+
+          <div class="filter-row">
+            <select><option>전체 지역</option><option>대전</option><option>공주</option><option>예산</option><option>천안</option><option>세종</option></select>
+            <select><option>전체 카테고리</option><option>교통·보행</option><option>복지·돌봄</option><option>도시재생</option></select>
+            <input type="date" value="2026-05-01">
+            <input type="date" value="2026-05-16">
+            <input type="text" placeholder="제목·내용·작성자 검색" style="flex:1;min-width:200px;">
+            <button class="btn btn--secondary btn--sm">필터 적용</button>
+            <button class="btn btn--ghost btn--sm">초기화</button>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;margin-bottom:var(--space-3);">
+            <div style="font-size:var(--text-sm);color:var(--color-text-secondary);">3건 선택됨</div>
+            <div style="display:flex;gap:var(--space-2);">
+              <button class="btn btn--secondary btn--sm">선택 일괄 승인 (3 → 4단계)</button>
+              <button class="btn btn--secondary btn--sm">선택 일괄 반려</button>
+              <button class="btn btn--secondary btn--sm">CSV 다운로드</button>
+            </div>
+          </div>
+
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width:32px;"><input type="checkbox"></th>
+                <th>제목</th>
+                <th>지역</th>
+                <th>단계</th>
+                <th>제보자</th>
+                <th>공감</th>
+                <th>제보일</th>
+                <th>SLA</th>
+                <th>액션</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox" checked></td>
+                <td><strong>공주 시내버스 노선 부족 (산성동·중학동)</strong></td>
+                <td><span class="badge" style="background:#d1fae5;color:#047857;">공주</span></td>
+                <td><span class="badge" style="background:#f3f4f6;color:#374151;">1. 제보</span></td>
+                <td>박시민</td>
+                <td>5</td>
+                <td>오늘 09:23</td>
+                <td style="color:var(--color-danger);font-weight:700;">6h</td>
+                <td><a href="/mockup/pages/admin/issue-detail.html" class="btn btn--primary btn--sm">검토</a></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" checked></td>
+                <td><strong>예산 농촌 빈집 정비 및 귀촌 지원</strong></td>
+                <td><span class="badge" style="background:#ede9fe;color:#7c3aed;">예산</span></td>
+                <td><span class="badge" style="background:#f3f4f6;color:#374151;">1. 제보</span></td>
+                <td>김시민</td>
+                <td>34</td>
+                <td>어제 16:45</td>
+                <td>18h</td>
+                <td><a href="/mockup/pages/admin/issue-detail.html" class="btn btn--secondary btn--sm">검토</a></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" checked></td>
+                <td><strong>세종 어진동 자전거 보관소 신설 요청</strong></td>
+                <td><span class="badge" style="background:#fed7aa;color:#9a3412;">세종</span></td>
+                <td><span class="badge" style="background:#dbeafe;color:#1d4ed8;">2. 검토중</span></td>
+                <td>최시민</td>
+                <td>18</td>
+                <td>2일 전</td>
+                <td>36h</td>
+                <td><button class="btn btn--secondary btn--sm">단계 전환</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><strong>반석동 횡단보도 신호등 시간 부족</strong></td>
+                <td><span class="badge" style="background:#dbeafe;color:#1d4ed8;">대전</span></td>
+                <td><span class="badge" style="background:#fef3c7;color:#92400e;">5. 처리중</span></td>
+                <td>김시민</td>
+                <td>42</td>
+                <td>2일 전</td>
+                <td>-</td>
+                <td><a href="/mockup/pages/admin/issue-detail.html" class="btn btn--ghost btn--sm">보기</a></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td><strong>웅진동 빈집 활용 청년 창업공간</strong></td>
+                <td><span class="badge" style="background:#d1fae5;color:#047857;">공주</span></td>
+                <td><span class="badge" style="background:#ede9fe;color:#7c3aed;">4. 멘토배정</span></td>
+                <td>이시민</td>
+                <td>67</td>
+                <td>1주 전</td>
+                <td>-</td>
+                <td><a href="#" class="btn btn--ghost btn--sm">보기</a></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="display:flex;justify-content:center;gap:var(--space-2);margin-top:var(--space-4);">
+            <button class="btn btn--ghost btn--sm">‹</button>
+            <button class="btn btn--primary btn--sm">1</button>
+            <button class="btn btn--ghost btn--sm">2</button>
+            <button class="btn btn--ghost btn--sm">3</button>
+            <button class="btn btn--ghost btn--sm">›</button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

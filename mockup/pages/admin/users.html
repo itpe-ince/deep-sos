@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원 목록 - USCP 관리자</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <style>
+    body { background: var(--color-bg); }
+    .admin-shell { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+    .admin-main { padding: var(--space-6); }
+    .panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-5); margin-bottom: var(--space-4); }
+    .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); margin-bottom: var(--space-4); }
+    .stat-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-4); }
+    .data-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+    .data-table th { background: var(--color-bg); padding: var(--space-3); text-align: left; font-weight: 700; font-size: var(--text-xs); }
+    .data-table td { padding: var(--space-3); border-bottom: 1px solid var(--color-border); }
+    .filter-row { display: flex; gap: var(--space-2); margin-bottom: var(--space-3); flex-wrap: wrap; }
+    .filter-row select, .filter-row input { padding: 8px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-md); font-size: var(--text-sm); }
+  </style>
+</head>
+<body data-admin-nav="users">
+  <div class="admin-shell">
+    <div data-slot="admin-side"></div>
+    <div>
+      <div data-slot="admin-top"></div>
+      <main class="admin-main">
+        <div style="margin-bottom:var(--space-5);">
+          <h1 style="font-size:var(--text-2xl);font-weight:800;">회원 목록</h1>
+          <p style="font-size:var(--text-sm);color:var(--color-text-secondary);">USCP 가입 회원 조회 (시민·멘토·학생팀). 운영자는 단일 역할이므로 별도 권한 관리 메뉴 없음.</p>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card"><div style="font-size:var(--text-xs);color:var(--color-text-secondary);">총 회원</div><div style="font-size:var(--text-3xl);font-weight:800;">1,284</div></div>
+          <div class="stat-card"><div style="font-size:var(--text-xs);color:var(--color-text-secondary);">시민 회원</div><div style="font-size:var(--text-3xl);font-weight:800;color:var(--color-primary);">1,229</div></div>
+          <div class="stat-card"><div style="font-size:var(--text-xs);color:var(--color-text-secondary);">멘토</div><div style="font-size:var(--text-3xl);font-weight:800;color:#7c3aed;">24</div></div>
+          <div class="stat-card"><div style="font-size:var(--text-xs);color:var(--color-text-secondary);">학생팀</div><div style="font-size:var(--text-3xl);font-weight:800;color:var(--color-secondary);">31</div></div>
+        </div>
+
+        <div class="panel">
+          <div class="filter-row">
+            <select><option>전체 역할</option><option>시민</option><option>멘토</option><option>학생팀</option></select>
+            <select><option>전체 지역</option><option>대전</option><option>공주</option><option>예산</option><option>천안</option><option>세종</option></select>
+            <select><option>전체 상태</option><option>활성</option><option>비활성</option><option>탈퇴 대기</option></select>
+            <input type="text" placeholder="이름·이메일 검색" style="flex:1;min-width:200px;">
+            <button class="btn btn--secondary btn--sm">필터 적용</button>
+            <button class="btn btn--secondary btn--sm">CSV 다운로드</button>
+          </div>
+
+          <table class="data-table">
+            <thead><tr>
+              <th>이름</th><th>이메일</th><th>역할</th><th>지역</th><th>가입일</th><th>약관 v</th><th>활동</th><th>상태</th><th>액션</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>박시민</strong></td>
+                <td>parkcitizen@email.com</td>
+                <td><span class="badge" style="background:#dbeafe;color:#1d4ed8;">시민</span></td>
+                <td>대전</td>
+                <td>2026-03-12</td>
+                <td>v2.1 / v1.3</td>
+                <td>제보 4 · 댓글 8</td>
+                <td><span class="badge" style="background:#d1fae5;color:#047857;">활성</span></td>
+                <td><button class="btn btn--ghost btn--sm">상세</button></td>
+              </tr>
+              <tr>
+                <td><strong>김멘토</strong></td>
+                <td>kim@daejeon.go.kr</td>
+                <td><span class="badge" style="background:#ede9fe;color:#7c3aed;">멘토 (관)</span></td>
+                <td>대전</td>
+                <td>2026-04-01</td>
+                <td>v2.1 / v1.3</td>
+                <td>멘토 활동 3건</td>
+                <td><span class="badge" style="background:#d1fae5;color:#047857;">활성</span></td>
+                <td><button class="btn btn--ghost btn--sm">상세</button></td>
+              </tr>
+              <tr>
+                <td><strong>박교수</strong></td>
+                <td>park@kongju.ac.kr</td>
+                <td><span class="badge" style="background:#ede9fe;color:#7c3aed;">멘토 (학)</span></td>
+                <td>공주</td>
+                <td>2026-03-15</td>
+                <td>v2.1 / v1.3</td>
+                <td>멘토 활동 2건</td>
+                <td><span class="badge" style="background:#d1fae5;color:#047857;">활성</span></td>
+                <td><button class="btn btn--ghost btn--sm">상세</button></td>
+              </tr>
+              <tr>
+                <td><strong>최리더</strong></td>
+                <td>choi@student.kongju.ac.kr</td>
+                <td><span class="badge" style="background:#d1fae5;color:#047857;">학생팀 (3기)</span></td>
+                <td>대전</td>
+                <td>2026-04-10</td>
+                <td>v2.1 / v1.3</td>
+                <td>리빙랩 1 · 산출물 2</td>
+                <td><span class="badge" style="background:#d1fae5;color:#047857;">활성</span></td>
+                <td><button class="btn btn--ghost btn--sm">상세</button></td>
+              </tr>
+              <tr>
+                <td><strong>이충남대생</strong></td>
+                <td>lee@student.cnu.ac.kr</td>
+                <td><span class="badge" style="background:#fce7f3;color:#be185d;">학생팀 (충남대)</span></td>
+                <td>천안</td>
+                <td>2026-05-01</td>
+                <td>v2.1 / v1.3</td>
+                <td>리빙랩 1</td>
+                <td><span class="badge" style="background:#d1fae5;color:#047857;">활성</span></td>
+                <td><button class="btn btn--ghost btn--sm">상세</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>

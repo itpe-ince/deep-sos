@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>프로필 설정 - USCP</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+  <link rel="stylesheet" href="/mockup/styles/main.css">
+  <link rel="stylesheet" href="/mockup/styles/pages/home.css">
+  <style>
+    .user-layout { display: grid; grid-template-columns: 240px 1fr; gap: var(--space-6); max-width: var(--layout-content-max); margin: 0 auto; padding: var(--space-6) var(--space-4); }
+    .panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-6); margin-bottom: var(--space-5); }
+    .form-field { margin-bottom: var(--space-4); }
+    .form-field__label { display: block; font-size: var(--text-sm); font-weight: 600; margin-bottom: 6px; }
+    .form-field__input { width: 100%; padding: 10px 14px; border: 1px solid var(--color-border); border-radius: var(--radius-md); font-size: var(--text-sm); }
+    .form-field__input:disabled { background: var(--color-bg); color: var(--color-text-muted); }
+    .form-field__hint { font-size: var(--text-xs); color: var(--color-text-secondary); margin-top: 4px; }
+    .consent-info { padding: var(--space-3); background: var(--color-bg); border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2); font-size: var(--text-sm); }
+    .danger-zone { background: #fef2f2; border: 1px solid #fecaca; border-radius: var(--radius-md); padding: var(--space-4); }
+    .danger-zone__title { font-weight: 700; color: var(--color-danger); margin-bottom: var(--space-2); }
+    @media (max-width: 1024px) { .user-layout { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body data-user-nav="profile">
+  <div data-slot="header-user"></div>
+
+  <div class="user-layout">
+    <div data-slot="user-lnb"></div>
+
+    <main>
+      <h1 style="font-size:var(--text-2xl);font-weight:800;margin-bottom:var(--space-5);">프로필 설정</h1>
+
+      <div class="panel">
+        <h3 style="font-size:var(--text-lg);font-weight:700;margin-bottom:var(--space-4);">기본 정보</h3>
+
+        <div style="display:flex;align-items:center;gap:var(--space-4);margin-bottom:var(--space-5);">
+          <div style="width:80px;height:80px;border-radius:999px;background:var(--color-primary-light);color:var(--color-primary);font-size:var(--text-3xl);font-weight:800;display:flex;align-items:center;justify-content:center;">박</div>
+          <div>
+            <button class="btn btn--secondary btn--sm">사진 변경</button>
+            <div style="font-size:var(--text-xs);color:var(--color-text-secondary);margin-top:var(--space-2);">JPG/PNG · 최대 2MB</div>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-field__label">이메일 (변경 불가)</label>
+          <input type="email" class="form-field__input" value="parkcitizen@email.com" disabled>
+          <div class="form-field__hint">이메일은 회원가입 후 변경할 수 없습니다. 변경이 필요한 경우 운영자에게 문의해주세요.</div>
+        </div>
+
+        <div class="form-field">
+          <label class="form-field__label">이름</label>
+          <input type="text" class="form-field__input" value="박시민">
+        </div>
+
+        <div class="form-field">
+          <label class="form-field__label">활동 지역</label>
+          <select class="form-field__input">
+            <option selected>대전</option>
+            <option>공주</option>
+            <option>예산</option>
+            <option>천안</option>
+            <option>세종</option>
+            <option>기타</option>
+          </select>
+          <div class="form-field__hint">활동 지역은 의제 추천·통계 집계에 활용됩니다.</div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;margin-top:var(--space-4);">
+          <button class="btn btn--primary">기본 정보 저장</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3 style="font-size:var(--text-lg);font-weight:700;margin-bottom:var(--space-4);">비밀번호 변경</h3>
+
+        <div class="form-field">
+          <label class="form-field__label">현재 비밀번호</label>
+          <input type="password" class="form-field__input">
+        </div>
+        <div class="form-field">
+          <label class="form-field__label">새 비밀번호</label>
+          <input type="password" class="form-field__input" placeholder="8자 이상, 영문+숫자 조합">
+          <div class="form-field__hint">최소 8자 · 영문+숫자 조합 · 이전 비밀번호 재사용 금지</div>
+        </div>
+        <div class="form-field">
+          <label class="form-field__label">새 비밀번호 확인</label>
+          <input type="password" class="form-field__input">
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;">
+          <button class="btn btn--primary">비밀번호 변경</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3 style="font-size:var(--text-lg);font-weight:700;margin-bottom:var(--space-4);">알림 설정</h3>
+        <p style="font-size:var(--text-sm);color:var(--color-text-secondary);margin-bottom:var(--space-4);line-height:1.6;">USCP는 이메일 단일 채널만 지원합니다. 의제 단계 변경 시 자동 발송되며, 광고성 정보는 발송되지 않습니다.</p>
+
+        <div style="background:var(--color-bg);border-radius:var(--radius-md);padding:var(--space-4);">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:var(--space-2) 0;">
+            <div>
+              <div style="font-weight:600;font-size:var(--text-sm);">의제 단계 변경 알림 <span class="badge" style="background:#fef3c7;color:#92400e;margin-left:6px;font-size:10px;">필수</span></div>
+              <div style="font-size:var(--text-xs);color:var(--color-text-secondary);">내가 제보한 의제의 단계가 변경되면 자동 발송 (수신거부 불가)</div>
+            </div>
+            <span style="font-weight:700;color:var(--color-secondary);">활성</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:var(--space-2) 0;border-top:1px solid var(--color-border);">
+            <div>
+              <div style="font-weight:600;font-size:var(--text-sm);">공지사항·약관 개정 알림 <span class="badge" style="background:#fef3c7;color:#92400e;margin-left:6px;font-size:10px;">필수</span></div>
+              <div style="font-size:var(--text-xs);color:var(--color-text-secondary);">개인정보처리방침·이용약관 개정 시 자동 발송 (법적 의무)</div>
+            </div>
+            <span style="font-weight:700;color:var(--color-secondary);">활성</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:var(--space-2) 0;border-top:1px solid var(--color-border);">
+            <div>
+              <div style="font-weight:600;font-size:var(--text-sm);">이벤트·소식 알림 (선택)</div>
+              <div style="font-size:var(--text-xs);color:var(--color-text-secondary);">우수사례 공모전·시민 라운드테이블 등 행사 안내</div>
+            </div>
+            <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer;">
+              <input type="checkbox" checked style="opacity:0;width:0;height:0;">
+              <span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--color-primary);border-radius:34px;"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3 style="font-size:var(--text-lg);font-weight:700;margin-bottom:var(--space-4);">개인정보 동의 이력</h3>
+
+        <div class="consent-info">
+          <div>
+            <div style="font-weight:600;">개인정보 수집·이용 동의 v2.1</div>
+            <div style="font-size:var(--text-xs);color:var(--color-text-secondary);">동의일: 2026-05-15 09:30</div>
+          </div>
+          <a href="#" style="color:var(--color-primary);text-decoration:none;font-size:var(--text-xs);">동의서 보기 →</a>
+        </div>
+        <div class="consent-info">
+          <div>
+            <div style="font-weight:600;">이용약관 v1.3</div>
+            <div style="font-size:var(--text-xs);color:var(--color-text-secondary);">동의일: 2026-05-15 09:30</div>
+          </div>
+          <a href="#" style="color:var(--color-primary);text-decoration:none;font-size:var(--text-xs);">약관 보기 →</a>
+        </div>
+        <div class="consent-info">
+          <div>
+            <div style="font-weight:600;">만 14세 이상 확인</div>
+            <div style="font-size:var(--text-xs);color:var(--color-text-secondary);">확인일: 2026-05-15 09:30</div>
+          </div>
+          <span style="color:var(--color-secondary);font-weight:600;font-size:var(--text-xs);">확인 완료</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3 style="font-size:var(--text-lg);font-weight:700;margin-bottom:var(--space-4);">계정 관리</h3>
+        <div class="danger-zone">
+          <div class="danger-zone__title">회원 탈퇴</div>
+          <p style="font-size:var(--text-sm);line-height:1.6;color:#7f1d1d;margin-bottom:var(--space-3);">
+            회원 탈퇴 시 등록한 제보·댓글·공감투표가 비공개 처리됩니다. 다만 다른 회원과의 상호작용 이력(받은 공감·댓글)은 익명 처리되어 통계 목적으로 보존될 수 있습니다.
+            감사 로그는 법적 의무에 따라 1년간 보관됩니다.
+          </p>
+          <button class="btn" style="background:var(--color-danger);color:#fff;">회원 탈퇴 신청</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/mockup/scripts/app.js"></script>
+</body>
+</html>
