@@ -147,32 +147,37 @@
       <div class="section__inner section__inner--row">
         <div class="notice-panel">
           <div class="notice-panel__header">
-            <h3>공지사항</h3>
+            <h3>공지·이벤트 통합 게시판</h3>
             <a href="#" class="btn btn--ghost btn--sm">더보기 →</a>
+          </div>
+          <div style="display:flex;gap:6px;padding:8px 16px;border-bottom:1px solid var(--color-border);">
+            <span class="filter-chip is-active" style="padding:4px 12px;font-size:12px;background:var(--color-primary);color:#fff;border-radius:999px;border:none;font-weight:600;">전체 (12)</span>
+            <span class="filter-chip" style="padding:4px 12px;font-size:12px;background:#dbeafe;color:#1d4ed8;border-radius:999px;border:1px solid #93c5fd;font-weight:600;">📢 공지 (8)</span>
+            <span class="filter-chip" style="padding:4px 12px;font-size:12px;background:#fef3c7;color:#92400e;border-radius:999px;border:1px solid #fcd34d;font-weight:600;">🎉 이벤트 (4)</span>
           </div>
           <div>
             <div class="notice-row">
-              <span class="badge badge--accent">필독</span>
+              <span class="badge" style="background:#dbeafe;color:#1d4ed8;">📢 공지</span>
               <a class="notice-row__title">개인정보처리방침 v2.1 개정 안내 (2026-05-15 적용)</a>
               <span class="notice-row__date">3일 전</span>
             </div>
             <div class="notice-row">
-              <span class="badge">이벤트</span>
+              <span class="badge" style="background:#fef3c7;color:#92400e;">🎉 이벤트</span>
               <a class="notice-row__title">2026 상반기 리빙랩 우수사례 공모전 안내</a>
               <span class="notice-row__date">1주 전</span>
             </div>
             <div class="notice-row">
-              <span class="badge">공지</span>
+              <span class="badge" style="background:#dbeafe;color:#1d4ed8;">📢 공지</span>
               <a class="notice-row__title">공주대-충남대 MOU 체결 안내 (천안캠퍼스 협력 시작)</a>
               <span class="notice-row__date">2주 전</span>
             </div>
             <div class="notice-row">
-              <span class="badge">안내</span>
-              <a class="notice-row__title">USCP 플랫폼 베타 운영 시작 (5개 지역 동시 오픈)</a>
+              <span class="badge" style="background:#fef3c7;color:#92400e;">🎉 이벤트</span>
+              <a class="notice-row__title">USCP 플랫폼 베타 운영 시작 기념 시민 워크숍 (8/20)</a>
               <span class="notice-row__date">3주 전</span>
             </div>
             <div class="notice-row">
-              <span class="badge">시스템</span>
+              <span class="badge" style="background:#dbeafe;color:#1d4ed8;">📢 공지</span>
               <a class="notice-row__title">이용약관 v1.3 개정 안내 (만 14세 표기 명확화)</a>
               <span class="notice-row__date">1개월 전</span>
             </div>
@@ -181,27 +186,41 @@
 
         <div>
           <div class="sidebar-card" style="margin-bottom:var(--space-4);">
-            <h4 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-3);">자료실 (인기)</h4>
+            <h4 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-3);">자료실 (다운로드순)</h4>
+            <div style="display:flex;gap:4px;margin-bottom:var(--space-3);flex-wrap:wrap;">
+              <span style="padding:3px 8px;font-size:11px;background:var(--color-primary);color:#fff;border-radius:999px;font-weight:600;">전체 24</span>
+              <span style="padding:3px 8px;font-size:11px;background:#d1fae5;color:#047857;border-radius:999px;font-weight:600;border:1px solid #6ee7b7;">📘 가이드 8</span>
+              <span style="padding:3px 8px;font-size:11px;background:#dbeafe;color:#1e40af;border-radius:999px;font-weight:600;border:1px solid #93c5fd;">📄 양식 7</span>
+              <span style="padding:3px 8px;font-size:11px;background:#ede9fe;color:#6d28d9;border-radius:999px;font-weight:600;border:1px solid #c4b5fd;">🧰 툴킷 6</span>
+              <span style="padding:3px 8px;font-size:11px;background:#f3f4f6;color:#4b5563;border-radius:999px;font-weight:600;border:1px solid #d1d5db;">📦 기타 3</span>
+            </div>
             <div style="display:flex;flex-direction:column;gap:var(--space-2);">
               <div class="resource-card">
                 <div class="resource-card__icon">📘</div>
                 <div style="flex:1;">
-                  <div class="resource-card__title">USCP 시민 가이드북</div>
-                  <div class="resource-card__meta">PDF · 4.2MB · 다운로드 384</div>
+                  <div class="resource-card__title">USCP 시민 가이드북 <span style="font-size:10px;background:#d1fae5;color:#047857;padding:1px 6px;border-radius:999px;margin-left:4px;">가이드</span></div>
+                  <div class="resource-card__meta">PDF · 4.2MB · <strong style="color:#1d4ed8;">⬇ 384</strong></div>
                 </div>
               </div>
               <div class="resource-card">
                 <div class="resource-card__icon">📊</div>
                 <div style="flex:1;">
-                  <div class="resource-card__title">리빙랩 운영 매뉴얼 v2.0</div>
-                  <div class="resource-card__meta">PDF · 2.8MB · 다운로드 217</div>
+                  <div class="resource-card__title">리빙랩 운영 매뉴얼 v2.0 <span style="font-size:10px;background:#d1fae5;color:#047857;padding:1px 6px;border-radius:999px;margin-left:4px;">가이드</span></div>
+                  <div class="resource-card__meta">PDF · 2.8MB · <strong style="color:#1d4ed8;">⬇ 217</strong></div>
                 </div>
               </div>
               <div class="resource-card">
                 <div class="resource-card__icon">📋</div>
                 <div style="flex:1;">
-                  <div class="resource-card__title">의제 제보 가이드라인</div>
-                  <div class="resource-card__meta">PDF · 1.1MB · 다운로드 192</div>
+                  <div class="resource-card__title">멘토단 신청서 양식 <span style="font-size:10px;background:#dbeafe;color:#1e40af;padding:1px 6px;border-radius:999px;margin-left:4px;">양식</span></div>
+                  <div class="resource-card__meta">DOCX · 84KB · <strong style="color:#1d4ed8;">⬇ 192</strong></div>
+                </div>
+              </div>
+              <div class="resource-card">
+                <div class="resource-card__icon">🧰</div>
+                <div style="flex:1;">
+                  <div class="resource-card__title">현장조사 체크리스트 툴킷 <span style="font-size:10px;background:#ede9fe;color:#6d28d9;padding:1px 6px;border-radius:999px;margin-left:4px;">툴킷</span></div>
+                  <div class="resource-card__meta">XLSX · 320KB · <strong style="color:#1d4ed8;">⬇ 156</strong></div>
                 </div>
               </div>
             </div>

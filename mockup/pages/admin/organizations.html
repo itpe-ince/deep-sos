@@ -101,16 +101,17 @@
         <div class="panel">
           <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-3);">협력기관 (38개)</h3>
           <table class="data-table">
-            <thead><tr><th>기관명</th><th>유형</th><th>지역</th><th>활동 의제</th><th>활성 MOU</th><th>액션</th></tr></thead>
+            <thead><tr><th>기관명</th><th>유형</th><th>지역</th><th>활동 의제</th><th>활성 MOU</th><th>상태</th><th>액션</th></tr></thead>
             <tbody>
-              <tr><td><strong>국립공주대학교</strong></td><td>학</td><td>공주</td><td>18</td><td>1</td><td><button class="btn btn--ghost btn--sm">상세</button></td></tr>
-              <tr><td><strong>충남대학교 (천안캠퍼스)</strong></td><td>학</td><td>천안</td><td>9</td><td>1</td><td><button class="btn btn--ghost btn--sm">상세</button></td></tr>
-              <tr><td><strong>대전광역시청</strong></td><td>관</td><td>대전</td><td>12</td><td>1</td><td><button class="btn btn--ghost btn--sm">상세</button></td></tr>
-              <tr><td><strong>공주시청</strong></td><td>관</td><td>공주</td><td>14</td><td>0</td><td><button class="btn btn--ghost btn--sm">상세</button></td></tr>
-              <tr><td><strong>한국전자통신연구원 (ETRI)</strong></td><td>관·출연연</td><td>대전</td><td>7</td><td>1</td><td><button class="btn btn--ghost btn--sm">상세</button></td></tr>
-              <tr><td><strong>LG화학 대전R&D센터</strong></td><td>산</td><td>대전</td><td>5</td><td>1</td><td><button class="btn btn--ghost btn--sm">상세</button></td></tr>
+              <tr><td><strong>국립공주대학교</strong></td><td>학</td><td>공주</td><td>18</td><td>1</td><td><span class="badge" style="background:#d1fae5;color:#047857;">활성</span></td><td><button class="btn btn--ghost btn--sm">상세</button> <button class="btn btn--ghost btn--sm" title="비활성 토글">⏸️</button></td></tr>
+              <tr><td><strong>충남대학교 (천안캠퍼스)</strong></td><td>학</td><td>천안</td><td>9</td><td>1</td><td><span class="badge" style="background:#d1fae5;color:#047857;">활성</span></td><td><button class="btn btn--ghost btn--sm">상세</button> <button class="btn btn--ghost btn--sm" title="비활성 토글">⏸️</button></td></tr>
+              <tr><td><strong>대전광역시청</strong></td><td>관</td><td>대전</td><td>12</td><td>1</td><td><span class="badge" style="background:#d1fae5;color:#047857;">활성</span></td><td><button class="btn btn--ghost btn--sm">상세</button> <button class="btn btn--ghost btn--sm" title="비활성 토글">⏸️</button></td></tr>
+              <tr><td><strong>공주시청</strong></td><td>관</td><td>공주</td><td>14</td><td>0</td><td><span class="badge" style="background:#fef3c7;color:#92400e;">비활성</span></td><td><button class="btn btn--ghost btn--sm">상세</button> <button class="btn btn--ghost btn--sm" title="활성 토글">▶️</button> <button class="btn btn--ghost btn--sm" title="삭제 (MOU 0개)" style="color:#dc2626;">🗑️</button></td></tr>
+              <tr><td><strong>한국전자통신연구원 (ETRI)</strong></td><td>관·출연연</td><td>대전</td><td>7</td><td>1</td><td><span class="badge" style="background:#d1fae5;color:#047857;">활성</span></td><td><button class="btn btn--ghost btn--sm">상세</button> <button class="btn btn--ghost btn--sm" title="비활성 토글">⏸️</button></td></tr>
+              <tr><td><strong>LG화학 대전R&D센터</strong></td><td>산</td><td>대전</td><td>5</td><td>1</td><td><span class="badge" style="background:#d1fae5;color:#047857;">활성</span></td><td><button class="btn btn--ghost btn--sm">상세</button> <button class="btn btn--ghost btn--sm" title="비활성 토글">⏸️</button></td></tr>
             </tbody>
           </table>
+          <p style="font-size:11px;color:var(--color-text-secondary);margin-top:8px;">⏸️ 비활성 토글 · ▶️ 재활성 · 🗑️ 영구 삭제(연관 MOU 0개일 때만 가능, FK 무결성 검증)</p>
         </div>
       </main>
     </div>

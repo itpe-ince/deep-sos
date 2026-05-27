@@ -66,11 +66,23 @@
           </select>
         </div>
 
+        <div class="filter-bar">
+          <span class="filter-bar__label">트랙:</span>
+          <span class="filter-chip is-active">전체</span>
+          <span class="filter-chip" style="border-left:3px solid #2563eb;">정책반영</span>
+          <span class="filter-chip" style="border-left:3px solid #7c3aed;">정책참고</span>
+          <span class="filter-chip" style="border-left:3px solid #059669;">시민자율</span>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+            <input type="search" placeholder="🔍 제목·내용 키워드 검색" style="padding:6px 12px;border:1px solid var(--color-border);border-radius:var(--radius-md);font-size:var(--text-sm);min-width:280px;">
+          </div>
+        </div>
+
         <div class="card-grid card-grid--3" data-view-content="cards">
           <article class="issue-card" onclick="location.href='/mockup/pages/public/issue-detail.html'">
             <div class="issue-card__header">
               <span class="badge" style="background:#dbeafe;color:#1d4ed8;">대전</span>
               <span class="badge" style="background:#fef3c7;color:#92400e;">5. 처리중</span>
+              <span class="badge" style="background:#dbeafe;color:#1e40af;border:1px solid #93c5fd;">🏛️ 정책반영</span>
             </div>
             <h3 class="issue-card__title">반석동 인근 횡단보도 신호등 시간 부족</h3>
             <p class="issue-card__desc">노인·어린이 보행자가 횡단보도를 건너는 시간이 부족하여 위험합니다. 신호 주기 조정 또는 음성 안내 설치 필요.</p>
@@ -81,6 +93,7 @@
             <div class="issue-card__header">
               <span class="badge" style="background:#d1fae5;color:#047857;">공주</span>
               <span class="badge" style="background:#ede9fe;color:#7c3aed;">4. 멘토배정</span>
+              <span class="badge" style="background:#ede9fe;color:#6d28d9;border:1px solid #c4b5fd;">📋 정책참고</span>
             </div>
             <h3 class="issue-card__title">웅진동 빈집 활용 청년 창업공간 제안</h3>
             <p class="issue-card__desc">웅진동 일대 빈집을 청년 창업공간으로 재활용하는 방안 제안. 지자체·공주대 산학협력단과 협력 가능.</p>
@@ -91,6 +104,7 @@
             <div class="issue-card__header">
               <span class="badge" style="background:#fce7f3;color:#be185d;">천안</span>
               <span class="badge" style="background:#cffafe;color:#0e7490;">3. 공개등록</span>
+              <span class="badge" style="background:#d1fae5;color:#047857;border:1px solid #6ee7b7;">🌱 시민자율</span>
             </div>
             <h3 class="issue-card__title">충남대 천안캠퍼스 인근 야간 보안 강화</h3>
             <p class="issue-card__desc">캠퍼스 인근 골목길 가로등 부족과 CCTV 사각지대로 야간 보행 안전이 우려됩니다.</p>

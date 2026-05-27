@@ -77,6 +77,11 @@
           로그인
         </button>
 
+        <div style="margin-top:16px;padding:12px;background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;font-size:11px;">
+          <strong style="color:#92400e;">⚠️ 약관 재동의 안내</strong><br>
+          <span style="color:#78350f;">개인정보처리방침 v2.1 (2026-05-15 시행) 또는 이용약관 v1.3 (만 14세 명확화) 등 신 버전 미동의 회원은 로그인 후 재동의 모달이 노출됩니다 (개인정보보호법 §15·22 권고).</span>
+        </div>
+
         <div class="auth-divider">SSO·소셜 로그인은 제공되지 않습니다</div>
         <div style="text-align:center;font-size:var(--text-xs);color:var(--color-text-secondary);">
           USCP는 이메일 기반 자체 로그인만 지원합니다.<br>
@@ -99,8 +104,14 @@
 
         <div class="form-field">
           <label class="form-field__label form-field__label--required">비밀번호</label>
-          <input type="password" class="form-field__input" placeholder="8자 이상, 영문+숫자 조합">
-          <div class="form-field__hint">최소 8자 · 영문+숫자 조합 · 재사용 금지</div>
+          <input type="password" class="form-field__input" placeholder="8자 이상, 영문·숫자·특수문자 조합">
+          <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;font-size:11px;">
+            <span style="padding:2px 8px;background:#d1fae5;color:#047857;border-radius:999px;font-weight:600;">✓ 8자 이상</span>
+            <span style="padding:2px 8px;background:#d1fae5;color:#047857;border-radius:999px;font-weight:600;">✓ 영문</span>
+            <span style="padding:2px 8px;background:#d1fae5;color:#047857;border-radius:999px;font-weight:600;">✓ 숫자</span>
+            <span style="padding:2px 8px;background:#fef3c7;color:#92400e;border-radius:999px;font-weight:600;">○ 특수문자</span>
+          </div>
+          <div class="form-field__hint" style="margin-top:6px;">보안 정책: 5회 실패 시 30분 잠금 · 다중 디바이스 로그인 허용 · 세션 1h (자동 갱신 7d)</div>
         </div>
 
         <div class="form-field">

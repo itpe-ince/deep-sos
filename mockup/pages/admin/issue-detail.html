@@ -76,6 +76,21 @@
             <div class="panel">
               <h3 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-3);">게이트키핑 의견 · 단계 전환</h3>
               <div class="form-field">
+                <label>트랙 라벨 (검토중 진입 시 지정)</label>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                  <label style="display:flex;align-items:center;gap:6px;padding:6px 12px;border:2px solid #2563eb;border-radius:8px;background:#dbeafe;color:#1e40af;font-weight:600;cursor:pointer;">
+                    <input type="radio" name="track" checked> 🏛️ 정책반영
+                  </label>
+                  <label style="display:flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--color-border);border-radius:8px;cursor:pointer;">
+                    <input type="radio" name="track"> 📋 정책참고
+                  </label>
+                  <label style="display:flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--color-border);border-radius:8px;cursor:pointer;">
+                    <input type="radio" name="track"> 🌱 시민자율
+                  </label>
+                </div>
+                <small style="color:var(--color-text-secondary);font-size:11px;">단순 라벨로만 운영 — 자동 단계 전환·차별 처리 없음</small>
+              </div>
+              <div class="form-field">
                 <label>현재 단계 → 다음 단계</label>
                 <select>
                   <option>5. 처리중 (유지)</option>
@@ -91,9 +106,12 @@
               <div class="form-field">
                 <label><input type="checkbox" checked> 단계 전환 시 제보자에게 이메일 자동 발송 (필수)</label>
               </div>
-              <div style="display:flex;gap:var(--space-2);justify-content:flex-end;">
-                <button class="btn btn--secondary">임시저장</button>
-                <button class="btn btn--primary">단계 전환 + 이메일 발송</button>
+              <div style="display:flex;gap:var(--space-2);justify-content:space-between;align-items:center;">
+                <button class="btn btn--ghost btn--sm" style="color:#059669;border:1px dashed #6ee7b7;">💬 댓글로 해결 처리 → resolved (CMT-04)</button>
+                <div style="display:flex;gap:var(--space-2);">
+                  <button class="btn btn--secondary">임시저장</button>
+                  <button class="btn btn--primary">단계 전환 + 이메일 발송</button>
+                </div>
               </div>
             </div>
           </div>

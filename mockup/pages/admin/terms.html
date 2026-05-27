@@ -107,9 +107,19 @@
               <div style="margin-top:var(--space-3);padding:var(--space-3);background:#fef3c7;border-left:3px solid var(--color-accent);border-radius:var(--radius-md);font-size:var(--text-xs);color:#92400e;">
                 <strong>안내</strong> · 약관 신규 버전 발행 시 모든 회원에게 이메일이 자동 발송됩니다 (법적 의무). 발송 후 동의 이력이 회원별 프로필에 기록됩니다.
               </div>
+              <div style="margin-top:var(--space-3);padding:var(--space-3);background:#dbeafe;border:2px solid #2563eb;border-radius:var(--radius-md);">
+                <label style="display:flex;align-items:center;gap:8px;font-weight:700;color:#1e40af;cursor:pointer;">
+                  <input type="checkbox" checked style="width:18px;height:18px;">
+                  🔔 재동의 필요 (require_reconsent)
+                </label>
+                <p style="font-size:11px;color:#1e40af;margin-top:6px;margin-left:26px;">
+                  본 옵션 활성화 시: 활성 회원이 다음 로그인 시 <strong>재동의 모달</strong>이 노출됩니다 (개인정보보호법 §15·22 권고).<br>
+                  거부 시: 자동 로그아웃 + 탈퇴 안내.
+                </p>
+              </div>
               <div style="display:flex;justify-content:flex-end;gap:var(--space-2);margin-top:var(--space-3);">
                 <button class="btn btn--secondary">임시저장</button>
-                <button class="btn btn--primary">새 버전 발행 + 전회원 이메일 발송</button>
+                <button class="btn btn--primary">새 버전 발행 + 재동의 모달 활성</button>
               </div>
             </div>
           </div>

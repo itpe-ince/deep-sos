@@ -94,13 +94,15 @@
         </div>
 
         <div class="panel">
-          <h3 style="font-size:var(--text-lg);font-weight:700;margin-bottom:var(--space-4);">사진 첨부 (선택)</h3>
-          <div class="photo-upload">
-            <label class="photo-upload__slot">+ 사진 추가<br>(최대 5MB)</label>
-            <label class="photo-upload__slot">+ 사진 추가</label>
-            <label class="photo-upload__slot">+ 사진 추가</label>
+          <h3 style="font-size:var(--text-lg);font-weight:700;margin-bottom:var(--space-4);">사진 첨부 (선택, 최대 5장)</h3>
+          <div class="photo-upload" style="grid-template-columns: repeat(5, 1fr);">
+            <label class="photo-upload__slot">+ 1번<br>(5MB)</label>
+            <label class="photo-upload__slot">+ 2번</label>
+            <label class="photo-upload__slot">+ 3번</label>
+            <label class="photo-upload__slot">+ 4번</label>
+            <label class="photo-upload__slot">+ 5번</label>
           </div>
-          <div class="form-field__hint" style="margin-top:var(--space-3);">최대 3장 · 장당 5MB 이하 · JPG/PNG. 현장 사진은 운영자 검토와 시민 공감에 큰 도움이 됩니다.</div>
+          <div class="form-field__hint" style="margin-top:var(--space-3);">📷 <strong>사진 정책</strong>: 최대 5장 · 장당 5MB 이하 · JPG / PNG / WebP 지원. 현장 사진은 운영자 검토와 시민 공감에 큰 도움이 됩니다.</div>
         </div>
 
         <div class="panel">
