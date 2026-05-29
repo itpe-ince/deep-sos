@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-05-18T11:57:12.531Z",
+  "lastUpdated": "2026-05-28T22:40:02.593Z",
   "activeFeatures": [
     "uscp-v1",
     "sos-lab",
@@ -191,9 +191,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-09T05:17:50.472Z",
-        "lastUpdated": "2026-05-18T11:57:12.531Z"
+        "lastUpdated": "2026-05-28T22:40:02.593Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/mockup/scripts/app.js"
+      "lastFile": "/Users/sangincha/dev/deep-sos/scripts/restructure-sitemap.py"
     },
     "tmp": {
       "phase": "do",
@@ -828,7 +828,7 @@
   "session": {
     "startedAt": "2026-04-07T07:44:19.225Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-05-18T11:57:12.531Z"
+    "lastActivity": "2026-05-28T22:40:02.593Z"
   },
   "history": [
     {
@@ -3101,6 +3101,30 @@
     },
     {
       "timestamp": "2026-05-18T11:57:12.531Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-27T20:16:55.404Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-27T23:14:48.687Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T00:47:37.512Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T22:40:02.593Z",
       "feature": "scripts",
       "phase": "do",
       "action": "updated"

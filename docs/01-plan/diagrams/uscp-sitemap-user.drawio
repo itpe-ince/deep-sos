@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="Electron" agent="Claude Code" version="22.1.16">
+  <diagram name="USCP 사용자 영역" id="user-area">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="USCP 사용자 영역 메뉴 구조도&#10;(13개 화면 — 비로그인 공개 + 로그인 후)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#111827;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="1320" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="usr" value="👥 사용자 영역&#10;13개 화면" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E40AF;strokeColor=#1E3A8A;fontColor=#FFFFFF;fontSize=16;fontStyle=1;align=center;verticalAlign=middle;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="400" width="220" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="pub" value="🌐 비로그인 공개&#10;7개 영역 · 10개 화면&#10;누구나 열람 가능" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1E40AF;fontColor=#1E3A8A;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="380" y="200" width="240" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="log" value="🔑 로그인 후&#10;5개 활동 · 3개 페이지&#10;시민 회원 / 매칭 멤버" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#15803D;fontColor=#14532D;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="380" y="600" width="240" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="p1" value="🏠 홈" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#1E40AF;fontColor=#1E3A8A;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="720" y="40" width="240" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="p2" value="📖 USCP 소개" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#1E40AF;fontColor=#1E3A8A;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="720" y="92" width="240" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="p3" value="💬 지역문제 광장" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#1E40AF;fontColor=#1E3A8A;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="720" y="144" width="240" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="p4" value="🧪 리빙랩" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#1E40AF;fontColor=#1E3A8A;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="720" y="196" width="240" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="p5" value="🤝 협력 네트워크" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#1E40AF;fontColor=#1E3A8A;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="720" y="248" width="240" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="p6" value="📊 성과자료" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#1E40AF;fontColor=#1E3A8A;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="720" y="300" width="240" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="p7" value="🔐 로그인 / 회원가입" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#1E40AF;fontColor=#1E3A8A;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="720" y="352" width="240" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="l1" value="✍️ 지역문제 제보" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#15803D;fontColor=#14532D;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="720" y="500" width="280" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="l2" value="❤️ 공감·댓글 (의제 상세 내)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#15803D;fontColor=#14532D;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="720" y="552" width="280" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="l3" value="🔒 프로젝트 참여 (매칭 멤버 전용)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#15803D;fontColor=#14532D;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="720" y="604" width="280" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="l4" value="📋 내 활동" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#15803D;fontColor=#14532D;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="720" y="656" width="280" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="l5" value="👤 프로필" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#15803D;fontColor=#14532D;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="720" y="708" width="280" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="e_usr_pub" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#1E3A8A;" edge="1" parent="1" source="usr" target="pub">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_usr_log" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#1E3A8A;" edge="1" parent="1" source="usr" target="log">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_p1" style="endArrow=classic;html=1;rounded=0;strokeColor=#1E40AF;" edge="1" parent="1" source="pub" target="p1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_p2" style="endArrow=classic;html=1;rounded=0;strokeColor=#1E40AF;" edge="1" parent="1" source="pub" target="p2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_p3" style="endArrow=classic;html=1;rounded=0;strokeColor=#1E40AF;" edge="1" parent="1" source="pub" target="p3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_p4" style="endArrow=classic;html=1;rounded=0;strokeColor=#1E40AF;" edge="1" parent="1" source="pub" target="p4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_p5" style="endArrow=classic;html=1;rounded=0;strokeColor=#1E40AF;" edge="1" parent="1" source="pub" target="p5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_p6" style="endArrow=classic;html=1;rounded=0;strokeColor=#1E40AF;" edge="1" parent="1" source="pub" target="p6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_p7" style="endArrow=classic;html=1;rounded=0;strokeColor=#1E40AF;" edge="1" parent="1" source="pub" target="p7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_l1" style="endArrow=classic;html=1;rounded=0;strokeColor=#15803D;" edge="1" parent="1" source="log" target="l1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_l2" style="endArrow=classic;html=1;rounded=0;strokeColor=#15803D;" edge="1" parent="1" source="log" target="l2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_l3" style="endArrow=classic;html=1;rounded=0;strokeColor=#15803D;" edge="1" parent="1" source="log" target="l3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_l4" style="endArrow=classic;html=1;rounded=0;strokeColor=#15803D;" edge="1" parent="1" source="log" target="l4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_l5" style="endArrow=classic;html=1;rounded=0;strokeColor=#15803D;" edge="1" parent="1" source="log" target="l5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

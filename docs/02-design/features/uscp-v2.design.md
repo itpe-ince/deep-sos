@@ -39,6 +39,7 @@ basis: USCP_견적서_20260516.xlsx (부가세 포함 5,500만 원)
 |---|---|
 | 메뉴 구조도 (24 화면) | `docs/01-plan/uscp-sitemap.md` |
 | 기능 목록 (9모듈 116기능, 2026-08-20 오픈) | `docs/01-plan/uscp-feature-list.md` |
+| **기능 상세 명세서 (116개 기능별 목적·입력·처리·응답·권한·예외·연관)** | [`docs/02-design/features/uscp-feature-spec.md`](./uscp-feature-spec.md) |
 | 본 PDCA Plan | `docs/01-plan/features/uscp-v2.plan.md` |
 | 견적 정본 | `USCP_견적서_20260516.xlsx` |
 
@@ -394,8 +395,10 @@ CREATE TYPE audit_action AS ENUM ('login','logout','create','update','delete','v
 | GET | `/success-cases` | public |
 | POST | `/admin/projects` | operator |
 | PATCH | `/admin/projects/{id}` | operator |
-| POST | `/admin/projects/{id}/timeline` | operator |
-| POST | `/admin/projects/{id}/deliverables` | operator (presigned URL 발급) |
+| POST | `/projects/{id}/timeline` | **project-member + operator** (M03-08, 매칭 멤버는 자신 프로젝트만) |
+| PATCH | `/projects/{id}/timeline/{entry_id}` | **author or operator** (작성자 본인 수정·삭제 가능) |
+| POST | `/projects/{id}/deliverables` | **project-member + operator** (M03-09, presigned URL 발급, uploaded_by 자동 기록) |
+| PATCH | `/admin/deliverables/{id}` | **uploaded_by or operator** (M03-10, 업로드자 본인 메타데이터 수정 가능) |
 | POST | `/admin/success-cases` | operator |
 | GET | `/projects/{id}/posts` | **project-member** (매칭된 멘토·학생팀·운영자만) |
 | GET | `/projects/{id}/posts/{post_id}` | project-member |
@@ -421,6 +424,9 @@ CREATE TYPE audit_action AS ENUM ('login','logout','create','update','delete','v
 | POST | `/admin/student-teams` | operator |
 | PATCH | `/admin/student-teams/{id}` | operator |
 | POST | `/admin/projects/{id}/match` | operator (수동 매칭 + 이메일 통보) |
+| POST | `/projects/{id}/matching-activities` | **매칭된 멘토 본인 + operator** (M04-08, 회의·자문·검토 기록) |
+| PATCH | `/projects/{id}/matching-activities/{activity_id}` | **author(멘토) or operator** |
+| GET | `/users/me/mentor-activities` | citizen+ (본인 활동 이력) |
 
 #### M05. 협력 네트워크 (`/api/v1/network`, `/api/v1/admin/organizations`)
 
@@ -566,16 +572,17 @@ CREATE TYPE audit_action AS ENUM ('login','logout','create','update','delete','v
     4. max 초과 → dead-letter + Sentry
 ```
 
-### 5.4 파일 업로드 흐름 (MinIO Presigned)
+### 5.4 파일 업로드 흐름 (MinIO Presigned, M03-09)
 
 ```
-[운영자 산출물 업로드]
-  Client → POST /admin/projects/{id}/deliverables
+[운영자·매칭 멤버 산출물 업로드]
+  Client → POST /projects/{id}/deliverables
     body: { filename, content_type, size, stage, tags }
   Server:
-    1. 권한 검증 (operator)
+    1. 권한 검증 — operator OR require_project_member(project_id)
     2. MinIO presigned PUT URL 생성 (TTL 5분)
-    3. deliverables INSERT (status='pending')
+    3. deliverables INSERT (uploaded_by=current_user, status='pending')
+    4. audit_logs(action=create, target=deliverable)
   → 200 { upload_url, deliverable_id }
 
   Client → PUT (upload_url) [직접 MinIO로 업로드]
@@ -585,6 +592,35 @@ CREATE TYPE audit_action AS ENUM ('login','logout','create','update','delete','v
     1. MinIO HEAD 확인 (size·etag)
     2. deliverables UPDATE status='ready'
   → 200
+```
+
+### 5.4.1 멤버 활동 기록 흐름 (M03-08, M04-08)
+
+```
+[매칭 멤버 활동 타임라인 작성 — M03-08]
+  member → POST /projects/{id}/timeline
+    body: { date, title, description }
+  Server:
+    1. require_project_member(project_id) 검증 → 비멤버 403
+    2. timeline_entries INSERT (created_by=current_user)
+    3. audit_logs(action=create, target=timeline_entry)
+  → 200
+
+[수정·삭제 — author or operator]
+  member → PATCH/DELETE /projects/{id}/timeline/{entry_id}
+  Server:
+    1. timeline_entries.created_by == current_user OR is_operator 검증
+    2. UPDATE / DELETE → audit_logs
+
+[매칭 멘토 활동 기록 — M04-08]
+  mentor → POST /projects/{id}/matching-activities
+    body: { date, type:'meeting'|'advice'|'review', summary }
+  Server:
+    1. matchings.mentor_id == current_user OR is_operator 검증
+       (학생팀 멤버는 본 API 불가 → M03-08 타임라인으로 대체 안내)
+    2. matching_activities INSERT (created_by=current_user)
+    3. audit_logs
+  → 200 / 403 (학생팀이 시도)
 ```
 
 ### 5.5 6단계 ↔ 알림 매핑
@@ -625,6 +661,9 @@ CREATE TYPE audit_action AS ENUM ('login','logout','create','update','delete','v
 | 게이트키핑·CMS·기관·매칭·감사 | — | — | — | ✅ |
 | 댓글 삭제 | — | author만 | author만 | ✅ (조정) |
 | **프로젝트 게시판 (멤버 전용 비공개)** | — | — | **매칭된 멤버만 ✅** | ✅ |
+| **활동 타임라인 작성·수정 (M03-08)** | — | — | **매칭 멤버 본인 작성·수정 ✅** | ✅ (전체 조정) |
+| **산출물 업로드·메타데이터 (M03-09/10)** | — | — | **매칭 멤버 업로드자 본인 ✅** | ✅ (전체 조정) |
+| **멘토단 활동 기록 (M04-08)** | — | — | **매칭 멘토 본인만 ✅** | ✅ |
 
 ### 6.3 미들웨어 체인
 
