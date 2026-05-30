@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { MessageCircle, Send, ThumbsUp, Trash2 } from 'lucide-react';
 import { api, ApiError } from '@/lib/api';
 import { useAuth } from '@/lib/use-auth';
+import { ConfirmModal, useToast } from '@/components/ui';
 
 interface VoteState {
   voted: boolean;
@@ -51,6 +52,10 @@ export function IssueInteractions({
   const [newComment, setNewComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // §7.2.1 — window.confirm 대체 ConfirmModal 상태
+  const [deleteCommentId, setDeleteCommentId] = useState<string | null>(null);
+  const toast = useToast();
 
   // 초기 로드: 내 투표 상태 + 댓글 목록
   useEffect(() => {
@@ -142,25 +147,31 @@ export function IssueInteractions({
     [user, newComment, issueId],
   );
 
-  const handleCommentDelete = useCallback(
-    async (commentId: string) => {
-      if (!confirm('댓글을 삭제하시겠어요?')) return;
-      try {
-        await api.delete(`/issues/${issueId}/comments/${commentId}`);
-        setComments((prev) =>
-          prev.map((c) =>
-            c.id === commentId
-              ? { ...c, is_deleted: true, content: '[삭제된 댓글입니다]' }
-              : c,
-          ),
-        );
-        setCommentTotal((n) => Math.max(0, n - 1));
-      } catch (err) {
-        setError(err instanceof Error ? err.message : '댓글 삭제 실패');
-      }
-    },
-    [issueId],
-  );
+  const handleCommentDelete = useCallback((commentId: string) => {
+    setDeleteCommentId(commentId);
+  }, []);
+
+  const confirmCommentDelete = useCallback(async () => {
+    if (!deleteCommentId) return;
+    try {
+      await api.delete(`/issues/${issueId}/comments/${deleteCommentId}`);
+      setComments((prev) =>
+        prev.map((c) =>
+          c.id === deleteCommentId
+            ? { ...c, is_deleted: true, content: '[삭제된 댓글입니다]' }
+            : c,
+        ),
+      );
+      setCommentTotal((n) => Math.max(0, n - 1));
+      toast.success('댓글을 삭제했습니다.');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : '댓글 삭제 실패';
+      setError(message);
+      toast.error(message);
+    } finally {
+      setDeleteCommentId(null);
+    }
+  }, [deleteCommentId, issueId, toast]);
 
   return (
     <section className="mt-8 space-y-6">
@@ -275,6 +286,17 @@ export function IssueInteractions({
           </ul>
         )}
       </div>
+
+      <ConfirmModal
+        open={deleteCommentId !== null}
+        onClose={() => setDeleteCommentId(null)}
+        onConfirm={confirmCommentDelete}
+        title="댓글 삭제"
+        description="댓글을 삭제하시겠습니까? 삭제된 댓글은 '[삭제된 댓글입니다]' 로 표시됩니다."
+        confirmLabel="삭제"
+        cancelLabel="취소"
+        variant="danger"
+      />
     </section>
   );
 }

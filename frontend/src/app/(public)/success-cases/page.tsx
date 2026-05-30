@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { Award, Globe, FileCheck } from 'lucide-react';
 import { serverFetch, type ListResponse, type SuccessCaseItem } from '@/lib/server-api';
 
@@ -6,6 +7,12 @@ export const metadata: Metadata = {
   title: '성공 사례',
   description: '리빙랩 프로젝트가 만든 실제 변화를 확인하세요.',
 };
+
+/** TipTap HTML 본문에서 미리보기용 평문 추출. */
+function preview(html: string, max = 120): string {
+  const text = html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  return text.length > max ? `${text.slice(0, max)}…` : text;
+}
 
 export default async function SuccessCasesPage() {
   const data = await serverFetch<ListResponse<SuccessCaseItem>>(
@@ -26,9 +33,10 @@ export default async function SuccessCasesPage() {
 
       <div className="grid gap-8 md:grid-cols-2">
         {data.data.map((c) => (
-          <article
+          <Link
+            href={`/success-cases/${c.id}`}
             key={c.id}
-            className="overflow-hidden rounded-2xl border border-border bg-white shadow-sm transition hover:shadow-lg"
+            className="block overflow-hidden rounded-2xl border border-border bg-white shadow-sm transition hover:shadow-lg"
           >
             <div className="aspect-[16/9] bg-gradient-to-br from-secondary-light to-primary-light" />
             <div className="p-6">
@@ -55,32 +63,24 @@ export default async function SuccessCasesPage() {
                 <div>
                   <h3 className="mb-1 text-xs font-semibold text-rose-600">문제</h3>
                   <p className="line-clamp-2 text-sm text-text-secondary">
-                    {c.problem_summary}
+                    {preview(c.problem_summary)}
                   </p>
                 </div>
                 <div>
                   <h3 className="mb-1 text-xs font-semibold text-amber-600">과정</h3>
                   <p className="line-clamp-2 text-sm text-text-secondary">
-                    {c.process_summary}
+                    {preview(c.process_summary)}
                   </p>
                 </div>
                 <div>
                   <h3 className="mb-1 text-xs font-semibold text-secondary">결과</h3>
                   <p className="line-clamp-2 text-sm text-text-secondary">
-                    {c.result_summary}
+                    {preview(c.result_summary)}
                   </p>
                 </div>
-                {c.impact_summary && (
-                  <div>
-                    <h3 className="mb-1 text-xs font-semibold text-primary">파급 효과</h3>
-                    <p className="line-clamp-2 text-sm text-text-secondary">
-                      {c.impact_summary}
-                    </p>
-                  </div>
-                )}
               </div>
             </div>
-          </article>
+          </Link>
         ))}
       </div>
     </div>

@@ -3,7 +3,9 @@ from __future__ import annotations
 
 import uuid
 
-from sqlalchemy import Boolean, ForeignKey, Integer, String, Text
+import datetime as _dt
+
+from sqlalchemy import Boolean, Date, ForeignKey, Integer, String, Text
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -33,6 +35,9 @@ class SuccessCase(UUIDPrimaryKey, TimestampMixin, Base):
 
     policy_linked: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     policy_detail: Mapped[str | None] = mapped_column(Text)
+    # M03-12 정책 반영 기록 보강 (0013)
+    policy_name: Mapped[str | None] = mapped_column(String(200))
+    effective_date: Mapped[_dt.date | None] = mapped_column(Date)
     global_transfer_candidate: Mapped[bool] = mapped_column(
         Boolean, default=False, nullable=False
     )

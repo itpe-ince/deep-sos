@@ -1,10 +1,19 @@
 'use client';
 
+/**
+ * @deprecated USCP V2 out-of-scope (봉사활동 관리는 본 사업 범위 외).
+ * design.md §7.6 + plan §7.2 참조. Sprint 0 Day 10 정리 단계에서
+ * 페이지·API 와 함께 제거 또는 격리 예정. 본 컴포넌트는 V1 잔재 화면이
+ * 마운트되어도 ESLint no-alert 규칙을 위반하지 않도록 ConfirmModal 로
+ * 마이그레이션만 완료한 상태.
+ */
+
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Send, CheckCircle2 } from 'lucide-react';
 import { api, ApiError } from '@/lib/api';
 import { useAuth } from '@/lib/use-auth';
+import { ConfirmModal, useToast } from '@/components/ui';
 
 interface Participation {
   id: string;
@@ -38,6 +47,8 @@ export function VolunteerApplication({ activityId }: Props) {
   );
   const [note, setNote] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [cancelOpen, setCancelOpen] = useState(false);
+  const toast = useToast();
   const [error, setError] = useState<string | null>(null);
 
   const loadMy = useCallback(async () => {
@@ -98,13 +109,21 @@ export function VolunteerApplication({ activityId }: Props) {
     }
   }
 
-  async function handleCancel() {
-    if (!confirm('신청을 취소하시겠어요?')) return;
+  function handleCancel() {
+    setCancelOpen(true);
+  }
+
+  async function confirmCancel() {
     try {
       await api.delete(`/volunteers/${activityId}/apply`);
       setMyParticipation(null);
+      toast.success('신청을 취소했습니다.');
     } catch (err) {
-      setError(err instanceof Error ? err.message : '취소 실패');
+      const message = err instanceof Error ? err.message : '취소 실패';
+      setError(message);
+      toast.error(message);
+    } finally {
+      setCancelOpen(false);
     }
   }
 
@@ -181,6 +200,17 @@ export function VolunteerApplication({ activityId }: Props) {
         <Send className="h-3 w-3" />
         {submitting ? '신청 중...' : '참여 신청'}
       </button>
+
+      <ConfirmModal
+        open={cancelOpen}
+        onClose={() => setCancelOpen(false)}
+        onConfirm={confirmCancel}
+        title="신청 취소"
+        description="봉사활동 신청을 취소하시겠습니까?"
+        confirmLabel="신청 취소"
+        cancelLabel="유지"
+        variant="danger"
+      />
     </form>
   );
 }

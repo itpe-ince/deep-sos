@@ -79,6 +79,8 @@ class SuccessCaseRead(_Base):
     project_id: uuid.UUID | None = None
     policy_linked: bool
     policy_detail: str | None = None
+    policy_name: str | None = None
+    effective_date: date | None = None
     global_transfer_candidate: bool
     view_count: int
     is_published: bool

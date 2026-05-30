@@ -14,55 +14,71 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Brand
+        // Brand — design.md §7.1 (충남대·공주대 색조 기반)
         primary: {
-          DEFAULT: '#2563eb',
-          hover: '#1d4ed8',
+          DEFAULT: '#1E40AF',
+          hover: '#1d3596',
+          dark: '#1d3596',
           light: '#dbeafe',
         },
         secondary: {
-          DEFAULT: '#059669',
-          light: '#d1fae5',
+          DEFAULT: '#475569',
+          light: '#e2e8f0',
         },
         accent: '#f59e0b',
         danger: '#ef4444',
         info: '#3b82f6',
-        success: '#10b981',
-        warning: '#f59e0b',
+        success: '#10B981',
+        warning: '#F59E0B',
 
-        // 4개 캠퍼스
-        campus: {
-          dj: '#2563eb', // 대전
-          gj: '#059669', // 공주
-          ys: '#7c3aed', // 예산
-          sj: '#ea580c', // 세종
+        // 5개 지역 (design.md §3.2 region ENUM)
+        region: {
+          dj: '#1E40AF', // 대전 (daejeon)
+          gj: '#059669', // 공주 (gongju)
+          ys: '#7c3aed', // 예산 (yesan)
+          cn: '#0891b2', // 천안 (cheonan)
+          sj: '#ea580c', // 세종 (sejong)
         },
 
-        // 상태
-        status: {
-          submitted: '#6b7280',
-          reviewing: '#3b82f6',
-          assigned: '#8b5cf6',
-          progress: '#f59e0b',
-          resolved: '#10b981',
-          rejected: '#ef4444',
+        // 6단계 의제 워크플로우 (design.md §3.2 issue_stage ENUM)
+        stage: {
+          reported: '#6b7280',         // 1. 제보
+          reviewing: '#3b82f6',         // 2. 검토중
+          published: '#8b5cf6',         // 3. 공개등록
+          'mentor-assigned': '#7c3aed', // 4. 멘토배정
+          'in-progress': '#f59e0b',     // 5. 처리중
+          resolved: '#10B981',          // 6. 해결완료
+          rejected: '#ef4444',          // 반려
         },
 
-        // 배경/표면 (mockup 기준)
-        bg: '#f9fafb',
+        // 3종 트랙 라벨 (design.md §3.2 issue_track ENUM, mockup issues.html 기반)
+        track: {
+          'policy-reflection-bg': '#dbeafe',
+          'policy-reflection-fg': '#1e40af',
+          'policy-reflection-border': '#93c5fd',
+          'policy-reference-bg': '#ede9fe',
+          'policy-reference-fg': '#6d28d9',
+          'policy-reference-border': '#c4b5fd',
+          'citizen-autonomy-bg': '#d1fae5',
+          'citizen-autonomy-fg': '#047857',
+          'citizen-autonomy-border': '#6ee7b7',
+        },
+
+        // 배경/표면 (design.md §7.1)
+        bg: '#F8FAFC',
         surface: {
-          DEFAULT: '#ffffff',
+          DEFAULT: '#FFFFFF',
           hover: '#f3f4f6',
         },
         border: {
           DEFAULT: '#e5e7eb',
-          focus: '#2563eb',
+          focus: '#1E40AF',
         },
         text: {
-          DEFAULT: '#111827',
-          secondary: '#6b7280',
-          muted: '#9ca3af',
-          disabled: '#d1d5db',
+          DEFAULT: '#0F172A',
+          secondary: '#475569',
+          muted: '#64748B',
+          disabled: '#cbd5e1',
         },
       },
 
@@ -79,16 +95,17 @@ const config: Config = {
         mono: ['JetBrains Mono', 'D2Coding', 'monospace'],
       },
 
+      // design.md §7.1: scale xs(12) sm(14) base(16) lg(18) xl(20) 2xl(24) 3xl(30)
       fontSize: {
-        xs: '0.75rem',
-        sm: '0.8125rem',
-        base: '0.9375rem',
+        xs: '0.75rem',     // 12px
+        sm: '0.875rem',    // 14px
+        base: '1rem',      // 16px (design.md 표준)
         md: '1rem',
-        lg: '1.125rem',
-        xl: '1.375rem',
-        '2xl': '1.75rem',
-        '3xl': '2.25rem',
-        '4xl': '3rem',
+        lg: '1.125rem',    // 18px
+        xl: '1.25rem',     // 20px
+        '2xl': '1.5rem',   // 24px
+        '3xl': '1.875rem', // 30px
+        '4xl': '2.25rem',
       },
 
       spacing: {

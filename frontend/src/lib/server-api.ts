@@ -111,6 +111,10 @@ export interface SuccessCaseItem {
   sdg_goals: number[] | null;
   campus_id: string | null;
   policy_linked: boolean;
+  // M03-12 정책반영 기록 (0013)
+  policy_name: string | null;
+  effective_date: string | null;
+  policy_detail: string | null;
   global_transfer_candidate: boolean;
   view_count: number;
   cover_image_url: string | null;

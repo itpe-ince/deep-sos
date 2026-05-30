@@ -1,10 +1,32 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { AlertCircle, CheckCircle2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
+
+import { useToast } from '@/components/ui';
 import { api, ApiError } from '@/lib/api';
+import { cn } from '@/lib/utils';
+
+/**
+ * M01-01/02/03/04 — USCP V2 로그인 / 회원가입 (sitemap #10).
+ *
+ * 설계 근거:
+ *  - feature-spec §M01-01 (이메일 회원가입)
+ *  - feature-spec §M01-02 (만 14세 이상 확인)
+ *  - feature-spec §M01-03 (개인정보·이용약관 통합 동의)
+ *  - feature-spec §M01-04 (이메일 로그인)
+ *  - feature-spec §M01-13 (비밀번호 보안 정책)
+ *  - design.md §7.2.1 (window.alert/confirm 금지 → Toast/ConfirmModal)
+ *  - mockup/pages/public/login.html (Auth 탭·통합 동의 UI)
+ *
+ * URL 분기:
+ *   /login                — 로그인 탭 기본 (default mode='login')
+ *   /login?tab=signup     — 회원가입 탭 (Header GuestMenu '회원가입' 진입점)
+ *   /login?next=/user/profile — 인증 redirect 시 복귀 URL 보존 (§2.4.2)
+ */
 
 interface TokenResponse {
   access_token: string;
@@ -13,331 +35,527 @@ interface TokenResponse {
   expires_in: number;
 }
 
+interface SignupResponse {
+  user_id: string;
+  email: string;
+  name: string;
+  email_verification_sent: boolean;
+  message: string;
+}
+
+interface SignupErrorDetail {
+  code:
+    | 'agreements_required'
+    | 'age_below_minimum'
+    | 'password_too_weak'
+    | 'email_already_registered';
+  message: string;
+}
+
 type Mode = 'login' | 'signup';
 
-/**
- * P-10 로그인/회원가입 — mockup/pages/public/login.html 포팅
- * Sprint 1: 실제 FastAPI /auth/login + /auth/register 연동
- */
+const CURRENT_YEAR = new Date().getFullYear();
+const MIN_BIRTH_YEAR = 1900;
+const MAX_BIRTH_YEAR = CURRENT_YEAR - 14;
+
+const PW_PATTERN =
+  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]{8,}$/;
+
 export default function LoginPage() {
   const router = useRouter();
-  const [mode, setMode] = useState<Mode>('login');
+  const searchParams = useSearchParams();
+  const toast = useToast();
+
+  const initialMode: Mode =
+    (searchParams?.get('tab') as Mode) === 'signup' ? 'signup' : 'login';
+  const nextUrl = searchParams?.get('next') ?? '/';
+
+  const [mode, setMode] = useState<Mode>(initialMode);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const [email, setEmail] = useState('test@univ.ac.kr');
-  const [password, setPassword] = useState('test12345');
+  // ── Login fields ─────────────────────────────────────────
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  // ── Signup-only fields ───────────────────────────────────
   const [name, setName] = useState('');
-  const [role, setRole] = useState<'student' | 'professor' | 'citizen' | 'enterprise'>('citizen');
-  const [campusCode, setCampusCode] = useState<'DJ' | 'GJ' | 'YS' | 'SJ' | ''>('');
-  const [agreed, setAgreed] = useState(false);
+  const [birthYear, setBirthYear] = useState<string>('');
+  const [agreedPrivacy, setAgreedPrivacy] = useState(false);
+  const [agreedService, setAgreedService] = useState(false);
+  const [agreedAge, setAgreedAge] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  // URL ?tab= 변경 시 모드 동기화
+  useEffect(() => {
+    const t = searchParams?.get('tab');
+    if (t === 'signup' || t === 'login') {
+      setMode(t);
+    }
+  }, [searchParams]);
+
+  // ── Validations (M01-02/03/13) ───────────────────────────
+  const birthYearNum = Number(birthYear);
+  const isBirthYearValid = useMemo(() => {
+    if (!birthYear) return false;
+    if (!Number.isInteger(birthYearNum)) return false;
+    return birthYearNum >= MIN_BIRTH_YEAR && birthYearNum <= MAX_BIRTH_YEAR;
+  }, [birthYear, birthYearNum]);
+
+  const isPasswordValid = useMemo(
+    () => (password ? PW_PATTERN.test(password) : false),
+    [password],
+  );
+
+  const isSignupReady =
+    !!email.trim() &&
+    isPasswordValid &&
+    name.trim().length >= 2 &&
+    isBirthYearValid &&
+    agreedPrivacy &&
+    agreedService &&
+    agreedAge;
+
+  function switchMode(next: Mode) {
+    setMode(next);
+    const params = new URLSearchParams(searchParams?.toString() ?? '');
+    if (next === 'signup') {
+      params.set('tab', 'signup');
+    } else {
+      params.delete('tab');
+    }
+    const qs = params.toString();
+    router.replace(qs ? `/login?${qs}` : '/login');
+  }
+
+  async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
+    if (!isSignupReady || loading) return;
     setLoading(true);
-
     try {
-      if (mode === 'signup') {
-        if (!agreed) {
-          throw new Error('이용약관에 동의해주세요.');
-        }
-        await api.post('/auth/register', {
-          email,
-          password,
-          name,
-          role,
-          campus_code: campusCode || null,
-        });
-      }
+      const res = await api.post<SignupResponse>('/auth/signup', {
+        email: email.trim(),
+        password,
+        name: name.trim(),
+        birth_year: birthYearNum,
+        agreements: { privacy: agreedPrivacy, service: agreedService },
+      });
+      toast.success(
+        res.email_verification_sent
+          ? '회원가입 완료! 이메일 인증 메일을 확인해 주세요.'
+          : '회원가입 완료. 로그인하여 이용해 주세요.',
+        5000,
+      );
+      // 가입 직후 로그인 탭으로 전환
+      switchMode('login');
+      setPassword(''); // 보안: 가입 후 비밀번호 입력값 초기화
+    } catch (err) {
+      handleSignupError(err);
+    } finally {
+      setLoading(false);
+    }
+  }
 
-      const tokens = await api.post<TokenResponse>('/auth/login', { email, password });
+  function handleSignupError(err: unknown) {
+    if (err instanceof ApiError) {
+      const detail = (err.detail as { detail?: SignupErrorDetail })?.detail;
+      const code = detail?.code;
+      if (code === 'agreements_required') {
+        toast.error('이용약관·개인정보 처리방침에 모두 동의해 주세요.');
+        return;
+      }
+      if (code === 'age_below_minimum') {
+        toast.error('만 14세 이상부터 이용 가능합니다.');
+        return;
+      }
+      if (code === 'password_too_weak') {
+        toast.error(
+          '비밀번호는 8자 이상이며 영문·숫자·특수문자를 모두 포함해야 합니다.',
+        );
+        return;
+      }
+      if (code === 'email_already_registered') {
+        toast.error('이미 등록된 이메일입니다. 로그인해 주세요.');
+        return;
+      }
+      toast.error(detail?.message ?? err.message);
+      return;
+    }
+    toast.error(err instanceof Error ? err.message : '회원가입 실패');
+  }
+
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
+    if (loading) return;
+    setLoading(true);
+    try {
+      const tokens = await api.post<TokenResponse>('/auth/login', {
+        email: email.trim(),
+        password,
+      });
       localStorage.setItem('access_token', tokens.access_token);
       localStorage.setItem('refresh_token', tokens.refresh_token);
       window.dispatchEvent(new Event('auth-change'));
-      router.push('/');
+      toast.success('로그인되었습니다.');
+      router.push(nextUrl);
       router.refresh();
     } catch (err) {
       if (err instanceof ApiError) {
-        const detail = (err.detail as { detail?: string } | undefined)?.detail;
-        setError(detail ?? err.message);
-      } else if (err instanceof Error) {
-        setError(err.message);
+        if (err.status === 423) {
+          toast.error('5회 실패로 30분간 계정이 잠금되었습니다.');
+        } else if (err.status === 401) {
+          toast.error('이메일 또는 비밀번호가 올바르지 않습니다.');
+        } else if (err.status === 429) {
+          toast.warning('로그인 시도가 너무 많습니다. 잠시 후 다시 시도해 주세요.');
+        } else {
+          toast.error('로그인 실패: ' + err.message);
+        }
       } else {
-        setError('알 수 없는 오류가 발생했습니다.');
+        toast.error(err instanceof Error ? err.message : '로그인 실패');
       }
     } finally {
       setLoading(false);
     }
   }
 
+  function toggleAgreeAll(checked: boolean) {
+    setAgreedAge(checked);
+    setAgreedPrivacy(checked);
+    setAgreedService(checked);
+  }
+
+  const allAgreed = agreedAge && agreedPrivacy && agreedService;
+
   return (
-    <div className="grid min-h-[calc(100vh-64px)] lg:grid-cols-2">
-      <aside className="relative hidden flex-col justify-between overflow-hidden p-12 text-white lg:flex"
-        style={{
-          background:
-            'radial-gradient(circle at 20% 20%, #2563eb 0%, transparent 40%), radial-gradient(circle at 80% 80%, #7c3aed 0%, transparent 40%), linear-gradient(135deg, #1e3a8a 0%, #4c1d95 100%)',
-        }}>
+    <div
+      className="container-content py-12"
+      data-testid={mode === 'signup' ? 'signup-page' : 'login-page'}
+    >
+      <div className="mx-auto max-w-md">
+        <div className="mb-6 flex justify-center">
+          <Image
+            src="/logo.png"
+            alt="국립공주대학교 글로컬사업단 지역사회특화센터"
+            width={200}
+            height={40}
+            priority
+          />
+        </div>
+
+        <h1 className="mb-6 text-center text-2xl font-black text-text">
+          {mode === 'signup' ? 'USCP 회원가입' : '로그인'}
+        </h1>
+
+        {/* Auth 탭 */}
         <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
-            backgroundSize: '40px 40px',
-          }}
-        />
-        <Link href="/" className="relative z-10 flex items-center gap-3">
-          <Image src="/logo.png" alt="국립공주대학교" width={140} height={28} className="brightness-0 invert" />
-          <div className="flex flex-col leading-tight">
-            <span className="text-xl font-black tracking-tight">USCP</span>
-            <span className="text-xs font-semibold tracking-wider text-white/60">온라인 사회공헌 플랫폼</span>
-          </div>
-        </Link>
-        <div className="relative z-10">
-          <div className="mb-6 inline-block rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold backdrop-blur-sm">
-            ⭐ 2025 글로컬대학 본지정 사업
-          </div>
-          <h1 className="mb-5 text-4xl font-black leading-tight tracking-tight text-white">
-            지역의 문제를
-            <br />
-            함께 해결하는 곳.
-          </h1>
-          <p className="mb-8 max-w-md text-md text-white/75">
-            대학의 역량과 시민의 참여로 만들어가는 사회공헌 플랫폼에 함께해주세요.
-            여러분의 목소리가 지역을 바꾸는 첫걸음이 됩니다.
-          </p>
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              ['해결된 문제', '127건'],
-              ['진행 프로젝트', '12개'],
-              ['누적 봉사시간', '2,845시간'],
-              ['참여 시민', '1,438명'],
-            ].map(([label, val]) => (
-              <div
-                key={label}
-                className="rounded-lg border border-white/10 bg-white/5 p-4 backdrop-blur-sm"
-              >
-                <div className="text-xs opacity-70">{label}</div>
-                <div className="mt-1 text-lg font-extrabold">{val}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="relative z-10 text-xs opacity-60">
-          © 2026 USCP · 지역사회특화센터 · ESG센터 · 국제협력센터
-        </div>
-      </aside>
-
-      <div className="flex items-center justify-center overflow-y-auto bg-surface p-8 lg:p-12">
-        <div className="w-full max-w-md">
-          <h2 className="mb-2 text-2xl font-extrabold tracking-tight">환영합니다</h2>
-          <p className="mb-8 text-text-secondary">
-            {mode === 'login'
-              ? '로그인하고 우리 지역을 함께 만들어가요'
-              : '가입하고 활동을 시작하세요'}
-          </p>
-
-          <div className="mb-6 flex gap-0.5 rounded-md bg-surface-hover p-1">
+          className="mb-6 grid grid-cols-2 overflow-hidden rounded-md border border-border bg-bg"
+          role="tablist"
+          aria-label="인증 모드"
+        >
+          {(['login', 'signup'] as const).map((m) => (
             <button
+              key={m}
               type="button"
-              onClick={() => setMode('login')}
-              className={`flex-1 rounded-sm px-3 py-3 text-sm font-semibold transition ${
-                mode === 'login'
-                  ? 'bg-surface text-primary shadow-sm'
-                  : 'text-text-secondary'
-              }`}
+              role="tab"
+              aria-selected={mode === m}
+              aria-controls={m === 'signup' ? 'signup-form' : 'login-form'}
+              onClick={() => switchMode(m)}
+              data-testid={`auth-tab-${m}`}
+              className={cn(
+                'px-4 py-3 text-sm font-semibold transition',
+                mode === m
+                  ? 'bg-surface text-primary'
+                  : 'text-text-secondary hover:text-text',
+              )}
             >
-              로그인
+              {m === 'login' ? '로그인' : '회원가입'}
             </button>
-            <button
-              type="button"
-              onClick={() => setMode('signup')}
-              className={`flex-1 rounded-sm px-3 py-3 text-sm font-semibold transition ${
-                mode === 'signup'
-                  ? 'bg-surface text-primary shadow-sm'
-                  : 'text-text-secondary'
-              }`}
-            >
-              회원가입
-            </button>
-          </div>
+          ))}
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {mode === 'signup' && (
-              <>
-                <div>
-                  <label className="mb-2 block text-sm font-semibold">
-                    이름 <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                    placeholder="박학생"
-                    className="w-full rounded-md border border-border bg-surface px-4 py-3 text-base outline-none focus:border-primary focus:ring-3 focus:ring-primary/10"
-                  />
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-semibold">역할</label>
-                  <select
-                    value={role}
-                    onChange={(e) => setRole(e.target.value as typeof role)}
-                    className="w-full rounded-md border border-border bg-surface px-4 py-3 text-base outline-none focus:border-primary focus:ring-3 focus:ring-primary/10"
-                  >
-                    <option value="citizen">시민</option>
-                    <option value="student">학생</option>
-                    <option value="professor">교수</option>
-                    <option value="enterprise">기업/기관</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-semibold">캠퍼스</label>
-                  <select
-                    value={campusCode}
-                    onChange={(e) => setCampusCode(e.target.value as typeof campusCode)}
-                    className="w-full rounded-md border border-border bg-surface px-4 py-3 text-base outline-none focus:border-primary focus:ring-3 focus:ring-primary/10"
-                  >
-                    <option value="">선택 안 함</option>
-                    <option value="DJ">대전</option>
-                    <option value="GJ">공주</option>
-                    <option value="YS">예산</option>
-                    <option value="SJ">세종</option>
-                  </select>
-                </div>
-              </>
-            )}
-
-            <div>
-              <label className="mb-2 block text-sm font-semibold">
-                이메일 <span className="text-danger">*</span>
-              </label>
+        {mode === 'login' ? (
+          <form
+            id="login-form"
+            onSubmit={handleLogin}
+            className="space-y-4"
+            data-testid="login-form"
+          >
+            <Field label="이메일">
               <input
                 type="email"
+                autoComplete="email"
+                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="your@email.com"
-                className="w-full rounded-md border border-border bg-surface px-4 py-3 text-base outline-none focus:border-primary focus:ring-3 focus:ring-primary/10"
+                className={inputClass}
               />
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-semibold">
-                비밀번호 <span className="text-danger">*</span>
-              </label>
+            </Field>
+            <Field label="비밀번호">
               <input
                 type="password"
+                autoComplete="current-password"
+                required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={8}
-                placeholder="8자 이상"
-                className="w-full rounded-md border border-border bg-surface px-4 py-3 text-base outline-none focus:border-primary focus:ring-3 focus:ring-primary/10"
+                className={inputClass}
               />
-            </div>
-
-            {mode === 'signup' && (
-              <label className="flex items-start gap-2 text-sm text-text-secondary">
-                <input
-                  type="checkbox"
-                  checked={agreed}
-                  onChange={(e) => setAgreed(e.target.checked)}
-                  className="mt-0.5"
-                />
-                <span>
-                  <a href="#" className="text-primary">
-                    이용약관
-                  </a>{' '}
-                  및{' '}
-                  <a href="#" className="text-primary">
-                    개인정보 처리방침
-                  </a>
-                  에 동의합니다
-                </span>
-              </label>
-            )}
-
-            {error && (
-              <div className="rounded-md border border-danger/30 bg-danger/5 p-3 text-sm text-danger">
-                {error}
-              </div>
-            )}
-
+            </Field>
             <button
               type="submit"
-              disabled={loading}
-              className="w-full rounded-md bg-primary px-6 py-4 text-md font-semibold text-white transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={loading || !email || !password}
+              data-testid="login-submit"
+              className={cn(submitClass, 'bg-primary hover:bg-primary-hover')}
             >
-              {loading ? '처리 중...' : mode === 'login' ? '로그인' : '회원가입'}
+              {loading ? '로그인 중...' : '로그인'}
             </button>
-          </form>
 
-          {mode === 'login' && (
-            <div className="mt-3 text-right">
+            <div className="flex items-center justify-between text-sm">
               <Link
                 href="/password/forgot"
-                className="text-xs text-text-secondary hover:text-primary hover:underline"
+                className="text-text-secondary hover:text-primary"
               >
                 비밀번호를 잊으셨나요?
               </Link>
+              <button
+                type="button"
+                onClick={() => switchMode('signup')}
+                className="font-semibold text-primary hover:underline"
+              >
+                회원가입
+              </button>
             </div>
-          )}
+          </form>
+        ) : (
+          <form
+            id="signup-form"
+            onSubmit={handleSignup}
+            className="space-y-4"
+            data-testid="signup-form"
+            noValidate
+          >
+            <Notice>
+              <strong>USCP 회원가입 안내</strong>
+              <br />
+              <span className="text-xs">
+                만 14세 이상만 이용 가능합니다. 광고성 정보 발송은 없으며,
+                모든 알림은 의제 진행 상황 이메일로만 전달됩니다.
+              </span>
+            </Notice>
 
-          <div className="my-6 flex items-center gap-3 text-xs text-text-muted">
-            <div className="h-px flex-1 bg-border" />
-            또는 소셜 로그인
-            <div className="h-px flex-1 bg-border" />
-          </div>
+            <Field label="이메일">
+              <input
+                type="email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className={inputClass}
+                data-testid="signup-email"
+              />
+            </Field>
 
-          <div className="grid grid-cols-3 gap-3">
-            <a
-              href="/api/v1/auth/oauth/kakao"
-              className="flex items-center justify-center rounded-md border border-border bg-[#FEE500] px-4 py-3 text-sm font-semibold text-[#3C1E1E] transition hover:brightness-95"
+            <Field
+              label="비밀번호"
+              hint="8자 이상 · 영문 · 숫자 · 특수문자 모두 포함 (M01-13)"
+              hintValid={!!password && isPasswordValid}
+              hintInvalid={!!password && !isPasswordValid}
             >
-              카카오
-            </a>
-            <a
-              href="/api/v1/auth/oauth/naver"
-              className="flex items-center justify-center rounded-md border border-border bg-[#03C75A] px-4 py-3 text-sm font-semibold text-white transition hover:brightness-95"
-            >
-              네이버
-            </a>
-            <a
-              href="/api/v1/auth/oauth/google"
-              className="flex items-center justify-center rounded-md border border-border bg-white px-4 py-3 text-sm font-semibold text-text-primary transition hover:bg-bg-muted"
-            >
-              Google
-            </a>
-          </div>
+              <input
+                type="password"
+                autoComplete="new-password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={inputClass}
+                data-testid="signup-password"
+                aria-invalid={!!password && !isPasswordValid}
+              />
+            </Field>
 
-          <div className="mt-6 text-center text-sm text-text-secondary">
-            {mode === 'login' ? (
-              <>
-                아직 회원이 아니신가요?{' '}
-                <button
-                  type="button"
-                  onClick={() => setMode('signup')}
-                  className="font-semibold text-primary"
+            <Field label="이름">
+              <input
+                type="text"
+                autoComplete="name"
+                required
+                minLength={2}
+                maxLength={20}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className={inputClass}
+                data-testid="signup-name"
+              />
+            </Field>
+
+            <Field
+              label="출생연도 (만 14세 확인)"
+              hint={
+                isBirthYearValid
+                  ? '확인 완료'
+                  : birthYear
+                    ? `만 14세 이상은 ${MAX_BIRTH_YEAR}년 이전 출생자만 가능합니다`
+                    : '4자리 숫자 입력 (예: 2008)'
+              }
+              hintValid={isBirthYearValid}
+              hintInvalid={!!birthYear && !isBirthYearValid}
+            >
+              <input
+                type="number"
+                inputMode="numeric"
+                min={MIN_BIRTH_YEAR}
+                max={MAX_BIRTH_YEAR}
+                placeholder={String(MAX_BIRTH_YEAR - 10)}
+                required
+                value={birthYear}
+                onChange={(e) => setBirthYear(e.target.value)}
+                className={inputClass}
+                data-testid="signup-birth-year"
+                aria-invalid={!!birthYear && !isBirthYearValid}
+              />
+            </Field>
+
+            {/* M01-03 통합 동의 */}
+            <fieldset
+              className="rounded-md border border-border bg-surface p-4"
+              data-testid="signup-agreements"
+            >
+              <legend className="px-1 text-sm font-semibold text-text">
+                약관 및 개인정보 동의 (필수)
+              </legend>
+              <label className="mb-2 flex cursor-pointer items-center gap-2 border-b border-border pb-2 text-sm font-semibold">
+                <input
+                  type="checkbox"
+                  checked={allAgreed}
+                  onChange={(e) => toggleAgreeAll(e.target.checked)}
+                  className="h-4 w-4"
+                  data-testid="signup-agree-all"
+                />
+                모두 동의합니다
+              </label>
+              <label className="mb-1 flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={agreedAge}
+                  onChange={(e) => setAgreedAge(e.target.checked)}
+                  className="h-4 w-4"
+                  data-testid="signup-agree-age"
+                />
+                <strong>[필수]</strong> 만 14세 이상입니다
+              </label>
+              <label className="mb-1 flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={agreedService}
+                  onChange={(e) => setAgreedService(e.target.checked)}
+                  className="h-4 w-4"
+                  data-testid="signup-agree-service"
+                />
+                <strong>[필수]</strong>{' '}
+                <Link
+                  href="/terms/service"
+                  target="_blank"
+                  className="text-primary hover:underline"
                 >
-                  회원가입
-                </button>
-              </>
-            ) : (
-              <>
-                이미 회원이신가요?{' '}
-                <button
-                  type="button"
-                  onClick={() => setMode('login')}
-                  className="font-semibold text-primary"
+                  이용약관
+                </Link>
+                에 동의합니다
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={agreedPrivacy}
+                  onChange={(e) => setAgreedPrivacy(e.target.checked)}
+                  className="h-4 w-4"
+                  data-testid="signup-agree-privacy"
+                />
+                <strong>[필수]</strong>{' '}
+                <Link
+                  href="/terms/privacy"
+                  target="_blank"
+                  className="text-primary hover:underline"
                 >
-                  로그인
-                </button>
-              </>
-            )}
-          </div>
-        </div>
+                  개인정보 수집·이용
+                </Link>
+                에 동의합니다
+              </label>
+              <p className="mt-3 text-xs text-text-muted">
+                · 필수 항목에 동의하지 않으면 회원가입이 제한됩니다.
+                <br />· 광고성 정보 발송 동의 항목은 별도 제공하지 않습니다.
+              </p>
+            </fieldset>
+
+            <button
+              type="submit"
+              disabled={loading || !isSignupReady}
+              data-testid="signup-submit"
+              className={cn(
+                submitClass,
+                'bg-primary hover:bg-primary-hover disabled:bg-text-muted',
+              )}
+            >
+              {loading ? '가입 처리 중...' : '회원가입'}
+            </button>
+
+            <div className="text-center text-sm">
+              이미 계정이 있으신가요?{' '}
+              <button
+                type="button"
+                onClick={() => switchMode('login')}
+                className="font-semibold text-primary hover:underline"
+              >
+                로그인
+              </button>
+            </div>
+          </form>
+        )}
       </div>
+    </div>
+  );
+}
+
+const inputClass =
+  'w-full rounded-md border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary';
+
+const submitClass =
+  'w-full rounded-md px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed';
+
+function Field({
+  label,
+  hint,
+  hintValid,
+  hintInvalid,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  hintValid?: boolean;
+  hintInvalid?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1 block text-sm font-medium text-text">{label}</span>
+      {children}
+      {hint ? (
+        <span
+          className={cn(
+            'mt-1 flex items-center gap-1 text-xs',
+            hintValid ? 'text-success' : hintInvalid ? 'text-danger' : 'text-text-muted',
+          )}
+        >
+          {hintValid ? (
+            <CheckCircle2 className="h-3 w-3" aria-hidden="true" />
+          ) : hintInvalid ? (
+            <AlertCircle className="h-3 w-3" aria-hidden="true" />
+          ) : null}
+          {hint}
+        </span>
+      ) : null}
+    </label>
+  );
+}
+
+function Notice({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="rounded-md border-l-4 border-warning bg-warning/10 p-3 text-sm text-text">
+      {children}
     </div>
   );
 }

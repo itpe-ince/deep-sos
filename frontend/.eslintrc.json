@@ -1,6 +1,38 @@
 {
   "extends": ["next/core-web-vitals", "next/typescript"],
   "rules": {
-    "react/no-unescaped-entities": "off"
-  }
+    "react/no-unescaped-entities": "off",
+    "no-alert": "error",
+    "no-restricted-globals": [
+      "error",
+      {
+        "name": "alert",
+        "message": "USCP V2 §7.2.1: window.alert 금지. components/ui/Toast 의 useToast().info|success|error|warning 으로 대체."
+      },
+      {
+        "name": "confirm",
+        "message": "USCP V2 §7.2.1: window.confirm 금지. components/ui/ConfirmModal 로 대체."
+      },
+      {
+        "name": "prompt",
+        "message": "USCP V2 §7.2.1: window.prompt 금지. 별도 form/Modal 로 대체."
+      }
+    ],
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "CallExpression[callee.object.name='window'][callee.property.name=/^(alert|confirm|prompt)$/]",
+        "message": "USCP V2 §7.2.1: window.alert/confirm/prompt 금지. Modal/ConfirmModal/Toast 사용."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["tests/**/*.{ts,tsx}", "playwright.config.ts"],
+      "rules": {
+        "react-hooks/rules-of-hooks": "off",
+        "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }]
+      }
+    }
+  ]
 }

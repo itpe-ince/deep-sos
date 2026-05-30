@@ -1,20 +1,240 @@
 {
-  "sessionCount": 32,
+  "sessionCount": 35,
   "lastSession": {
-    "startedAt": "2026-05-29T19:03:10.822Z",
+    "startedAt": "2026-05-30T06:14:16.975Z",
     "platform": "claude",
     "level": "Enterprise"
   },
   "currentFeature": "uscp-v2",
-  "currentPhase": "design",
+  "currentPhase": "check",
+  "currentSprint": "Sprint 3 Day 8-13 ✅ — M03 18/18 기능 완료 (M03-11/12/14/15/16/17/18 신규 구현 + Check 완료), Match Rate 86%, Sprint 4(M04) 진입 권장",
+  "sprintTargetDate": "2026-06-12",
+  "nextCheckDate": "2026-06-12",
   "planCreatedAt": "2026-05-27T15:30:00.000Z",
   "planDocument": "docs/01-plan/features/uscp-v2.plan.md",
   "designCreatedAt": "2026-05-27T15:45:00.000Z",
   "designDocument": "docs/02-design/features/uscp-v2.design.md",
+  "designVersion": "1.5",
+  "designUpdatedAt": "2026-05-30T00:00:00.000Z",
+  "analysisCreatedAt": "2026-05-30T00:00:00.000Z",
+  "analysisDocument": "docs/03-analysis/features/uscp-v2.analysis.md",
+  "matchRate": 86,
+  "matchRateTarget": 90,
+  "matchRateHistory": {
+    "v1.0_initial": 22,
+    "v2.0_sprint0_end": 41,
+    "v3.0_sprint1_end": 62,
+    "v4.0_sprint2_end": 80,
+    "v5.0_sprint3_day8-13": 86
+  },
+  "p0Completion": "13/13 (100%) + Sprint 2 C10 회수 = 14/14",
+  "sprint2Completion": "M02 21/21 (100%)",
+  "sprint3Entry": "recommended (M03 리빙랩 18 기능, 게이트키핑 패턴 복제, 예상 10-12일)",
+  "sprint1CaveatsResolved": {
+    "CR-1": "completed (m03~m09 7개 placeholder spec 생성, 39 tests in 13 files 확인)",
+    "CR-2": "completed (app/application/__init__.py + app/infrastructure/{db,email,storage,external,audit}/__init__.py 신설)",
+    "CR-3": "completed (tests/e2e/visual-baseline/README.md 신설, baseline 디렉터리 활성화)"
+  },
+  "sprint2Caveats": [
+    "CR-4: Frontend src/features/issues/ 디렉터리 — M02 첫 PR 자연 도입 (비차단)",
+    "CR-5: V1 잔재 페이지 (/campus, /volunteers, /portfolio, /guide) 격리 — Day 1 권장",
+    "CR-6: M01-09 알림 토글 localStorage → DB 컬럼 마이그레이션"
+  ],
+  "sprint2CaveatsResolved": {
+    "CR-4": "completed (src/features/issues/{api,types,components,index.ts} 4파일 + RegionSelect/PhotoUpload 컴포넌트)",
+    "CR-5": "completed (DeprecatedNotice 공통 컴포넌트 + campus/volunteers/guide/portfolio 4 페이지 deprecated 안내)",
+    "CR-6": "completed (Alembic 0011 — users.notification_email_enabled BOOL DEFAULT TRUE)"
+  },
+  "sprint2Progress": {
+    "M02-01_submit_issue": "completed (presentation/issues/router.py + application/issue_service.py + /user/issue-new + features/issues/)",
+    "M02-02_list_issues": "completed (V2 /issues 재작성 + IssueCard + filter/sort/cursor pagination + URL 동기화)",
+    "M02-03_issue_detail": "completed (V2 /issues/[id] + StageStepper history + 사진 갤러리)",
+    "M02-04_vote": "completed (VoteButton + Optimistic Update + 1인 1회 UNIQUE + 비로그인 redirect)",
+    "M02-05_comments": "completed (CommentSection + ConfirmModal danger 삭제 — M01-10 패턴 복제)",
+    "M02-06_filter": "completed (큐 필터 — 단계/지역/검색 URL 동기화)",
+    "M02-07_gatekeeping_queue": "completed (/admin/issues + 단계별 통계 칩 + IssueRow + Stats)",
+    "M02-08_review_screen": "completed (/admin/issues/[id] + StageStepper history + 액션 패널)",
+    "M02-09_to_M02-13_transitions": "completed (gatekeeping_service state machine + TransitionDialog + reviewing track 필수 + email queue)",
+    "M02-11_transition_in_progress": "completed (단계 전환 함수 통합)",
+    "M02-14_reject": "completed (reject_issue_v2 + RejectDialog danger + 사유 30자 이상 검증)",
+    "M02-15_history_auto": "completed (issue_stage_history INSERT 자동화 + audit_log 통합)",
+    "M02-16_stage_emails": "completed (notify_under_review/published/mentor_matched/in_progress/resolved/rejected 큐 발송)",
+    "M02-17_history_query": "completed (GET /admin/issues/{id}/history)",
+    "M02-18_stats": "completed (GET /admin/issues/stats — 단계별 카운트)",
+    "M02-19_track_only": "completed (PATCH /admin/issues/{id}/track 단독 변경)",
+    "M02-20_keyword_search": "completed (pg_trgm 확장 보강 0012 + useDebouncedValue 300ms hook + /issues 와 /admin/issues 적용)",
+    "M02-21_resolve_by_comment": "completed (resolve_by_comment_v2 + admin endpoint + ResolveByCommentDialog + radiogroup 댓글 선택)"
+  },
+  "sprint2_v2_routers": [
+    "app/presentation/auth (signup + login)",
+    "app/presentation/common (stats + regions/map + health)",
+    "app/presentation/issues (GET/POST /issues + /vote + /comments + presign)",
+    "app/presentation/issues admin_router (queue + stats + transition + reject + track + history)"
+  ],
+  "sprint3_v2_routers": [
+    "app/presentation/projects (GET /projects, GET /projects/{id})",
+    "app/presentation/projects admin_router (POST /admin/projects — M03-06)"
+  ],
+  "sprint3Progress": {
+    "M03-01_06_create_project": "completed (project_service + presentation/projects + features/projects + /admin/projects/new + 6항 spec)",
+    "M03-01_list_projects": "completed (V2 /projects 재작성 + RegionSelect + ProjectCard + cursor pagination + URL 동기화)",
+    "M03-02_project_detail": "completed (V2 /projects/[id] + ProjectStageStepper 3단계 + source_issue 링크)",
+    "M03-03_timeline_query": "completed (GET /projects/{id}/timeline endpoint + Timeline 컴포넌트 + 빈 상태 EmptyState)",
+    "M03-07_update_delete": "completed (lifecycle_service.update_project_v2 + delete_project_v2 + ConfirmModal danger + completed 보호)",
+    "M03-08_timeline_create": "completed (project_service.create_timeline_entry_v2 + require_project_member + TimelineForm + 자동 refetch)",
+    "M03-09_deliverable_upload": "completed (project_service.presign + create + DeliverableUpload + 100MB 제한 + stub-aware uploadDeliverableFile)",
+    "M03-10_deliverable_meta": "completed (update_deliverable_meta_v2 + 업로드자/operator 권한)",
+    "M03-13_lifecycle_transition": "completed (lifecycle_service.transition_project_v2 state machine 3단계 + project_stage_history + audit_logs + notify_project_* + ProjectTransitionDialog)",
+    "M03-11_to_M03-18_remaining": "pending (M03-11/12 성공사례·정책반영, M03-14 의제 연결 보강, M03-15~18 게시판)"
+  },
+  "iterationCount": 0,
+  "doStartedAt": "2026-05-30T00:00:00.000Z",
+  "migrationsCreated": [
+    "0007_v2_enums.py",
+    "0008_v2_users.py",
+    "0009_v2_issues.py",
+    "0010_v2_new_tables.py"
+  ],
+  "domainCreated": [
+    "app/domain/__init__.py",
+    "app/domain/enums.py"
+  ],
+  "cleanArchitectureDirs": [
+    "app/domain",
+    "app/presentation",
+    "app/application",
+    "app/infrastructure"
+  ],
+  "frontendUiCreated": [
+    "frontend/src/components/ui/Modal.tsx",
+    "frontend/src/components/ui/ConfirmModal.tsx",
+    "frontend/src/components/ui/Toast.tsx",
+    "frontend/src/components/ui/index.ts"
+  ],
+  "frontendDomainCreated": [
+    "frontend/src/components/domain/StageStepper.tsx",
+    "frontend/src/components/domain/TrackBadge.tsx",
+    "frontend/src/components/domain/index.ts"
+  ],
+  "tailwindTokensUpdated": {
+    "primary": "#1E40AF (was #2563eb)",
+    "secondary": "#475569 (was #059669)",
+    "regions": "5 (added cheonan)",
+    "stage_enum": "6 + rejected",
+    "track_enum": "3 (policy_reflection/reference/citizen_autonomy)",
+    "base_font": "16px (was 15px)"
+  },
+  "frontendLayoutUpdated": "frontend/src/app/layout.tsx (ToastProvider 등록)",
+  "eslintRulesAdded": [
+    "no-alert: error",
+    "no-restricted-globals (alert/confirm/prompt): error",
+    "no-restricted-syntax (window.alert/confirm/prompt): error",
+    "overrides: 제거 완료 (Day 10 V1 잔재 4파일 모두 마이그레이션)"
+  ],
+  "v1FilesMigrated": [
+    "src/app/admin/cms/banners/page.tsx (confirm → ConfirmModal + useToast)",
+    "src/components/issue/IssueInteractions.tsx (confirm → ConfirmModal + useToast)",
+    "src/components/admin/TipTapEditor.tsx (prompt/confirm/alert → 3개 Modal + useToast)",
+    "src/components/volunteer/VolunteerApplication.tsx (confirm → ConfirmModal, @deprecated 표시)"
+  ],
+  "playwrightV2Setup": {
+    "moduleDirectories": [
+      "tests/e2e/m01-auth",
+      "tests/e2e/m02-issues",
+      "tests/e2e/m03-projects",
+      "tests/e2e/m04-mentors",
+      "tests/e2e/m05-network",
+      "tests/e2e/m06-performance",
+      "tests/e2e/m07-cms",
+      "tests/e2e/m08-audit",
+      "tests/e2e/m09-common",
+      "tests/e2e/visual-baseline"
+    ],
+    "fixtures": [
+      "tests/e2e/fixtures/users.ts (4종 역할)",
+      "tests/e2e/fixtures/seed-v2.ts (ensureTestUsers + seedIssue + cleanupTestData)",
+      "tests/e2e/fixtures/api-mocks.ts (mockJson/Problem/LoginLocked/Reconsent/RateLimit)",
+      "tests/e2e/fixtures/uscp-test.ts (extended test + uscp.routingOk/modalCompliant/a11yClean)"
+    ],
+    "sampleSpecs": [
+      "m01-04-login.spec.ts (6항 검증: Happy/Error/권한/URL/Modal[N/A]/A11y + RateLimit) — 6 tests",
+      "m02-19-track-label.spec.ts (3종 트랙 뱃지 + 시각 회귀) — 7 tests"
+    ],
+    "playwrightConfigUpdates": [
+      "snapshotPathTemplate → tests/e2e/visual-baseline/...",
+      "JUnit XML reporter (CI 전용)",
+      "expect.toHaveScreenshot maxDiffPixelRatio 0.02"
+    ],
+    "ciIntegration": ".github/workflows/e2e.yml (PR/push: postgres+redis 서비스 + 백엔드/프론트 부팅 + 9 모듈 spec 실행 + spec-presence guard + artifact upload)"
+  },
+  "eslintOverridesAdded": [
+    "tests/**/*.{ts,tsx} + playwright.config.ts: react-hooks/rules-of-hooks off (Playwright use() false positive)"
+  ],
+  "backendMiddlewareCreated": [
+    "app/presentation/middleware/jwt_auth.py",
+    "app/presentation/middleware/reconsent_check.py",
+    "app/presentation/middleware/rate_limit.py",
+    "app/presentation/middleware/audit.py"
+  ],
+  "v1LegacyFilesToMigrate": [
+    "src/app/admin/cms/banners/page.tsx (confirm)",
+    "src/components/admin/TipTapEditor.tsx (alert/confirm/prompt)",
+    "src/components/volunteer/VolunteerApplication.tsx (confirm, V1 only)",
+    "src/components/issue/IssueInteractions.tsx (confirm)"
+  ],
+  "sprintProgress": {
+    "day_1_3_migrations": "completed",
+    "day_4_5_ui_components": "completed",
+    "day_6_7_middleware": "completed",
+    "day_8_9_design_tokens": "completed (primary #1E40AF + StageStepper + TrackBadge + region/stage/track 토큰)",
+    "day_10_v1_cleanup": "completed (4파일 ConfirmModal/Toast 마이그레이션 + ESLint overrides 제거)",
+    "day_11_13_e2e_setup": "completed (9 모듈 디렉터리 + 4 fixtures + 2 샘플 spec (13 tests) + playwright.config 갱신 + e2e.yml CI 통합)",
+    "day_14_analysis_gate": "completed (Match Rate 22% → 41%, P0 11/13 = 84.6%, Caveats CR-1/CR-2/CR-3 모두 해소)",
+    "sprint_1_target": "M09 공통 (12기능) + M01 회원·인증 (13기능) = 25기능 (목표 Match Rate 60%)",
+    "sprint_1_progress": {
+      "M09_completion": "12/12 (100%)",
+      "M09-01_stats_cards": "completed (4종 카드 + /common/stats 백엔드 + 0 fallback)",
+      "M09-02_process_bar": "completed (6단계 안내 + CTA + stage 토큰 활용)",
+      "M09-03_recent_issues": "completed (3건 카드 + 지역/단계/트랙 뱃지 + EmptyState)",
+      "M09-04_admin_dashboard": "completed (AdminStatsCards 4종 + GatekeepingQueuePreview + 6 nav cards)",
+      "M09-05_region_map": "completed (5개 지역 핀 + CustomOverlay + KAKAO 키 미설정 시 fallback)",
+      "M09-06_issue_location": "completed (기존 KakaoMap.tsx 유지 + Kakao 타입 통합 d.ts)",
+      "M09-07_email_queue": "completed (Redis Stream + exp backoff + dead-letter, infrastructure/email/queue.py)",
+      "M09-08_smtp_client": "completed (aiosmtplib + dev mode fallback, infrastructure/email/smtp_client.py)",
+      "M09-09_email_templates": "completed (15종 TemplateId + Jinja2 멀티 디렉터리 loader + fallback)",
+      "M09-10_header_gnb": "completed (V2 6개 메뉴 + 모바일 햄버거 Modal + aria-current + V1 /guide /volunteers /campus 제거)",
+      "M09-11_footer": "completed (V2 메뉴 + 약관·개인정보 링크 + 공주대·충남대 운영 기관)",
+      "M09-12_responsive": "completed (375/768/1280 viewport spec + 햄버거↔nav 전환 + URL 유지)",
+      "M01-01_email_signup": "completed (POST /auth/signup + login/page.tsx signup tab + Toast)",
+      "M01-02_age_verification": "completed (만 14세 검증 + birth_year aria-invalid + 비활성 submit)",
+      "M01-03_unified_consent": "completed (privacy + service 통합 동의 fieldset + 모두동의 토글)",
+      "M01-04_login_v2": "completed (POST /auth/login V2 + login_v2 use case + JWT 발급 + needs_reconsent)",
+      "M01-05_logout": "compatible (V1 라우터 유지, Header 로그아웃 버튼 정상 동작)",
+      "M01-06_password_change": "compatible (V1 /auth/password/change 유지, Sprint 2 V2 마이그레이션 예정)",
+      "M01-07_password_reset": "compatible (V1 /password/forgot, /password/reset 유지)",
+      "M01-08_profile": "completed (V2 페이지 재작성 — V1 avatar/department/organization 제거)",
+      "M01-09_notification_pref": "completed (이메일 알림 토글 + localStorage 임시 보관, V2 컬럼 Sprint 1 후반 예정)",
+      "M01-10_withdraw": "completed (ConfirmModal danger + 비밀번호 재확인 + POST /users/me/withdraw)",
+      "M01-11_terms_service_page": "placeholder (Sprint 4 M07 본격 구현 예정)",
+      "M01-12_terms_privacy_page": "placeholder (Sprint 4 M07 본격 구현 예정)",
+      "M01-13_password_security": "completed (복잡도 client+server + 5회 잠금 30분 + JWT TTL 1h/7d)",
+      "backend_v2_routers": [
+        "app/presentation/common/router.py (/common/{stats,regions/map,health})",
+        "app/presentation/auth/router.py (/auth/signup — M01-01/02/03/13)"
+      ],
+      "backend_v2_application": [
+        "app/application/auth_service.py (signup_v2 — 14세·동의·복잡도·terms_versions 자동 부여)"
+      ],
+      "backend_v2_infrastructure": [
+        "app/infrastructure/email/{queue,smtp_client,templates}.py",
+        "app/infrastructure/email/templates/notify_under_review.html (sample V2)"
+      ]
+    }
+  },
   "purpose": "build",
   "scope": {
     "modules": 9,
-    "features": 103,
+    "features": 116,
     "screens": 24,
     "agreedAmountKRW": 55000000,
     "supplyAmountKRW": 50000000,

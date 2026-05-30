@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
 
+import { ToastProvider } from '@/components/ui';
+
 export const metadata: Metadata = {
   title: {
     default: 'SOS랩 (USCP) — 대학과 지역이 함께 만드는 사회공헌 플랫폼',
@@ -31,7 +33,7 @@ export default function RootLayout({
         >
           본문으로 건너뛰기
         </a>
-        {children}
+        <ToastProvider>{children}</ToastProvider>
       </body>
     </html>
   );

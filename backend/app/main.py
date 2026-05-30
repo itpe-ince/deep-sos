@@ -14,6 +14,12 @@ from app.api.v1 import api_router
 from app.core.config import settings
 from app.core.logging import RequestIdMiddleware, configure_logging, get_logger
 from app.core.problem_details import register_problem_handlers
+from app.presentation.middleware import (
+    AuditMiddleware,
+    JwtAuthMiddleware,
+    RateLimitMiddleware,
+    ReconsentCheckMiddleware,
+)
 
 
 def _init_sentry() -> None:
@@ -59,8 +65,16 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
-    app.add_middleware(RequestIdMiddleware)
-    app.add_middleware(
+    # ── Middleware 체인 (FastAPI 는 LIFO 적용 — 역순 등록) ──────
+    # 설계 근거: docs/02-design/features/uscp-v2.design.md §6.3
+    # 실행 순서 (요청 진입):
+    #   CORS → RequestId → JwtAuth → ReconsentCheck → RateLimit → Audit → Router
+    app.add_middleware(AuditMiddleware)              # 6. write 후 감사 로그
+    app.add_middleware(RateLimitMiddleware)          # 5. 글로벌 rate limit
+    app.add_middleware(ReconsentCheckMiddleware)     # 4. 약관 재동의 검사
+    app.add_middleware(JwtAuthMiddleware)            # 3. JWT → request.state
+    app.add_middleware(RequestIdMiddleware)          # 2. request-id 부여
+    app.add_middleware(                              # 1. CORS (최외곽)
         CORSMiddleware,
         allow_origins=settings.cors_origins,
         allow_credentials=True,

@@ -1,166 +1,285 @@
+'use client';
+
+import { Search, Plus } from 'lucide-react';
 import Link from 'next/link';
-import type { Metadata } from 'next';
-import { List, MapPin, MessageCircle, ThumbsUp, Eye, Map as MapIcon } from 'lucide-react';
-import { serverFetch, type ListResponse, type IssueItem } from '@/lib/server-api';
-import { KakaoMap } from '@/components/map/KakaoMap';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
 
-export const metadata: Metadata = {
-  title: '지역 문제 제안',
-  description: '대학과 지역이 함께 해결할 지역 사회 문제를 제안하고 논의합니다.',
-};
+import { ISSUE_TRACKS } from '@/components/domain';
+import {
+  IssueCard,
+  REGIONS,
+  RegionSelect,
+  listIssues,
+  useDebouncedValue,
+  type IssueListItem,
+  type IssueListResponse,
+  type RegionCode,
+} from '@/features/issues';
+import type { IssueTrack } from '@/features/issues';
+import { cn } from '@/lib/utils';
 
-const CATEGORY_LABEL: Record<string, string> = {
-  environment: '환경',
-  safety: '안전',
-  transport: '교통',
-  welfare: '복지',
-  culture: '문화',
-  other: '기타',
-};
+/**
+ * M02-02: USCP V2 지역문제 광장 (sitemap #3).
+ *
+ * 설계 근거:
+ *  - feature-spec §M02-02 (제보 목록 카드형)
+ *  - design.md §7.3 #3 (IssueFilterBar + IssueCardList + TrackBadge + Pagination)
+ *  - mockup/pages/public/issues.html
+ *
+ * V2 변경:
+ *  - V1 의 location_lat/lng 의존 제거 (V2 region 컬럼 + KakaoMap 별도 분리)
+ *  - 필터: 지역·단계·트랙·키워드 + 정렬 (-created_at | -vote_count)
+ *  - URL query 동기화 (§2.4 — F5/공유 시 동일 결과)
+ *  - features/issues 모듈의 IssueCard + listIssues 사용
+ */
+type Stage = 'published' | 'mentor_assigned' | 'in_progress' | 'resolved';
+type SortKey = '-created_at' | '-vote_count';
 
-const STATUS_LABEL: Record<string, string> = {
-  submitted: '접수',
-  reviewing: '검토 중',
-  assigned: '배정',
-  progress: '진행 중',
-  resolved: '해결',
-  rejected: '반려',
-};
+const STAGES: { code: Stage | ''; label: string }[] = [
+  { code: '', label: '전체' },
+  { code: 'published', label: '공개등록' },
+  { code: 'mentor_assigned', label: '멘토배정' },
+  { code: 'in_progress', label: '처리중' },
+  { code: 'resolved', label: '해결완료' },
+];
 
-const STATUS_COLOR: Record<string, string> = {
-  submitted: 'bg-slate-100 text-slate-700',
-  reviewing: 'bg-amber-100 text-amber-700',
-  assigned: 'bg-sky-100 text-sky-700',
-  progress: 'bg-primary-light text-primary',
-  resolved: 'bg-secondary-light text-secondary',
-  rejected: 'bg-rose-100 text-rose-700',
-};
+export default function IssuesPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-interface PageProps {
-  searchParams: Promise<{ view?: string; category?: string }>;
-}
+  const initRegion = (searchParams?.get('region') as RegionCode) || '';
+  const initStage = (searchParams?.get('stage') as Stage) || '';
+  const initTrack = (searchParams?.get('track') as IssueTrack) || '';
+  const initQ = searchParams?.get('q') ?? '';
+  const initSort = (searchParams?.get('sort') as SortKey) || '-created_at';
 
-export default async function IssuesPage({ searchParams }: PageProps) {
-  const { view } = await searchParams;
-  const isMap = view === 'map';
-  const size = isMap ? 100 : 20;
-  const data = await serverFetch<ListResponse<IssueItem>>(
-    `/issues?page=1&size=${size}`,
-  );
+  const [region, setRegion] = useState<RegionCode | ''>(initRegion);
+  const [stage, setStage] = useState<Stage | ''>(initStage);
+  const [track, setTrack] = useState<IssueTrack | ''>(initTrack);
+  const [q, setQ] = useState(initQ);
+  const [sort, setSort] = useState<SortKey>(initSort);
+
+  // M02-20: 키워드 검색 300ms 디바운스 — 백엔드 호출 부하 완화
+  const debouncedQ = useDebouncedValue(q, 300);
+
+  const [items, setItems] = useState<IssueListItem[]>([]);
+  const [meta, setMeta] = useState<IssueListResponse['meta']>({
+    limit: 20,
+    has_more: false,
+    next_cursor: null,
+  });
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const syncUrl = useCallback(() => {
+    const params = new URLSearchParams();
+    if (region) params.set('region', region);
+    if (stage) params.set('stage', stage);
+    if (track) params.set('track', track);
+    if (debouncedQ) params.set('q', debouncedQ);
+    if (sort !== '-created_at') params.set('sort', sort);
+    const qs = params.toString();
+    router.replace(qs ? `/issues?${qs}` : '/issues', { scroll: false });
+  }, [region, stage, track, debouncedQ, sort, router]);
+
+  const fetchFirstPage = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await listIssues({
+        region: (region || undefined) as RegionCode | undefined,
+        stage: (stage || undefined) as never,
+        track: (track || undefined) as never,
+        // M02-20: 디바운스된 키워드만 백엔드에 전송 (1자 이하는 backend 가 무시)
+        q: debouncedQ.trim() || undefined,
+        sort,
+        limit: 20,
+      });
+      setItems(res.data);
+      setMeta(res.meta);
+    } catch {
+      setItems([]);
+      setMeta({ limit: 20, has_more: false, next_cursor: null });
+    } finally {
+      setLoading(false);
+    }
+  }, [region, stage, track, debouncedQ, sort]);
+
+  useEffect(() => {
+    void fetchFirstPage();
+    syncUrl();
+  }, [fetchFirstPage, syncUrl]);
+
+  async function loadMore() {
+    if (loadingMore || !meta.has_more || !meta.next_cursor) return;
+    setLoadingMore(true);
+    try {
+      const res = await listIssues({
+        region: (region || undefined) as RegionCode | undefined,
+        stage: (stage || undefined) as never,
+        track: (track || undefined) as never,
+        q: q || undefined,
+        sort,
+        cursor: meta.next_cursor,
+        limit: 20,
+      });
+      setItems((prev) => [...prev, ...res.data]);
+      setMeta(res.meta);
+    } finally {
+      setLoadingMore(false);
+    }
+  }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12">
-      <header className="mb-8">
-        <p className="text-sm font-semibold text-primary">BF-1 · 지역 문제</p>
-        <h1 className="mt-2 text-3xl font-bold text-text-primary md:text-4xl">
-          지역 문제 제안 게시판
-        </h1>
-        <p className="mt-3 text-text-secondary">
-          누구나 지역에서 발견한 문제를 제안할 수 있습니다. 현재 {data.meta.total}건의 문제가 공유되고 있어요.
-        </p>
+    <div className="container-content py-12" data-testid="issues-page">
+      <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-black text-text">지역문제 광장</h1>
+          <p className="mt-1 text-sm text-text-secondary">
+            시민이 발견한 지역문제를 함께 살펴보고 공감하세요.
+          </p>
+        </div>
+        <Link
+          href="/user/issue-new"
+          className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hover"
+          data-testid="issues-new-cta"
+        >
+          <Plus className="h-4 w-4" aria-hidden="true" />
+          제보하기
+        </Link>
       </header>
 
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+      {/* 필터 */}
+      <div
+        className="mb-6 space-y-4 rounded-xl border border-border bg-surface p-5"
+        data-testid="issues-filter-bar"
+      >
+        <RegionSelect
+          value={(region || null) as RegionCode | null}
+          onChange={(r) => setRegion(r)}
+          label="지역 (전체 보려면 아래 '전체 지역' 클릭)"
+        />
         <div className="flex flex-wrap items-center gap-2">
-          <Link
-            href="/issues"
-            className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-white"
+          <button
+            type="button"
+            onClick={() => setRegion('')}
+            className={cn(
+              'rounded-full border px-3 py-1 text-xs font-medium',
+              region === ''
+                ? 'border-primary bg-primary-light text-primary'
+                : 'border-border bg-surface text-text-secondary hover:border-primary',
+            )}
+            data-testid="region-all"
           >
-            전체
-          </Link>
-          {Object.entries(CATEGORY_LABEL).map(([key, label]) => (
-            <Link
-              key={key}
-              href={`/issues?category=${key}`}
-              className="rounded-full border border-border px-4 py-2 text-sm text-text-secondary hover:border-primary hover:text-primary"
+            전체 지역
+          </button>
+          {REGIONS.length > 0 ? <span className="text-xs text-text-muted">·</span> : null}
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-3">
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium text-text">단계</span>
+            <select
+              value={stage}
+              onChange={(e) => setStage(e.target.value as Stage | '')}
+              className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-primary"
+              data-testid="filter-stage"
             >
-              {label}
-            </Link>
-          ))}
+              {STAGES.map((s) => (
+                <option key={s.code} value={s.code}>
+                  {s.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium text-text">트랙</span>
+            <select
+              value={track}
+              onChange={(e) => setTrack(e.target.value as IssueTrack | '')}
+              className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-primary"
+              data-testid="filter-track"
+            >
+              <option value="">전체</option>
+              {ISSUE_TRACKS.map((t) => (
+                <option key={t.value} value={t.value}>
+                  {t.icon} {t.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium text-text">정렬</span>
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as SortKey)}
+              className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-primary"
+              data-testid="filter-sort"
+            >
+              <option value="-created_at">최신순</option>
+              <option value="-vote_count">공감순</option>
+            </select>
+          </label>
         </div>
-        <div className="flex gap-1 rounded-full border border-border bg-white p-1">
-          <Link
-            href="/issues"
-            className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium transition ${
-              !isMap
-                ? 'bg-primary text-white'
-                : 'text-text-secondary hover:text-primary'
-            }`}
-          >
-            <List className="h-3 w-3" /> 목록
-          </Link>
-          <Link
-            href="/issues?view=map"
-            className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium transition ${
-              isMap
-                ? 'bg-primary text-white'
-                : 'text-text-secondary hover:text-primary'
-            }`}
-          >
-            <MapIcon className="h-3 w-3" /> 지도
-          </Link>
-        </div>
+
+        <label className="block text-sm">
+          <span className="mb-1 block font-medium text-text">키워드 검색</span>
+          <div className="relative">
+            <Search
+              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted"
+              aria-hidden="true"
+            />
+            <input
+              type="search"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="제목·본문 검색 (2자 이상)"
+              className="w-full rounded-md border border-border bg-surface pl-9 pr-3 py-2 text-sm outline-none focus:border-primary"
+              data-testid="filter-q"
+            />
+          </div>
+        </label>
       </div>
 
-      {isMap ? (
-        <KakaoMap
-          issues={data.data.map((i) => ({
-            id: i.id,
-            title: i.title,
-            category: i.category,
-            vote_count: i.vote_count,
-            location_lat: i.location_lat,
-            location_lng: i.location_lng,
-            location_address: i.location_address,
-          }))}
-        />
+      {/* 결과 */}
+      {loading ? (
+        <p className="text-sm text-text-muted" data-testid="issues-loading">
+          제보를 불러오는 중...
+        </p>
+      ) : items.length === 0 ? (
+        <p
+          className="rounded-xl border border-dashed border-border bg-surface p-12 text-center text-sm text-text-muted"
+          data-testid="issues-empty"
+        >
+          조건에 맞는 제보가 없습니다.
+        </p>
       ) : (
-      <ul className="grid gap-4 md:grid-cols-2">
-        {data.data.map((issue) => (
-          <li
-            key={issue.id}
-            className="rounded-2xl border border-border bg-white p-6 shadow-sm transition hover:shadow-md"
+        <>
+          <ul
+            className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+            data-testid="issues-list"
           >
-            <Link href={`/issues/${issue.id}`} className="block">
-              <div className="mb-3 flex items-center gap-2">
-                <span
-                  className={`rounded-full px-3 py-1 text-xs font-medium ${
-                    STATUS_COLOR[issue.status] ?? 'bg-slate-100 text-slate-700'
-                  }`}
-                >
-                  {STATUS_LABEL[issue.status] ?? issue.status}
-                </span>
-                <span className="rounded-full bg-bg-muted px-3 py-1 text-xs text-text-secondary">
-                  {CATEGORY_LABEL[issue.category] ?? issue.category}
-                </span>
-              </div>
-              <h2 className="mb-2 line-clamp-2 text-lg font-semibold text-text-primary">
-                {issue.title}
-              </h2>
-              <p className="mb-4 line-clamp-2 text-sm text-text-secondary">
-                {issue.description}
-              </p>
-              {issue.location_address && (
-                <p className="mb-3 flex items-center gap-1 text-xs text-text-muted">
-                  <MapPin className="h-3 w-3" />
-                  {issue.location_address}
-                </p>
-              )}
-              <div className="flex items-center gap-4 text-xs text-text-muted">
-                <span className="flex items-center gap-1">
-                  <ThumbsUp className="h-3 w-3" /> {issue.vote_count}
-                </span>
-                <span className="flex items-center gap-1">
-                  <MessageCircle className="h-3 w-3" /> {issue.comment_count}
-                </span>
-                <span className="flex items-center gap-1">
-                  <Eye className="h-3 w-3" /> {issue.view_count}
-                </span>
-              </div>
-            </Link>
-          </li>
-        ))}
-      </ul>
+            {items.map((issue) => (
+              <IssueCard key={issue.id} issue={issue} />
+            ))}
+          </ul>
+
+          {meta.has_more ? (
+            <div className="mt-8 text-center">
+              <button
+                type="button"
+                onClick={loadMore}
+                disabled={loadingMore}
+                className="rounded-md border border-primary px-5 py-2.5 text-sm font-semibold text-primary hover:bg-primary-light disabled:opacity-60"
+                data-testid="issues-load-more"
+              >
+                {loadingMore ? '불러오는 중...' : '더 보기'}
+              </button>
+            </div>
+          ) : null}
+        </>
       )}
     </div>
   );

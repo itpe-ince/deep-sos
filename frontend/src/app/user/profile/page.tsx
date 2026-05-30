@@ -1,221 +1,285 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { ArrowLeft, Bell, Save, Trash2 } from 'lucide-react';
 import Link from 'next/link';
-import { ArrowLeft, Camera, Save } from 'lucide-react';
-import { api, ApiError } from '@/lib/api';
-import { useAuth, type AuthUser } from '@/lib/use-auth';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3810/api';
+import { ConfirmModal, useToast } from '@/components/ui';
+import { api, ApiError } from '@/lib/api';
+import { cn } from '@/lib/utils';
+import { useAuth } from '@/lib/use-auth';
+
+/**
+ * USCP V2 — 시민 회원 프로필 (sitemap #13).
+ *
+ * 설계 근거:
+ *  - feature-spec §M01-08/09/10
+ *  - design.md §7.3 #13 + §7.2.1 (탈퇴=ConfirmModal danger)
+ *
+ * V2 변경:
+ *  - V1 avatar/department/organization 입력 제거 (sitemap 범위 외)
+ *  - V2 신규: 이메일 알림 수신 토글 (M01-09)
+ *  - V2 신규: 회원 탈퇴 (M01-10) — ConfirmModal danger + 비밀번호 재확인
+ *  - alert/confirm 0건 — 모두 Toast/ConfirmModal
+ */
+const NOTIFICATION_PREF_KEY = 'uscp.notification_email_enabled';
 
 export default function UserProfilePage() {
   const router = useRouter();
   const { user, loading: authLoading, refresh } = useAuth();
+  const toast = useToast();
 
   const [name, setName] = useState('');
-  const [department, setDepartment] = useState('');
-  const [organization, setOrganization] = useState('');
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [phone, setPhone] = useState('');
+  const [notificationEnabled, setNotificationEnabled] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+
+  const [withdrawOpen, setWithdrawOpen] = useState(false);
+  const [withdrawPw, setWithdrawPw] = useState('');
+  const [withdrawing, setWithdrawing] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
       router.replace('/login?next=/user/profile');
-      return;
-    }
-    if (user) {
-      setName(user.name);
-      setDepartment(user.department ?? '');
-      setOrganization((user as AuthUser & { organization?: string }).organization ?? '');
     }
   }, [authLoading, user, router]);
 
-  function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setAvatarFile(file);
-    setAvatarPreview(URL.createObjectURL(file));
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setSuccess(null);
-    setSaving(true);
-
+  useEffect(() => {
+    if (!user) return;
+    setName(user.name);
+    setPhone((user as typeof user & { phone?: string | null }).phone ?? '');
     try {
-      // 1. 프로필 필드 업데이트
-      await api.put<AuthUser>('/auth/me', {
-        name,
-        department: department || null,
-        organization: organization || null,
-      });
+      const stored = localStorage.getItem(NOTIFICATION_PREF_KEY);
+      if (stored !== null) setNotificationEnabled(stored === 'true');
+    } catch {
+      /* SSR / private mode */
+    }
+  }, [user]);
 
-      // 2. 아바타가 있으면 업로드
-      if (avatarFile) {
-        const fd = new FormData();
-        fd.append('file', avatarFile);
-        const token = localStorage.getItem('access_token');
-        const res = await fetch(`${API_URL}/v1/auth/me/avatar`, {
-          method: 'POST',
-          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-          body: fd,
-        });
-        if (!res.ok) {
-          const problem = await res.json().catch(() => null);
-          throw new ApiError(res.status, problem?.detail ?? 'Avatar upload failed');
-        }
-      }
-
-      setSuccess('프로필이 저장되었습니다.');
-      setAvatarFile(null);
-      if (avatarPreview) {
-        URL.revokeObjectURL(avatarPreview);
-        setAvatarPreview(null);
+  async function handleSave(e: React.FormEvent) {
+    e.preventDefault();
+    if (saving) return;
+    setSaving(true);
+    try {
+      await api.patch('/users/me', { name: name.trim(), phone: phone.trim() || null });
+      try {
+        localStorage.setItem(NOTIFICATION_PREF_KEY, String(notificationEnabled));
+      } catch {
+        /* private mode */
       }
       await refresh();
+      toast.success('프로필을 저장했습니다.');
     } catch (err) {
-      if (err instanceof ApiError) setError(err.message);
-      else setError(err instanceof Error ? err.message : '저장 실패');
+      const msg = err instanceof ApiError ? err.message : err instanceof Error ? err.message : '저장 실패';
+      toast.error(msg);
     } finally {
       setSaving(false);
     }
   }
 
+  async function confirmWithdraw() {
+    if (withdrawing) return;
+    if (!withdrawPw.trim()) {
+      toast.error('본인 확인을 위해 비밀번호를 입력해 주세요.');
+      return;
+    }
+    setWithdrawing(true);
+    try {
+      await api.post('/users/me/withdraw', { password: withdrawPw, reason: null });
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      window.dispatchEvent(new Event('auth-change'));
+      toast.success('회원 탈퇴가 처리되었습니다. 90일 후 완전 파기됩니다.', 5000);
+      router.replace('/');
+    } catch (err) {
+      const msg =
+        err instanceof ApiError && err.status === 401
+          ? '비밀번호가 일치하지 않습니다.'
+          : err instanceof Error
+            ? err.message
+            : '탈퇴 실패';
+      toast.error(msg);
+    } finally {
+      setWithdrawing(false);
+      setWithdrawOpen(false);
+      setWithdrawPw('');
+    }
+  }
+
   if (authLoading || !user) {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-12 text-center text-text-secondary">
-        확인 중...
+      <div className="container-content py-12" data-testid="profile-loading">
+        <p className="text-sm text-text-muted">불러오는 중...</p>
       </div>
     );
   }
 
-  const avatarSrc = avatarPreview ?? user.profile_image_url;
-
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12">
-      <Link
-        href="/user/dashboard"
-        className="mb-6 inline-flex items-center gap-2 text-sm text-text-secondary hover:text-primary"
-      >
-        <ArrowLeft className="h-4 w-4" /> 대시보드로
-      </Link>
+    <div className="container-content py-12" data-testid="profile-page">
+      <div className="mx-auto max-w-xl">
+        <Link
+          href="/user/my-activities"
+          className="mb-4 inline-flex items-center gap-1 text-sm text-text-secondary hover:text-primary"
+        >
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          내 활동으로
+        </Link>
 
-      <header className="mb-8">
-        <p className="text-sm font-semibold text-primary">P-18 · 프로필</p>
-        <h1 className="mt-2 text-3xl font-bold text-text-primary">프로필 수정</h1>
-      </header>
+        <h1 className="mb-2 text-2xl font-black text-text">프로필</h1>
+        <p className="mb-8 text-sm text-text-secondary">
+          기본 정보와 이메일 알림 설정을 관리하세요.
+        </p>
 
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-6 rounded-2xl border border-border bg-white p-8 shadow-sm"
-      >
-        {/* 아바타 */}
-        <div className="flex items-center gap-6">
-          <div className="relative">
-            <div className="h-24 w-24 overflow-hidden rounded-full bg-primary-light">
-              {avatarSrc ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={avatarSrc}
-                  alt="avatar"
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center text-3xl font-bold text-primary">
-                  {user.name.charAt(0)}
-                </div>
-              )}
-            </div>
-            <label className="absolute -bottom-1 -right-1 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-primary text-white shadow-md hover:bg-primary-hover">
-              <Camera className="h-4 w-4" />
+        <form
+          onSubmit={handleSave}
+          className="space-y-5 rounded-xl border border-border bg-surface p-6 shadow-sm"
+          data-testid="profile-form"
+        >
+          <Field label="이메일" hint="이메일은 본 화면에서 변경할 수 없습니다.">
+            <input
+              type="email"
+              value={user.email}
+              disabled
+              className={cn(inputClass, 'bg-bg text-text-muted')}
+              data-testid="profile-email"
+            />
+          </Field>
+          <Field label="이름">
+            <input
+              type="text"
+              required
+              minLength={2}
+              maxLength={20}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className={inputClass}
+              data-testid="profile-name"
+            />
+          </Field>
+          <Field label="연락처 (선택)">
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="010-0000-0000"
+              className={inputClass}
+              data-testid="profile-phone"
+            />
+          </Field>
+
+          <fieldset className="rounded-md border border-border bg-bg p-4" data-testid="notification-toggle">
+            <legend className="px-1 text-sm font-semibold text-text">
+              <Bell className="mr-1 inline h-4 w-4 align-text-bottom" aria-hidden="true" />
+              이메일 알림 수신
+            </legend>
+            <label className="flex cursor-pointer items-start gap-3">
               <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                onChange={handleAvatarChange}
-                className="hidden"
+                type="checkbox"
+                checked={notificationEnabled}
+                onChange={(e) => setNotificationEnabled(e.target.checked)}
+                className="mt-0.5 h-4 w-4"
+                data-testid="notification-checkbox"
+                aria-describedby="notification-help"
               />
+              <span className="text-sm">
+                <strong className="block text-text">의제 단계 변경 알림 받기</strong>
+                <span id="notification-help" className="block text-xs text-text-secondary">
+                  본인이 제보한 의제의 단계가 변경되면 이메일로 안내합니다.
+                  비밀번호 재설정·약관 개정 등 의무 발송 메일은 본 설정과 무관하게 발송됩니다.
+                </span>
+              </span>
             </label>
-          </div>
-          <div>
-            <p className="text-lg font-semibold text-text-primary">{user.email}</p>
-            <p className="text-sm text-text-muted">
-              {user.role} · 레벨 {user.level} · {user.points}점
-            </p>
-          </div>
-        </div>
+          </fieldset>
 
-        <div>
-          <label className="mb-2 block text-sm font-semibold">
-            이름 <span className="text-danger">*</span>
-          </label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            minLength={2}
-            maxLength={100}
-            className="w-full rounded-md border border-border px-4 py-3 text-base outline-none focus:border-primary focus:ring-3 focus:ring-primary/10"
-          />
-        </div>
-
-        <div>
-          <label className="mb-2 block text-sm font-semibold">학과 / 부서</label>
-          <input
-            type="text"
-            value={department}
-            onChange={(e) => setDepartment(e.target.value)}
-            maxLength={100}
-            placeholder="예: 컴퓨터공학과"
-            className="w-full rounded-md border border-border px-4 py-3 text-base outline-none focus:border-primary focus:ring-3 focus:ring-primary/10"
-          />
-        </div>
-
-        <div>
-          <label className="mb-2 block text-sm font-semibold">소속 기관</label>
-          <input
-            type="text"
-            value={organization}
-            onChange={(e) => setOrganization(e.target.value)}
-            maxLength={200}
-            placeholder="예: 대전캠퍼스 ESG센터"
-            className="w-full rounded-md border border-border px-4 py-3 text-base outline-none focus:border-primary focus:ring-3 focus:ring-primary/10"
-          />
-        </div>
-
-        {error && (
-          <div className="rounded-md border border-danger/30 bg-danger/5 p-3 text-sm text-danger">
-            {error}
-          </div>
-        )}
-        {success && (
-          <div className="rounded-md border border-secondary/30 bg-secondary-light p-3 text-sm text-secondary">
-            {success}
-          </div>
-        )}
-
-        <div className="flex items-center gap-3 border-t border-border pt-6">
           <button
             type="submit"
             disabled={saving}
-            className="flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
+            className={cn('inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary-hover disabled:bg-text-muted')}
+            data-testid="profile-save"
           >
-            <Save className="h-4 w-4" />
+            <Save className="h-4 w-4" aria-hidden="true" />
             {saving ? '저장 중...' : '저장'}
           </button>
-          <Link
-            href="/user/dashboard"
-            className="rounded-md border border-border px-6 py-3 text-sm font-semibold text-text-secondary hover:bg-bg-muted"
+        </form>
+
+        <section
+          className="mt-8 rounded-xl border border-danger/30 bg-danger/5 p-6"
+          aria-labelledby="withdraw-heading"
+          data-testid="withdraw-section"
+        >
+          <h2 id="withdraw-heading" className="mb-2 text-base font-bold text-danger">
+            <Trash2 className="mr-1 inline h-4 w-4 align-text-bottom" aria-hidden="true" />
+            회원 탈퇴
+          </h2>
+          <p className="mb-4 text-sm text-text-secondary">
+            탈퇴 즉시 이름은 「****」 로 가려지고 이메일은 익명화되며, 90일이 지나면 시스템에서 완전히 삭제됩니다.
+            본인이 작성한 제보·게시글·댓글은 익명 표시로 남습니다.
+          </p>
+          <button
+            type="button"
+            onClick={() => setWithdrawOpen(true)}
+            className="rounded-md border border-danger px-4 py-2 text-sm font-semibold text-danger hover:bg-danger hover:text-white"
+            data-testid="withdraw-open"
           >
-            취소
-          </Link>
-        </div>
-      </form>
+            탈퇴 신청
+          </button>
+        </section>
+      </div>
+
+      <ConfirmModal
+        open={withdrawOpen}
+        onClose={() => {
+          if (!withdrawing) {
+            setWithdrawOpen(false);
+            setWithdrawPw('');
+          }
+        }}
+        onConfirm={confirmWithdraw}
+        title="회원 탈퇴 확인"
+        description={
+          <>
+            <p className="mb-3 text-sm">
+              정말 탈퇴하시겠습니까? 이 작업은 90일 후 완전히 되돌릴 수 없습니다.
+            </p>
+            <label className="block text-sm">
+              <span className="mb-1 block font-medium text-text">본인 확인 — 현재 비밀번호 입력</span>
+              <input
+                type="password"
+                value={withdrawPw}
+                onChange={(e) => setWithdrawPw(e.target.value)}
+                className={inputClass}
+                autoComplete="current-password"
+                data-testid="withdraw-password"
+              />
+            </label>
+          </>
+        }
+        confirmLabel="탈퇴"
+        cancelLabel="취소"
+        variant="danger"
+      />
     </div>
+  );
+}
+
+const inputClass =
+  'w-full rounded-md border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary disabled:opacity-60';
+
+function Field({
+  label,
+  hint,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1 block text-sm font-medium text-text">{label}</span>
+      {children}
+      {hint ? <span className="mt-1 block text-xs text-text-muted">{hint}</span> : null}
+    </label>
   );
 }

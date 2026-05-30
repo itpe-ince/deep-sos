@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Plus, Trash2, Eye, EyeOff } from 'lucide-react';
 import { api, ApiError } from '@/lib/api';
+import { ConfirmModal, useToast } from '@/components/ui';
 
 interface Banner {
   id: string;
@@ -40,6 +41,10 @@ export default function AdminCmsBannersPage() {
   const [linkUrl, setLinkUrl] = useState('');
   const [orderIndex, setOrderIndex] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+
+  // §7.2.1 — window.confirm 대체 ConfirmModal 상태
+  const [deleteTarget, setDeleteTarget] = useState<Banner | null>(null);
+  const toast = useToast();
 
   async function load() {
     setLoading(true);
@@ -101,13 +106,22 @@ export default function AdminCmsBannersPage() {
     }
   }
 
-  async function handleDelete(banner: Banner) {
-    if (!confirm(`"${banner.title}" 배너를 삭제하시겠어요?`)) return;
+  function handleDelete(banner: Banner) {
+    setDeleteTarget(banner);
+  }
+
+  async function confirmDelete() {
+    if (!deleteTarget) return;
     try {
-      await api.delete(`/cms/banners/${banner.id}`);
+      await api.delete(`/cms/banners/${deleteTarget.id}`);
       await load();
+      toast.success(`배너 "${deleteTarget.title}" 를 삭제했습니다.`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : '삭제 실패');
+      const message = err instanceof Error ? err.message : '삭제 실패';
+      setError(message);
+      toast.error(message);
+    } finally {
+      setDeleteTarget(null);
     }
   }
 
@@ -300,6 +314,21 @@ export default function AdminCmsBannersPage() {
           </table>
         </div>
       )}
+
+      <ConfirmModal
+        open={deleteTarget !== null}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={confirmDelete}
+        title="배너 삭제"
+        description={
+          deleteTarget
+            ? `"${deleteTarget.title}" 배너를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.`
+            : ''
+        }
+        confirmLabel="삭제"
+        cancelLabel="취소"
+        variant="danger"
+      />
     </div>
   );
 }

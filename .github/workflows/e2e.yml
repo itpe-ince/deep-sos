@@ -1,0 +1,212 @@
+name: E2E (Playwright)
+
+# 설계 근거: docs/02-design/features/uscp-v2.design.md §10.3.4
+# - PR 단위 실행, 머지 차단 (branch protection 에서 본 job 을 required check 로 지정)
+# - 기능 1건 완료 시 spec 통과 전 다음 기능 진입 금지 (§10.3 게이트)
+# - 시각 회귀 baseline 은 tests/e2e/visual-baseline/ 에 통합 관리
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    name: Playwright E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_USER: uscp
+          POSTGRES_PASSWORD: test-password
+          POSTGRES_DB: uscp_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U uscp -d uscp_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+
+    env:
+      DATABASE_URL: postgresql+asyncpg://uscp:test-password@localhost:5432/uscp_test
+      REDIS_URL: redis://localhost:6379/0
+      JWT_SECRET_KEY: e2e-jwt-secret-not-for-prod
+      ENVIRONMENT: test
+      CORS_ORIGINS: http://localhost:3800
+      E2E_API_URL: http://127.0.0.1:3810/api/v1
+      E2E_BASE_URL: http://127.0.0.1:3800
+      NEXT_PUBLIC_API_URL: http://127.0.0.1:3810/api
+      E2E_TEST_USER_PASSWORD: ${{ secrets.E2E_TEST_USER_PASSWORD || 'TestPassw0rd!' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # ────────────────────────────────
+      # Backend (FastAPI)
+      # ────────────────────────────────
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: backend/pyproject.toml
+
+      - name: Install backend deps
+        working-directory: ./backend
+        run: |
+          pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Apply Alembic migrations
+        working-directory: ./backend
+        run: alembic upgrade head
+
+      - name: Seed E2E test users (if seed script exists)
+        working-directory: ./backend
+        run: |
+          if [ -f scripts/seed_e2e.py ]; then
+            python scripts/seed_e2e.py
+          else
+            echo "scripts/seed_e2e.py 미존재 — Playwright fixture/ensureTestUsers 가 처리"
+          fi
+
+      - name: Start FastAPI server
+        working-directory: ./backend
+        run: |
+          uvicorn app.main:app --host 127.0.0.1 --port 3810 &
+          echo $! > /tmp/uvicorn.pid
+          # readiness 대기 (최대 60s)
+          for i in {1..60}; do
+            if curl -sf http://127.0.0.1:3810/api/v1/health > /dev/null \
+              || curl -sf http://127.0.0.1:3810/api/v1/common/health > /dev/null; then
+              echo "Backend ready after ${i}s"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Backend failed to start within 60s"
+          cat /tmp/uvicorn.log 2>/dev/null || true
+          exit 1
+
+      # ────────────────────────────────
+      # Frontend (Next.js)
+      # ────────────────────────────────
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend deps
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: ./frontend
+        run: npm run build
+
+      - name: Start Next.js server
+        working-directory: ./frontend
+        run: |
+          npm run start -- --port 3800 &
+          echo $! > /tmp/next.pid
+          for i in {1..60}; do
+            if curl -sf http://127.0.0.1:3800/ > /dev/null; then
+              echo "Frontend ready after ${i}s"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Frontend failed to start within 60s"
+          exit 1
+
+      # ────────────────────────────────
+      # Playwright
+      # ────────────────────────────────
+      - name: Install Playwright browsers
+        working-directory: ./frontend
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright (V2 specs only — m01..m09)
+        working-directory: ./frontend
+        env:
+          CI: '1'
+        run: |
+          # V2 모듈 디렉터리만 실행. V1 잔재 spec (auth.spec.ts 등) 은 점진 폐기 예정.
+          npx playwright test \
+            tests/e2e/m01-auth \
+            tests/e2e/m02-issues \
+            tests/e2e/m03-projects \
+            tests/e2e/m04-mentors \
+            tests/e2e/m05-network \
+            tests/e2e/m06-performance \
+            tests/e2e/m07-cms \
+            tests/e2e/m08-audit \
+            tests/e2e/m09-common
+
+      # ────────────────────────────────
+      # 신규/수정 기능에 대응 spec 누락 검증 (§10.3.4)
+      # ────────────────────────────────
+      - name: Enforce spec-presence guard
+        if: github.event_name == 'pull_request'
+        working-directory: ./frontend
+        run: |
+          # PR diff 에 새 features/{module}/ 코드는 있으나 tests/e2e/{module}/ spec 이 없으면 실패
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          git fetch origin "$BASE_SHA" --depth=1 || true
+          CHANGED=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- 'src/features/**/*.ts*' 'src/app/**/*.ts*' || true)
+          MISSING=""
+          for f in $CHANGED; do
+            case "$f" in
+              *features/auth/* | *app/login*)        spec_dir=tests/e2e/m01-auth ;;
+              *features/issues/* | *app/issues/* | *app/admin/issues/*) spec_dir=tests/e2e/m02-issues ;;
+              *features/projects/* | *app/projects/* | *app/admin/projects/*) spec_dir=tests/e2e/m03-projects ;;
+              *features/mentors/* | *app/admin/mentors/*) spec_dir=tests/e2e/m04-mentors ;;
+              *features/organizations/* | *app/network/* | *app/admin/organizations/*) spec_dir=tests/e2e/m05-network ;;
+              *features/kpi/* | *app/performance/* | *app/admin/kpi/*) spec_dir=tests/e2e/m06-performance ;;
+              *features/cms/* | *app/admin/cms-banners/* | *app/admin/terms/*) spec_dir=tests/e2e/m07-cms ;;
+              *features/audit/* | *app/admin/audit/* | *app/admin/users/*) spec_dir=tests/e2e/m08-audit ;;
+              *features/common/*) spec_dir=tests/e2e/m09-common ;;
+              *) continue ;;
+            esac
+            if [ -z "$(ls -A $spec_dir 2>/dev/null | grep -v README)" ]; then
+              MISSING="$MISSING\n  - $f → $spec_dir/ 에 spec 누락"
+            fi
+          done
+          if [ -n "$MISSING" ]; then
+            echo "::error::신규/수정 기능에 대응하는 E2E spec 이 누락되었습니다 (§10.3.4 게이트):"
+            printf "%b\n" "$MISSING"
+            exit 1
+          fi
+
+      # ────────────────────────────────
+      # Artifact upload (실패 시 트레이스·스크린샷·비디오)
+      # ────────────────────────────────
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            frontend/playwright-report/
+            frontend/test-results/
+          retention-days: 14
+
+      - name: Stop services
+        if: always()
+        run: |
+          [ -f /tmp/next.pid ] && kill "$(cat /tmp/next.pid)" 2>/dev/null || true
+          [ -f /tmp/uvicorn.pid ] && kill "$(cat /tmp/uvicorn.pid)" 2>/dev/null || true

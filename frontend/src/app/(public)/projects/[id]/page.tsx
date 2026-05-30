@@ -1,134 +1,184 @@
+'use client';
+
+import { ArrowLeft, Calendar, Link as LinkIcon } from 'lucide-react';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import { ArrowLeft, Users, Target, Calendar, Award } from 'lucide-react';
-import { serverFetch, type ProjectItem } from '@/lib/server-api';
-import { ProjectMembership } from '@/components/project/ProjectMembership';
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-const PHASES = [
-  { key: 'discover', label: '탐색', desc: '문제 탐색' },
-  { key: 'execute', label: '실행', desc: '실행 설계' },
-  { key: 'develop', label: '개발', desc: '솔루션 개발' },
-  { key: 'verify', label: '검증', desc: '현장 검증' },
-  { key: 'utilize', label: '활용', desc: '확산/활용' },
-];
+import { REGIONS } from '@/features/issues';
+import {
+  PROJECT_STAGES,
+  ProjectBoard,
+  ProjectStageStepper,
+  Timeline,
+  getProject,
+  type ProjectDetail,
+  type ProjectStage,
+} from '@/features/projects';
 
-interface PageProps {
-  params: Promise<{ id: string }>;
-}
+/**
+ * M03-02/03: USCP V2 리빙랩 상세 (sitemap #6).
+ *
+ * 설계 근거:
+ *  - feature-spec §M03-02 (개요·참여자·진행 단계)
+ *  - feature-spec §M03-03 (활동 타임라인 조회)
+ *  - design.md §7.3 #6 (ProjectHeader + Timeline + ProjectBoardTab[멤버 전용])
+ *  - design.md §10.3.3 6항
+ *
+ * V2 구성:
+ *   1. Header — region/stage 뱃지 + 제목 + 기간
+ *   2. ProjectStageStepper — 3단계 (recruiting/in_progress/completed)
+ *   3. Summary + Description
+ *   4. Source Issue 링크 (M03-14)
+ *   5. Timeline (M03-03)
+ */
+export default function ProjectDetailPage() {
+  const params = useParams<{ id: string }>();
+  const id = params?.id;
+  const [project, setProject] = useState<ProjectDetail | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-export default async function ProjectDetailPage({ params }: PageProps) {
-  const { id } = await params;
-  let project: ProjectItem;
-  try {
-    project = await serverFetch<ProjectItem>(`/projects/${id}`);
-  } catch {
-    notFound();
+  useEffect(() => {
+    if (!id) return;
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      try {
+        const data = await getProject(id);
+        if (!cancelled) setProject(data);
+      } catch (err) {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : '프로젝트 조회 실패');
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="container-content py-12" data-testid="project-detail-loading">
+        <p className="text-sm text-text-muted">불러오는 중...</p>
+      </div>
+    );
   }
 
-  const currentPhase = PHASES.findIndex((p) => p.key === project.phase);
+  if (error || !project) {
+    return (
+      <div className="container-content py-12" data-testid="project-detail-error">
+        <p className="text-sm text-danger">{error ?? '프로젝트를 찾을 수 없습니다.'}</p>
+        <Link
+          href="/projects"
+          className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
+        >
+          리빙랩 목록으로
+        </Link>
+      </div>
+    );
+  }
+
+  const region = REGIONS.find((r) => r.code === project.region);
+  const stage = PROJECT_STAGES.find((s) => s.code === project.stage);
+  const stageCode = (project.stage ?? 'recruiting') as ProjectStage;
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12">
-      <Link
-        href="/projects"
-        className="mb-6 inline-flex items-center gap-2 text-sm text-text-secondary hover:text-primary"
-      >
-        <ArrowLeft className="h-4 w-4" /> 프로젝트 목록
-      </Link>
+    <div className="container-content py-12" data-testid="project-detail-page">
+      <div className="mx-auto max-w-3xl">
+        <Link
+          href="/projects"
+          className="mb-4 inline-flex items-center gap-1 text-sm text-text-secondary hover:text-primary"
+        >
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          리빙랩 목록
+        </Link>
 
-      <article className="rounded-2xl border border-border bg-white p-8 shadow-sm">
-        <header className="mb-8 border-b border-border pb-6">
-          <h1 className="mb-3 text-3xl font-bold text-text-primary md:text-4xl">
+        <header className="mb-6">
+          <div className="mb-2 flex flex-wrap items-center gap-1.5">
+            {region ? (
+              <span
+                className="rounded-full px-2 py-0.5 text-xs font-semibold"
+                style={{ background: `${region.color}22`, color: region.color }}
+                data-testid={`project-detail-region-${region.code}`}
+              >
+                {region.label}
+              </span>
+            ) : null}
+            {stage ? (
+              <span
+                className="rounded-full px-2 py-0.5 text-xs font-semibold"
+                style={{ background: stage.bg, color: stage.fg }}
+                data-testid={`project-detail-stage-${stage.code}`}
+              >
+                {stage.label}
+              </span>
+            ) : null}
+          </div>
+          <h1
+            className="text-2xl font-black leading-snug text-text"
+            data-testid="project-detail-title"
+          >
             {project.title}
           </h1>
-          <p className="text-text-secondary">{project.description}</p>
+          <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-text-secondary">
+            {project.start_at || project.end_at ? (
+              <span className="inline-flex items-center gap-1">
+                <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
+                {project.start_at ?? '미정'} ~ {project.end_at ?? '미정'}
+              </span>
+            ) : null}
+            {project.linked_issue || project.source_issue_id ? (
+              <Link
+                href={`/issues/${project.linked_issue?.id ?? project.source_issue_id}`}
+                className="inline-flex items-center gap-1 text-primary hover:underline"
+                data-testid="project-detail-source-issue"
+              >
+                <LinkIcon className="h-3.5 w-3.5" aria-hidden="true" />
+                {project.linked_issue
+                  ? `연결된 의제: ${project.linked_issue.title}`
+                  : '연결된 의제 보기'}
+              </Link>
+            ) : null}
+          </div>
         </header>
 
-        <section className="mb-10">
-          <h2 className="mb-4 text-sm font-semibold text-text-secondary">
-            리빙랩 5단계 진행 상황
-          </h2>
-          <div className="flex items-center gap-2">
-            {PHASES.map((p, i) => {
-              const done = i < currentPhase;
-              const active = i === currentPhase;
-              return (
-                <div key={p.key} className="flex flex-1 flex-col items-center gap-2">
-                  <div
-                    className={`flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold ${
-                      active
-                        ? 'bg-primary text-white ring-4 ring-primary-light'
-                        : done
-                          ? 'bg-primary text-white'
-                          : 'bg-bg-muted text-text-muted'
-                    }`}
-                  >
-                    {i + 1}
-                  </div>
-                  <div className="text-center">
-                    <p
-                      className={`text-xs font-medium ${
-                        active || done ? 'text-primary' : 'text-text-muted'
-                      }`}
-                    >
-                      {p.label}
-                    </p>
-                    <p className="text-xs text-text-muted">{p.desc}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <div className="mt-6">
-            <div className="mb-1 flex justify-between text-sm">
-              <span className="text-text-secondary">전체 진행률</span>
-              <span className="font-semibold text-primary">{project.progress}%</span>
-            </div>
-            <div className="h-3 rounded-full bg-bg-muted">
-              <div
-                className="h-3 rounded-full bg-primary"
-                style={{ width: `${project.progress}%` }}
-              />
-            </div>
-          </div>
-        </section>
+        <ProjectStageStepper current={stageCode} />
 
-        <section className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4">
-          <div className="rounded-xl bg-bg-muted p-4 text-center">
-            <Users className="mx-auto mb-1 h-5 w-5 text-primary" />
-            <p className="text-lg font-bold text-text-primary">{project.member_count}</p>
-            <p className="text-xs text-text-muted">팀원</p>
-          </div>
-          <div className="rounded-xl bg-bg-muted p-4 text-center">
-            <Target className="mx-auto mb-1 h-5 w-5 text-secondary" />
-            <p className="text-lg font-bold text-text-primary">{project.partner_count}</p>
-            <p className="text-xs text-text-muted">파트너</p>
-          </div>
-          <div className="rounded-xl bg-bg-muted p-4 text-center">
-            <Calendar className="mx-auto mb-1 h-5 w-5 text-amber-600" />
-            <p className="text-sm font-semibold text-text-primary">
-              {project.start_date ?? '-'}
+        {project.summary ? (
+          <article
+            className="prose prose-sm mt-8 max-w-none rounded-xl border border-border bg-surface p-6"
+            data-testid="project-detail-summary"
+          >
+            <p className="whitespace-pre-wrap leading-relaxed text-text">
+              {project.summary}
             </p>
-            <p className="text-xs text-text-muted">시작일</p>
-          </div>
-          <div className="rounded-xl bg-bg-muted p-4 text-center">
-            <Award className="mx-auto mb-1 h-5 w-5 text-violet-600" />
-            <p className="text-sm font-semibold text-text-primary">
-              SDG {project.target_sdgs?.join(', ') ?? '-'}
+          </article>
+        ) : null}
+
+        {project.description &&
+        project.description !== project.summary ? (
+          <article
+            className="prose prose-sm mt-4 max-w-none rounded-xl border border-border bg-surface p-6"
+            data-testid="project-detail-description"
+          >
+            <p className="whitespace-pre-wrap leading-relaxed text-text">
+              {project.description}
             </p>
-            <p className="text-xs text-text-muted">목표</p>
-          </div>
-        </section>
+          </article>
+        ) : null}
 
-        {project.outcome_summary && (
-          <section className="rounded-xl bg-secondary-light p-6">
-            <h3 className="mb-2 text-sm font-semibold text-secondary">성과 요약</h3>
-            <p className="whitespace-pre-line text-text-primary">{project.outcome_summary}</p>
-          </section>
-        )}
-      </article>
+        {/* M03-03 활동 타임라인 */}
+        <Timeline projectId={project.id} />
 
-      <ProjectMembership projectId={project.id} leaderId={project.leader_id} />
+        {/* M03-15~18 멤버 전용 게시판 — 비멤버에게는 렌더되지 않음 */}
+        <div className="mt-10">
+          <ProjectBoard projectId={project.id} />
+        </div>
+      </div>
     </div>
   );
 }

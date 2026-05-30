@@ -16,7 +16,9 @@ import {
   Redo,
   Undo,
 } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
+import { Modal, useToast } from '@/components/ui';
 
 interface Props {
   initialContent: Record<string, unknown> | null;
@@ -28,7 +30,17 @@ const EMPTY_DOC: Record<string, unknown> = {
   content: [{ type: 'paragraph' }],
 };
 
+type ImageInsertMode = 'choose' | 'url' | null;
+
 export function TipTapEditor({ initialContent, onChange }: Props) {
+  const toast = useToast();
+
+  // §7.2.1 — window.alert/confirm/prompt 대체 모달 상태
+  const [linkUrlOpen, setLinkUrlOpen] = useState(false);
+  const [linkUrl, setLinkUrl] = useState('');
+  const [imageMode, setImageMode] = useState<ImageInsertMode>(null);
+  const [imageUrl, setImageUrl] = useState('');
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -128,9 +140,8 @@ export function TipTapEditor({ initialContent, onChange }: Props) {
         <button
           type="button"
           onClick={() => {
-            const url = window.prompt('링크 URL');
-            if (url)
-              editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+            setLinkUrl('');
+            setLinkUrlOpen(true);
           }}
           className={btnClass(editor.isActive('link'))}
           title="링크"
@@ -140,46 +151,7 @@ export function TipTapEditor({ initialContent, onChange }: Props) {
         </button>
         <button
           type="button"
-          onClick={async () => {
-            const mode = window.confirm(
-              '확인: 파일 업로드\n취소: URL 직접 입력',
-            );
-            if (mode) {
-              const input = document.createElement('input');
-              input.type = 'file';
-              input.accept = 'image/jpeg,image/png,image/webp';
-              input.onchange = async (ev) => {
-                const file = (ev.target as HTMLInputElement).files?.[0];
-                if (!file) return;
-                try {
-                  const fd = new FormData();
-                  fd.append('file', file);
-                  const token = localStorage.getItem('access_token');
-                  const apiUrl =
-                    process.env.NEXT_PUBLIC_API_URL ??
-                    'http://localhost:3810/api';
-                  const res = await fetch(`${apiUrl}/v1/admin/upload/image`, {
-                    method: 'POST',
-                    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-                    body: fd,
-                  });
-                  if (!res.ok) {
-                    const err = await res.json().catch(() => null);
-                    alert(err?.detail ?? `업로드 실패: ${res.status}`);
-                    return;
-                  }
-                  const data = await res.json();
-                  editor.chain().focus().setImage({ src: data.url }).run();
-                } catch (err) {
-                  alert(err instanceof Error ? err.message : '업로드 실패');
-                }
-              };
-              input.click();
-            } else {
-              const url = window.prompt('이미지 URL');
-              if (url) editor.chain().focus().setImage({ src: url }).run();
-            }
-          }}
+          onClick={() => setImageMode('choose')}
           className={btnClass(false)}
           title="이미지 (파일 업로드 또는 URL)"
           aria-label="이미지 삽입"
@@ -208,6 +180,169 @@ export function TipTapEditor({ initialContent, onChange }: Props) {
       </div>
 
       <EditorContent editor={editor} />
+
+      {/* §7.2.1 — window.prompt 대체: 링크 URL 입력 모달 */}
+      <Modal
+        open={linkUrlOpen}
+        onClose={() => setLinkUrlOpen(false)}
+        title="링크 삽입"
+        size="md"
+        footer={
+          <>
+            <button
+              type="button"
+              onClick={() => setLinkUrlOpen(false)}
+              className="rounded-md border border-border bg-white px-4 py-2 text-sm font-medium text-text hover:bg-bg"
+            >
+              취소
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (linkUrl.trim()) {
+                  editor
+                    .chain()
+                    .focus()
+                    .extendMarkRange('link')
+                    .setLink({ href: linkUrl.trim() })
+                    .run();
+                }
+                setLinkUrlOpen(false);
+              }}
+              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover"
+            >
+              삽입
+            </button>
+          </>
+        }
+      >
+        <label className="block text-sm">
+          <span className="mb-1 block font-medium text-text">URL</span>
+          <input
+            type="url"
+            autoFocus
+            value={linkUrl}
+            onChange={(e) => setLinkUrl(e.target.value)}
+            placeholder="https://example.com"
+            className="w-full rounded-md border border-border px-3 py-2 text-sm outline-none focus:border-primary"
+          />
+        </label>
+      </Modal>
+
+      {/* §7.2.1 — window.confirm 대체: 이미지 삽입 방식 선택 모달 */}
+      <Modal
+        open={imageMode === 'choose'}
+        onClose={() => setImageMode(null)}
+        title="이미지 삽입"
+        size="sm"
+      >
+        <div className="flex flex-col gap-2 text-sm">
+          <button
+            type="button"
+            onClick={() => {
+              setImageMode(null);
+              const input = document.createElement('input');
+              input.type = 'file';
+              input.accept = 'image/jpeg,image/png,image/webp';
+              input.onchange = async (ev) => {
+                const file = (ev.target as HTMLInputElement).files?.[0];
+                if (!file) return;
+                try {
+                  const fd = new FormData();
+                  fd.append('file', file);
+                  const token = localStorage.getItem('access_token');
+                  const apiUrl =
+                    process.env.NEXT_PUBLIC_API_URL ??
+                    'http://localhost:3810/api';
+                  const res = await fetch(`${apiUrl}/v1/admin/upload/image`, {
+                    method: 'POST',
+                    headers: token
+                      ? { Authorization: `Bearer ${token}` }
+                      : undefined,
+                    body: fd,
+                  });
+                  if (!res.ok) {
+                    const err = await res.json().catch(() => null);
+                    toast.error(err?.detail ?? `업로드 실패: ${res.status}`);
+                    return;
+                  }
+                  const data = await res.json();
+                  editor.chain().focus().setImage({ src: data.url }).run();
+                  toast.success('이미지를 삽입했습니다.');
+                } catch (err) {
+                  toast.error(
+                    err instanceof Error ? err.message : '업로드 실패',
+                  );
+                }
+              };
+              input.click();
+            }}
+            className="rounded-md border border-border bg-white px-4 py-3 text-left font-medium text-text hover:bg-bg"
+          >
+            📁 파일 업로드
+            <span className="mt-1 block text-xs text-text-secondary">
+              JPG · PNG · WebP 형식 이미지 파일
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setImageUrl('');
+              setImageMode('url');
+            }}
+            className="rounded-md border border-border bg-white px-4 py-3 text-left font-medium text-text hover:bg-bg"
+          >
+            🔗 URL 직접 입력
+            <span className="mt-1 block text-xs text-text-secondary">
+              외부 이미지 주소를 입력
+            </span>
+          </button>
+        </div>
+      </Modal>
+
+      {/* §7.2.1 — window.prompt 대체: 이미지 URL 입력 모달 */}
+      <Modal
+        open={imageMode === 'url'}
+        onClose={() => setImageMode(null)}
+        title="이미지 URL"
+        size="md"
+        footer={
+          <>
+            <button
+              type="button"
+              onClick={() => setImageMode(null)}
+              className="rounded-md border border-border bg-white px-4 py-2 text-sm font-medium text-text hover:bg-bg"
+            >
+              취소
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (imageUrl.trim()) {
+                  editor.chain().focus().setImage({ src: imageUrl.trim() }).run();
+                  toast.success('이미지를 삽입했습니다.');
+                }
+                setImageMode(null);
+              }}
+              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover"
+            >
+              삽입
+            </button>
+          </>
+        }
+      >
+        <label className="block text-sm">
+          <span className="mb-1 block font-medium text-text">이미지 URL</span>
+          <input
+            type="url"
+            autoFocus
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            placeholder="https://example.com/image.jpg"
+            className="w-full rounded-md border border-border px-3 py-2 text-sm outline-none focus:border-primary"
+          />
+        </label>
+      </Modal>
     </div>
   );
 }

@@ -19,32 +19,7 @@ interface Props {
   issues: IssueMarker[];
 }
 
-// Kakao Map SDK 전역 타입 선언 (간소화)
-declare global {
-  interface Window {
-    kakao: {
-      maps: {
-        load: (cb: () => void) => void;
-        Map: new (container: HTMLElement, options: unknown) => unknown;
-        LatLng: new (lat: number, lng: number) => unknown;
-        LatLngBounds: new () => {
-          extend: (latlng: unknown) => void;
-          isEmpty: () => boolean;
-        };
-        Marker: new (options: unknown) => {
-          setMap: (map: unknown) => void;
-        };
-        InfoWindow: new (options: { content: string }) => {
-          open: (map: unknown, marker: unknown) => void;
-          close: () => void;
-        };
-        event: {
-          addListener: (target: unknown, type: string, handler: () => void) => void;
-        };
-      };
-    };
-  }
-}
+// Kakao Maps SDK 전역 타입은 src/types/kakao-maps.d.ts 에 통합 (M09-05/06 공통).
 
 const CATEGORY_LABEL: Record<string, string> = {
   environment: '환경',

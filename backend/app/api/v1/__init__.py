@@ -17,8 +17,48 @@ from app.api.v1 import (
     volunteers,
 )
 
+# V2 presentation layer routers (Sprint 1+ 점진 도입)
+from app.presentation.auth import router as v2_auth_router
+from app.presentation.common import router as common_router
+from app.presentation.issues import admin_router as v2_admin_issues_router
+from app.presentation.issues import router as v2_issues_router
+from app.presentation.projects import admin_router as v2_admin_projects_router
+from app.presentation.projects import posts_router as v2_posts_router_module
+from app.presentation.projects import router as v2_projects_router
+from app.presentation.projects import success_admin_router as v2_success_admin_router
+
 api_router = APIRouter()
 api_router.include_router(health.router, tags=["health"])
+# V2 M09 공통 라우터 — /common/{stats,regions/map,health} (M09-01/05/06/09)
+api_router.include_router(common_router, prefix="/common", tags=["common-v2"])
+# V2 M01 인증 라우터 — /auth/signup, /auth/login (M01-01/02/03/04/13).
+api_router.include_router(v2_auth_router, prefix="/auth", tags=["auth-v2"])
+# V2 M02 제보 라우터 — POST /issues, POST /issues/photos/presign (M02-01).
+# V1 /issues GET/POST 와 동일 prefix 이지만 FastAPI 는 정의 순서 우선이므로 V2 가 먼저 매칭.
+api_router.include_router(v2_issues_router, prefix="/issues", tags=["issues-v2"])
+# V2 M02 게이트키핑 admin 라우터 (M02-06~11) — 운영자 전용.
+api_router.include_router(
+    v2_admin_issues_router, prefix="/admin/issues", tags=["admin-issues-v2"]
+)
+# V2 M03 리빙랩 공개 라우터 (M03-01/02) — GET /projects, GET /projects/{id}.
+api_router.include_router(
+    v2_projects_router, prefix="/projects", tags=["projects-v2"]
+)
+# V2 M03 리빙랩 admin 라우터 (M03-06+) — POST /admin/projects.
+api_router.include_router(
+    v2_admin_projects_router, prefix="/admin/projects", tags=["admin-projects-v2"]
+)
+# V2 M03-11/12 성공사례·정책반영 admin 라우터 — /admin/success-cases (운영자 전용).
+api_router.include_router(
+    v2_success_admin_router, prefix="/admin/success-cases", tags=["admin-success-v2"]
+)
+# V2 M03-15~18 프로젝트 게시판 (멤버 전용) — /projects/{id}/posts, /comments/project-posts.
+api_router.include_router(
+    v2_posts_router_module.router, prefix="/projects", tags=["project-board-v2"]
+)
+api_router.include_router(
+    v2_posts_router_module.comments_router, prefix="/comments", tags=["project-board-v2"]
+)
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(oauth.router, prefix="/auth", tags=["oauth"])
 api_router.include_router(users.router, prefix="/users", tags=["users"])

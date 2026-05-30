@@ -1,18 +1,38 @@
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, TrendingUp } from 'lucide-react';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
+
+import {
+  ProcessBar,
+  RecentIssues,
+  RegionMap,
+  StatsCards,
+} from '@/components/home';
 
 /**
- * P-01 홈 — mockup/pages/index.html 포팅
- * Sprint 1 완전 구현: 히어로 + KPI 4종 + 최근 이슈/프로젝트 + 캠퍼스 4개 + CTA
+ * USCP V2 홈 화면 (sitemap #1).
+ *
+ * 설계 근거: docs/02-design/features/uscp-v2.design.md §7.3 #1 홈
+ *
+ * V2 구성:
+ *   1. Hero       — 환영 메시지 + 핵심 CTA (V1 유지, 콘텐츠 V2 정합)
+ *   2. StatsCards — M09-01 운영 현황 4종 카드
+ *   3. ProcessBar — M09-02 6단계 의제 라이프사이클 안내
+ *   4. RegionMap  — M09-05 5개 지역 현황 지도 (KakaoMap + fallback)
+ *   5. RecentIssues — M09-03 최근 제보 3건 카드 그리드
+ *   6. ProjectsSection — 진행 중 리빙랩 (V1 유지, V2 sitemap 정합)
+ *   7. CTASection — 참여 유도 (V1 유지)
+ *
+ * V1 제거: CampusSection (V2 sitemap §3.1.2 에 캠퍼스 페이지 없음, /about 으로 통합)
  */
 export default function HomePage() {
   return (
     <>
       <HeroSection />
-      <KPISection />
-      <RecentIssuesSection />
+      <StatsCards />
+      <ProcessBar />
+      <RegionMap />
+      <RecentIssues />
       <ProjectsSection />
-      <CampusSection />
       <CTASection />
     </>
   );
@@ -54,189 +74,6 @@ function HeroSection() {
           <Link href="/projects" className="btn-secondary text-md">
             리빙랩 둘러보기
           </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ── KPI ─────────────────────────────────────────────
-function KPISection() {
-  const kpis = [
-    {
-      label: '해결된 문제',
-      value: '127',
-      unit: '건',
-      trend: '+12',
-      trendLabel: '지난달 대비',
-      color: 'primary' as const,
-    },
-    {
-      label: '진행 중인 프로젝트',
-      value: '12',
-      unit: '개',
-      trend: null,
-      trendLabel: '4개 캠퍼스 전체',
-      color: 'secondary' as const,
-    },
-    {
-      label: '누적 봉사 시간',
-      value: '2,845',
-      unit: '시간',
-      trend: '+580',
-      trendLabel: '이번 학기',
-      color: 'purple' as const,
-    },
-    {
-      label: '참여 시민',
-      value: '1,438',
-      unit: '명',
-      trend: null,
-      trendLabel: '교수·학생·시민',
-      color: 'orange' as const,
-    },
-  ];
-
-  return (
-    <section className="border-b border-border bg-surface py-12">
-      <div className="container-content">
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {kpis.map((k) => (
-            <KPICard key={k.label} {...k} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-const KPI_ICON_STYLE = {
-  primary: 'bg-primary-light text-primary',
-  secondary: 'bg-secondary-light text-secondary',
-  purple: 'bg-[#ede9fe] text-[#7c3aed]',
-  orange: 'bg-[#ffedd5] text-[#ea580c]',
-} as const;
-
-function KPICard({
-  label,
-  value,
-  unit,
-  trend,
-  trendLabel,
-  color,
-}: {
-  label: string;
-  value: string;
-  unit: string;
-  trend: string | null;
-  trendLabel: string;
-  color: keyof typeof KPI_ICON_STYLE;
-}) {
-  return (
-    <div className="card">
-      <div className={`mb-4 flex h-10 w-10 items-center justify-center rounded-lg ${KPI_ICON_STYLE[color]}`}>
-        <TrendingUp className="h-5 w-5" />
-      </div>
-      <div className="text-xs font-medium uppercase tracking-wider text-text-secondary">
-        {label}
-      </div>
-      <div className="my-2 text-3xl font-black leading-tight text-text">
-        {value}
-        <span className="ml-1 text-lg font-medium text-text-muted">{unit}</span>
-      </div>
-      <div className="flex items-center gap-1 text-xs text-text-muted">
-        {trend && <span className="font-bold text-success">▲ {trend}</span>}
-        <span>{trendLabel}</span>
-      </div>
-    </div>
-  );
-}
-
-// ── Recent Issues ───────────────────────────────────
-function RecentIssuesSection() {
-  const issues = [
-    {
-      id: '1',
-      title: '공주캠퍼스 앞 횡단보도 신호 대기 시간이 너무 깁니다',
-      description:
-        '아침 통학 시간에 공주캠퍼스 앞 횡단보도 신호가 너무 길어 학생들의 안전이 우려됩니다.',
-      category: '안전',
-      status: '처리중',
-      campus: '공주',
-      campusColor: 'bg-[#d1fae5] text-[#059669]',
-      votes: 142,
-      comments: 23,
-      time: '6일 전',
-    },
-    {
-      id: '2',
-      title: '대전캠퍼스 도서관 주변 쓰레기 무단 투기 심각',
-      description:
-        '대전캠퍼스 중앙도서관 뒤편에 쓰레기가 계속 쌓이고 있습니다. 분리수거함 설치와 정기적인 청소가 필요합니다.',
-      category: '환경',
-      status: '담당 배정',
-      campus: '대전',
-      campusColor: 'bg-[#dbeafe] text-[#2563eb]',
-      votes: 89,
-      comments: 12,
-      time: '3일 전',
-    },
-    {
-      id: '3',
-      title: '예산 지역 고령자 디지털 교육 수요 증가',
-      description:
-        '예산 지역 어르신들이 키오스크, 스마트폰 사용에 어려움을 겪고 있습니다. 정기적인 디지털 교육 프로그램이 필요합니다.',
-      category: '복지',
-      status: '해결됨',
-      campus: '예산',
-      campusColor: 'bg-[#ede9fe] text-[#7c3aed]',
-      votes: 203,
-      comments: 45,
-      time: '2주 전',
-    },
-  ];
-
-  return (
-    <section className="py-12">
-      <div className="container-content">
-        <SectionHead
-          title="최근 제보된 지역 문제"
-          subtitle="시민이 직접 발견한 우리 지역의 문제들"
-          moreHref="/issues"
-        />
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {issues.map((i) => (
-            <Link
-              key={i.id}
-              href={`/issues/${i.id}`}
-              className="card card-hover block"
-            >
-              <div className="mb-3 flex items-start justify-between gap-2">
-                <div className="flex gap-2">
-                  <span className="inline-flex items-center rounded-full border border-border px-3 py-0.5 text-xs font-semibold text-text-secondary">
-                    {i.category}
-                  </span>
-                  <span className="inline-flex items-center rounded-full bg-[#fef3c7] px-3 py-0.5 text-xs font-semibold text-[#d97706]">
-                    {i.status}
-                  </span>
-                </div>
-                <span className={`inline-flex items-center rounded-full px-3 py-0.5 text-xs font-semibold ${i.campusColor}`}>
-                  {i.campus}
-                </span>
-              </div>
-              <h3 className="mb-2 line-clamp-2 text-lg font-bold leading-snug text-text">
-                {i.title}
-              </h3>
-              <p className="mb-4 line-clamp-3 text-sm leading-relaxed text-text-secondary">
-                {i.description}
-              </p>
-              <div className="flex items-center gap-4 border-t border-border pt-4 text-xs text-text-muted">
-                <span>👍 {i.votes}</span>
-                <span>💬 {i.comments}</span>
-                <span className="ml-auto">{i.time}</span>
-              </div>
-            </Link>
-          ))}
         </div>
       </div>
     </section>
@@ -335,83 +172,6 @@ function ProjectsSection() {
                 <span>👥 {p.members}명</span>
                 <span>🏢 {p.partners}기관</span>
                 <span className="ml-auto">{p.endDate}</span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ── Campus ──────────────────────────────────────────
-function CampusSection() {
-  const campuses = [
-    {
-      code: '대전캠퍼스',
-      name: '청년정착 리빙랩',
-      type: 'ICT 기반 청년일자리 실험, 농촌형 주거·일·경험 플랫폼',
-      projects: 4,
-      members: 35,
-      color: '#2563eb',
-    },
-    {
-      code: '공주캠퍼스',
-      name: '교육·역사·문화재생 리빙랩',
-      type: '백제문화권 청년문화기획, 도시유휴공간 활용 창업랩',
-      projects: 3,
-      members: 28,
-      color: '#059669',
-    },
-    {
-      code: '예산캠퍼스',
-      name: '고령자돌봄테크 리빙랩',
-      type: '원격진료부스, 건강 모니터링, 디지털 역량강화 플랫폼',
-      projects: 3,
-      members: 42,
-      color: '#7c3aed',
-    },
-    {
-      code: '세종캠퍼스',
-      name: '모빌리티 리빙랩',
-      type: '자율주행, 차량공유서비스, 교통문제 해결 플랫폼',
-      projects: 2,
-      members: 20,
-      color: '#ea580c',
-    },
-  ];
-
-  return (
-    <section className="py-16">
-      <div className="container-content">
-        <div className="mb-8 text-center">
-          <h2 className="mb-2 text-2xl font-extrabold tracking-tight">
-            캠퍼스별 특화 리빙랩
-          </h2>
-          <p className="text-md text-text-secondary">
-            4개 캠퍼스가 각 지역 특성에 맞춘 리빙랩을 운영합니다
-          </p>
-        </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {campuses.map((c) => (
-            <Link
-              key={c.code}
-              href="/campus"
-              className="relative overflow-hidden rounded-xl border border-border bg-surface p-6 transition hover:-translate-y-1 hover:shadow-lg"
-              style={{ borderTop: `4px solid ${c.color}` }}
-            >
-              <div
-                className="mb-3 inline-block rounded-sm px-3 py-1 text-xs font-bold text-white"
-                style={{ backgroundColor: c.color }}
-              >
-                {c.code}
-              </div>
-              <h3 className="mb-2 text-lg font-extrabold">{c.name}</h3>
-              <p className="mb-4 text-sm text-text-secondary">{c.type}</p>
-              <div className="flex items-center gap-4 border-t border-border pt-4 text-xs text-text-muted">
-                <span>프로젝트 {c.projects}건</span>
-                <span>·</span>
-                <span>참여 {c.members}명</span>
               </div>
             </Link>
           ))}

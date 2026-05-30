@@ -185,7 +185,7 @@ frontend/src/
 │   ├── audit/       (M08)
 │   └── common/      (M09: KakaoMap, Header, Footer, Editor)
 │
-├── components/ui/                  (Atomic — Button, Input, Modal, Toast)
+├── components/ui/                  (Atomic — Button, Input, Modal, ConfirmModal, Toast, ToastProvider, EmptyState, Skeleton, Pagination, DataTable, Tabs, Badge — §7.2 강제)
 ├── lib/
 │   ├── api.ts                      (axios + JWT refresh interceptor)
 │   ├── auth.ts                     (session helpers)
@@ -193,6 +193,42 @@ frontend/src/
 │   └── utils.ts
 └── styles/globals.css
 ```
+
+### 2.4 라우팅 아키텍처 (🚨 절대 규칙)
+
+> **본 절은 2026-05-30 합의 사항.** SPA 사용성과 URL 직접 호출 호환성을 동시에 만족하여, 새로 고침·북마크·뒤로가기·딥링크 공유가 모두 정상 동작하도록 보장한다.
+
+#### 2.4.1 원칙
+
+- **SPA UX**: 사용자가 메뉴·링크 클릭으로 페이지 전환 시 **전체 페이지 리로드 없이** 클라이언트 라우터가 처리 → Next.js `<Link>` / `useRouter().push()` 사용.
+- **브라우저 URL 라우팅 (필수)**: 모든 페이지·상세 페이지는 **고유한 URL** 을 가진다. 새 탭에서 URL 직접 입력 또는 새 고침 (F5) 시 **반드시** 해당 페이지로 즉시 진입 가능해야 한다.
+- **딥링크 호환**: `/issues/123`, `/projects/45`, `/admin/issues/678` 등 동적 경로 모두 SSR fallback 으로 즉시 응답.
+- **❌ 금지**:
+  - 해시 기반 라우팅 (`/#/issues/123`) — Next.js App Router 가 표준 path 기반 라우팅을 강제하므로 우발 위험 낮음, 단 PR review 시 점검.
+  - 상태(state) 만으로 화면 전환 (URL 미변경) — 모달 단독 화면 전환은 허용, **상세 페이지 (full-screen) 는 반드시 URL 분리**.
+  - 클라이언트 라우팅 후 URL 미동기화 (`history.replaceState` 누락 등).
+
+#### 2.4.2 구현 가이드
+
+| 시나리오 | 구현 방법 |
+|---|---|
+| 메뉴·카드 클릭 → 페이지 전환 | `<Link href="/issues/[id]">` (prefetch 자동) |
+| 프로그래매틱 전환 | `const router = useRouter(); router.push('/issues/123')` |
+| 상세 페이지 URL 직접 진입 (F5·새 탭) | Next.js dynamic route `app/issues/[id]/page.tsx` 가 SSR 로 응답, 클라이언트 진입과 동일 화면 보장 |
+| 검색 필터 상태 보존 | URL query string 사용 (`?region=daejeon&stage=published&q=횡단보도`) — 새 고침·공유 시 동일 결과 |
+| 페이지네이션 | URL query string `?page=3` — 뒤로가기 시 이전 페이지 복원 |
+| 모달 단독 표시 | URL 변경 없음 (state). 단 "약관 모달" 등 광역은 URL `?modal=terms` 권장 |
+| 인증 필요 페이지 직접 진입 | middleware (server-side) 에서 redirect, redirect URL 에 `?next=/user/profile` 부여 → 로그인 후 복귀 |
+| 404 처리 | `app/not-found.tsx` 정의 → 모든 미정의 경로에 적용 |
+
+#### 2.4.3 검증 체크리스트
+
+각 화면 구현 시 다음 4 항목을 모두 통과해야 한다 (Playwright E2E §10.3 으로 자동 검증):
+
+- [ ] 메뉴 클릭으로 진입 → URL 변경 + 화면 전환
+- [ ] 진입 후 새 고침 (F5) → 동일 화면 즉시 표시
+- [ ] 진입 후 URL 복사 → 새 탭/시크릿 창에서 붙여넣기 → 동일 화면 진입 (또는 인증 redirect 정상 동작)
+- [ ] 뒤로가기/앞으로가기 → 이전·다음 페이지 정확히 복원
 
 ---
 
@@ -710,10 +746,57 @@ breakpoints: sm 640 / md 768 / lg 1024 / xl 1280
 
 ### 7.2 UI 표준 (memory [[feedback_ui-design]] 반영)
 
-- **모달 최소화**: 가능한 inline 편집·페이지 분리. 모달은 단순 확인·간단 폼만.
+#### 7.2.1 모달·Alert·Toast 원칙 (🚨 절대 규칙)
+
+> **본 절은 2026-05-30 합의 사항. 모든 화면 구현 시 예외 없이 적용.** Sprint 0 에 공통 컴포넌트로 선구축하여 반복 작업을 차단한다.
+
+- **❌ 금지**: 브라우저 기본 `window.alert()`, `window.confirm()`, `window.prompt()` 호출 — **단 1건도 코드에 존재해서는 안 된다**. ESLint 규칙 `no-alert` 활성화 + CI 차단.
+- **✅ 대체 수단**:
+  - **확인·취소가 필요한 경우** → `<ConfirmModal>` (레이어 모달, header/content/footer 3분할)
+  - **단순 안내·결과 알림** → `<Toast>` (3 ~ 5초 자동 dismiss, 우측 상단 stacking)
+  - **에러 표시** → `<Toast variant="danger">` 또는 `<ErrorBanner>` (form 영역 내부 inline)
+- **모달 닫기 규칙**:
+  - **❌ 금지**: 모달 바깥 영역 (backdrop) 클릭으로 닫기. backdrop click event handler 미장착.
+  - **✅ 허용**: ① 모달 우상단 `<CloseButton>` 클릭, ② footer 의 "취소"/"닫기" 버튼, ③ ESC 키 (옵션 — 위험 액션 모달은 비활성).
+- **모달 3분할 구조** (header / content / footer 분리, content 스크롤):
+  ```
+  ┌─────────────────────────────────┐
+  │ Header (고정, 닫기 버튼 포함)    │
+  ├─────────────────────────────────┤
+  │                                 │
+  │ Content (커지면 내부 스크롤)    │  ← overflow-y: auto, max-height: 70vh
+  │                                 │
+  ├─────────────────────────────────┤
+  │ Footer (고정, 액션 버튼)        │
+  └─────────────────────────────────┘
+  ```
+- **공통 컴포넌트 구현**:
+  - `<Modal>` (base) — `header`, `content`, `footer` 3 props, `closeOnBackdrop={false}` 기본값
+  - `<ConfirmModal>` — `<Modal>` 위 래핑, `onConfirm`/`onCancel` props
+  - `<Toast>` + `<ToastProvider>` — context 기반, `toast.success()`/`toast.error()`/`toast.info()` API
+  - 위 3종은 **Sprint 0 Day 4-5 에 우선 구축**, 이후 모든 화면이 import 만 하여 재사용
+
+#### 7.2.2 일반 UI 표준
+
+- **모달 최소화**: 가능한 inline 편집·페이지 분리. 모달은 단순 확인·간단 폼·재동의·삭제 확인 등에 한정.
 - **고객 여정 최소화**: 제보 등록·로그인 등 핵심 액션은 3 step 이내.
-- **모달 구조**: header 고정 + footer 고정 + 콘텐츠 내부 스크롤.
-- **공통 컴포넌트**: Header(GNB), Footer, KakaoMap, RichTextEditor(Tiptap), DataTable, EmptyState, Toast.
+- **공통 컴포넌트 (Atomic)**: `Button`, `Input`, `Select`, `Checkbox`, `Modal`, `ConfirmModal`, `Toast`, `EmptyState`, `Skeleton`, `Pagination`, `DataTable`, `Tabs`, `Badge`, `Dialog`.
+- **공통 컴포넌트 (Domain)**: `Header(GNB)`, `Footer`, `KakaoMap`, `RichTextEditor(Tiptap)`, `StageStepper`, `TrackBadge`, `ReconsentModal`, `ProjectBoardTab`, `ProgramRegistrationForm`, `ResourceUploader`.
+
+### 7.2.3 Mockup 우선 원칙 (🚨 절대 규칙)
+
+> **본 절은 2026-05-30 합의 사항.** 모든 화면 구현 시 Mockup 을 가장 먼저 확인하여, 디자인 의사결정 반복을 차단한다.
+
+- **참조 디렉터리**: `/Users/sangincha/dev/deep-sos/mockup/pages/`
+  - `public/` (10): about, issue-detail, issues, login, network, performance, project-detail, projects, success-cases, index
+  - `user/` (3): issue-new, my-activities, profile
+  - `admin/` (13): audit, cms-banners, dashboard, issue-detail, issues, kpi, mentors, organizations, project-detail, projects, success-cases, terms, users
+- **구현 절차**: 
+  1. 화면 구현 전 **반드시** 해당 mockup HTML 을 먼저 열어 레이아웃·구성요소·인터랙션 확인
+  2. mockup 과 design.md §7.3 의 컴포넌트 목록 교차 확인
+  3. Tailwind 디자인 토큰(§7.1) 으로 mockup CSS 를 React/Tailwind 로 변환
+  4. mockup 에 모달이 있으면 §7.2.1 규칙 강제 적용 (브라우저 alert/backdrop 닫기 발견 시 즉시 교체)
+- **Mockup 과 design.md 가 충돌하는 경우**: design.md 가 우선. Mockup 은 시각적 가이드, design.md 는 기능적 SOT.
 
 ### 7.3 24개 화면 매핑 (요약)
 
@@ -834,6 +917,78 @@ breakpoints: sm 640 / md 768 / lg 1024 / xl 1280
 - [ ] 운영 매뉴얼 작성 완료
 - [ ] design-validator Agent로 Plan ↔ Design ↔ 구현 일관성 95+점
 
+### 10.3 기능 단위 E2E 테스트 원칙 (🚨 절대 규칙)
+
+> **본 절은 2026-05-30 합의 사항.** 회귀 버그 누적·"다음 기능부터 깨짐" 패턴 방지를 위해 **기능 단위 closeout 게이트**를 강제한다.
+
+#### 10.3.1 원칙
+
+- **기능별 Definition of Done (DoD)**: 116개 기능 중 1건의 구현이 "완료"로 간주되려면 다음 5단계를 모두 통과해야 한다:
+  1. ✅ Backend API 구현 + OpenAPI 명세
+  2. ✅ Frontend UI 구현 + design.md §7.3 컴포넌트 매핑
+  3. ✅ Mockup (mockup/pages/*.html) 시각 비교 ≥ 90% 일치
+  4. ✅ **Playwright E2E 시나리오 작성 및 통과** (본 절의 핵심)
+  5. ✅ §2.4.3 URL 라우팅 4 체크 + §7.2.1 모달 규칙 검증
+- **순차 게이팅**: 한 기능의 E2E 가 통과되기 전에는 **다음 기능 구현을 시작하지 않는다**. 기능 누락·잠재 회귀를 차단.
+- **단, 병렬 작업 허용 조건**: 동일 모듈 내 독립적인 기능 (예: M02-01 제보 등록 ↔ M02-04 공감 투표) 은 병렬 구현 가능. 단, 각각의 E2E 가 통과되어야 모듈 완료로 간주.
+
+#### 10.3.2 Playwright 디렉터리 구조
+
+```
+frontend/tests/e2e/
+├── m01-auth/
+│   ├── m01-01-signup.spec.ts
+│   ├── m01-02-age-verification.spec.ts
+│   ├── m01-04-login.spec.ts
+│   ├── ...
+├── m02-issues/
+│   ├── m02-01-issue-create.spec.ts
+│   ├── m02-04-vote.spec.ts
+│   ├── m02-19-track-label.spec.ts
+│   ├── m02-20-keyword-search.spec.ts
+│   ├── ...
+├── m03-projects/, m04-mentors/, m05-network/, m06-performance/, m07-cms/, m08-audit/, m09-common/
+└── fixtures/
+    ├── users.ts            (testCitizen, testOperator, testMentor, testStudent)
+    ├── seed.ts             (DB 시드 헬퍼)
+    └── api-mocks.ts
+```
+
+#### 10.3.3 E2E 시나리오 최소 요건
+
+각 기능 1건의 `*.spec.ts` 는 다음을 검증한다:
+
+| 검증 항목 | 비고 |
+|---|---|
+| **Happy Path** | 정상 입력 → 정상 결과 |
+| **Error Path** | 잘못된 입력 (예: 14세 미만 회원가입) → 적절한 에러 표시 (브라우저 alert 미사용 §7.2.1) |
+| **권한 분기** | 무권한 사용자 → 403 또는 redirect |
+| **URL 라우팅** (§2.4) | 진입 후 새 고침 → 동일 화면 / URL 공유 → 동일 화면 |
+| **Modal 규칙** (§7.2.1) | 모달이 등장하면 backdrop 클릭 무반응 / 닫기 버튼 동작 / header·footer·content 3분할 구조 확인 |
+| **Accessibility** | `aria-label`, focus trap (모달), keyboard navigation |
+
+#### 10.3.4 CI 통합 (Sprint 0 에 구축)
+
+- `.github/workflows/e2e.yml` (또는 GitLab CI) 에서 PR 단위 Playwright 실행
+- **PR 머지 차단 조건**: 신규/수정 기능에 대응하는 E2E spec 이 없거나 실패
+- 로컬: `pnpm test:e2e -- m02-19-track-label.spec.ts` 로 단일 기능 검증 가능
+- 시각 회귀: Playwright `toHaveScreenshot()` 으로 baseline 관리 (mockup 과 비교)
+
+#### 10.3.5 기능 구현 워크플로우 (Sprint 1 이후 매 기능마다)
+
+```
+1. mockup/pages/*.html 열어 화면 확인 (§7.2.3)
+2. feature-spec.md 의 M*-** 명세 확인 (목적·입력·권한·유의사항)
+3. Backend API 구현 + OpenAPI 명세
+4. Frontend 컴포넌트 구현 (§7.2.1 Modal/Toast 규칙 + §7.3 컴포넌트 매핑 + §2.4 URL 라우팅)
+5. Playwright spec 작성 (§10.3.3 6개 검증 항목)
+6. 로컬 E2E 통과 확인
+7. PR 생성 → CI E2E 통과 → 머지
+8. 다음 기능 진입 ← 본 단계 통과 전에는 진입 불가
+```
+
+> **핵심**: 본 게이트는 "AI Agent 가 빠르게 다음 기능으로 넘어가다 회귀를 누적시키는" 패턴을 차단하기 위한 강제 장치이다. **건너뛰지 않는다.**
+
 ---
 
 ## 11. Risks (Build 단계)
@@ -863,6 +1018,7 @@ breakpoints: sm 640 / md 768 / lg 1024 / xl 1280
 
 | Version | Date | Changes |
 |---|---|---|
+| 1.5 | 2026-05-30 | **4대 절대 원칙 통합 + Gap 분석 22% Match Rate 진단 반영**: ① §2.4 신규 — SPA + URL 라우팅 아키텍처 (모든 페이지·상세 페이지 URL 직접 호출/F5/북마크 100% 호환, 검증 체크리스트 4항). ② §7.2.1 신규 — Modal/Alert/Toast 규칙 (window.alert/confirm 절대 금지, backdrop 클릭 닫기 금지, header/content/footer 3분할 + 내부 스크롤, ESLint no-alert + CI 차단). ③ §7.2.3 신규 — Mockup 우선 원칙 (`mockup/pages/` 26개 화면 SOT, 화면 구현 전 필수 참고). ④ §10.3 신규 — Playwright E2E 기능 단위 closeout 게이트 (DoD 5단계, 기능별 spec, CI 머지 차단, 다음 기능 진입 불가). 동시에 첫 Gap 분석 결과 Match Rate 22%, V1 BF-1~7 → V2 M01~M09 이행 작업 71건 식별 → `docs/03-analysis/features/uscp-v2.analysis.md` 참조. 9모듈·116기능·24화면 불변. |
 | 1.4 | 2026-05-27 | **100점 달성 + 8/20 오픈 일정 압축**: 한혜진 PDF 누락 7건 신규 + 2건 보강 API/스키마 반영 (M01-13 비밀번호 보안, M02-01 사진 정책, M02-05 댓글 수정, M02-20 키워드 검색 + `pg_trgm` 인덱스, M02-21 댓글 종결 endpoint, M05-09 협력기관 삭제·토글, M07-15/16 자료실 카테고리·다운로드 카운트 + `resource_category` Enum, M08-10 WCAG 2.1 AA §8.4 컴플라이언스에 명시). §9 일정표 8/20 정식 오픈으로 압축. 9모듈·**116기능**. |
 | 1.3 | 2026-05-27 | design-validator 96점 달성 보강: §9 Sprint 표에 분기 매핑 헤더 + 분기 칼럼 추가 (M1 해결), `/admin/issues/stats` API 추가 (m3·M02-18), §5.2 resolved 진입 시 KPI auto-count 트리거 명시 (m4·M06-04), #20 ProgramRegistrationForm 컴포넌트 추가 (m2·M05-06). |
 | 1.2 | 2026-05-27 | design-validator 재검증 반영: **issue_track Enum + issues.track 컬럼** (정책반영/정책참고/시민자율), `/admin/issues/{id}/track` API, TrackBadge/TrackFilter/TrackSelect 컴포넌트. **content_category Enum + contents 테이블 통합** (notice/event), `/contents` 통합 게시판 API. **terms_versions.require_reconsent BOOL** + `/auth/reconsent` API + `reconsent_check_middleware` + `ReconsentModal`. 9모듈·**109기능**·24화면. |
