@@ -24,7 +24,6 @@ export interface ProjectListItem {
   summary?: string | null;
   region?: RegionCode | null;
   stage?: ProjectStage | null;
-  source_issue_id?: string | null;
   start_at?: string | null;
   end_at?: string | null;
   created_at: string;
@@ -49,8 +48,16 @@ export interface LinkedIssue {
 export interface ProjectDetail extends ProjectListItem {
   description?: string | null;
   owner_id?: string | null;
-  /** M03-14 연결된 의제 (제보). */
-  linked_issue?: LinkedIssue | null;
+  /** M03-14 연결된 의제 목록 (N:M). */
+  linked_issues: LinkedIssue[];
+}
+
+/** M03-14 연결/해제 응답 (N:M). */
+export interface LinkIssueResponse {
+  project_id: string;
+  linked_issue?: { id: string; title: string } | null;
+  linked_issues: LinkedIssue[];
+  message: string;
 }
 
 export interface CreateProjectRequest {
@@ -80,7 +87,6 @@ export interface CreateProjectError {
     | 'invalid_title_length'
     | 'invalid_summary_length'
     | 'invalid_date_range'
-    | 'source_issue_already_linked'
     | 'operator_required';
   message: string;
   [key: string]: unknown;

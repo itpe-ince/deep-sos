@@ -139,8 +139,8 @@ export interface IssueDetail extends IssueListItem {
   voted: boolean;
   history: IssueStageHistoryEntry[];
   photos: IssuePhoto[];
-  /** M03-14 이 제보가 발전한 리빙랩 프로젝트 {id,title,stage}. */
-  linked_project?: { id: string; title: string; stage?: string | null } | null;
+  /** M03-14 이 제보가 발전한 리빙랩 프로젝트 목록 (N:M). */
+  linked_projects?: { id: string; title: string; stage?: string | null }[];
 }
 
 export interface VoteResponse {

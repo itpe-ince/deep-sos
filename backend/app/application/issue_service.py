@@ -572,32 +572,29 @@ async def get_issue_v2(
             except Exception:  # noqa: BLE001
                 voted = False
 
-    # M03-14 양방향 연결 — 이 제보가 발전한 리빙랩 프로젝트
-    linked_project: dict[str, object] | None = None
+    # M03-14 N:M 연결 — 이 제보가 발전한 리빙랩 프로젝트 목록 (project_issues)
+    linked_projects: list[dict[str, object]] = []
     try:
-        lp = (
+        lps = (
             await db.execute(
                 sa.text(
                     """
                     SELECT p.id::text AS id, p.title AS title,
                            COALESCE(p.stage::text, p.phase) AS stage
-                    FROM livinglab_projects p
-                    WHERE p.source_issue_id = CAST(:iid AS uuid)
-                       OR p.id = (
-                           SELECT linked_project_id FROM issues
-                           WHERE id = CAST(:iid AS uuid)
-                       )
-                    ORDER BY p.created_at DESC
-                    LIMIT 1
+                    FROM project_issues pi
+                    JOIN livinglab_projects p ON p.id = pi.project_id
+                    WHERE pi.issue_id = CAST(:iid AS uuid)
+                    ORDER BY pi.linked_at DESC
                     """
                 ),
                 {"iid": issue_id},
             )
-        ).first()
-        if lp is not None:
-            linked_project = {"id": str(lp.id), "title": lp.title, "stage": lp.stage}
-    except Exception:  # noqa: BLE001 — source_issue_id/linked_project_id 미존재 dev fallback
-        linked_project = None
+        ).all()
+        linked_projects = [
+            {"id": str(lp.id), "title": lp.title, "stage": lp.stage} for lp in lps
+        ]
+    except Exception:  # noqa: BLE001 — project_issues 미존재 dev fallback
+        linked_projects = []
 
     return {
         "id": str(row.id),
@@ -609,7 +606,7 @@ async def get_issue_v2(
         "vote_count": int(row.vote_count or 0),
         "comment_count": int(row.comment_count or 0),
         "reporter": {"id": row.reporter_id, "name": row.reporter_name},
-        "linked_project": linked_project,
+        "linked_projects": linked_projects,
         "location": (
             {"lat": float(row.location_lat), "lng": float(row.location_lng)}
             if row.location_lat is not None and row.location_lng is not None

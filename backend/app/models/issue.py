@@ -46,5 +46,5 @@ class Issue(UUIDPrimaryKey, TimestampMixin, Base):
     comment_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     is_anonymous: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
-    linked_project_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True))
+    # H01: 의제↔리빙랩 연결은 project_issues join table (N:M) 로 일원화 — 단일 FK 제거 (0014)
     resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

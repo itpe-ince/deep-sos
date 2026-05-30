@@ -77,8 +77,11 @@ async def submit_project_v2(
         {"project_id": str, "stage": "recruiting", "region": str, "created_at": iso8601}
 
     Raises:
-        HTTPException 422: region 미정의·title 길이 위반·날짜 역전·source_issue 중복
-        HTTPException 409: source_issue 가 이미 다른 프로젝트에 연결되어 있음
+        HTTPException 422: region 미정의·title 길이 위반·날짜 역전
+
+    Note:
+        의제(제보) 연결은 N:M (project_issues join table). 등록 시 source_issue_id 1건을
+        선택 연결할 수 있으나, 동일 의제의 다중 프로젝트 연결을 막지 않는다 (H01 N:M 결정).
     """
     # ── 1. 입력 검증 ─────────────────────────────────────────
     region_norm = region.lower().strip()
@@ -121,16 +124,13 @@ async def submit_project_v2(
             },
         )
 
-    # ── 2. source_issue 중복 검증 (M03-06 유의사항) ──────────
-    if source_issue_id:
-        await _check_source_issue_conflict(db, source_issue_id)
-
-    # ── 3. livinglab_projects INSERT (V1 호환 + V2 컬럼) ──────
+    # ── 2. livinglab_projects INSERT (V1 호환 + V2 컬럼) ──────
+    # H01: source_issue_id 단일 FK 폐기 → 연결은 project_issues join table 로 일원화.
     project_id = uuid.uuid4()
     now = _dt.datetime.now(_dt.UTC)
 
     try:
-        # V1 컬럼 (phase) + V2 컬럼 (stage/region/source_issue_id) 동시 채움
+        # V1 컬럼 (phase) + V2 컬럼 (stage/region) 동시 채움
         await db.execute(
             sa.text(
                 """
@@ -138,14 +138,13 @@ async def submit_project_v2(
                     (id, title, description, summary,
                      phase, stage, region,
                      start_at, end_at,
-                     owner_id, source_issue_id,
+                     owner_id,
                      created_at, updated_at)
                 VALUES
                     (CAST(:id AS uuid), :title, :summary, :summary,
                      'discover', CAST('recruiting' AS project_stage), CAST(:region AS region),
                      :start_at, :end_at,
                      CAST(:owner AS uuid),
-                     CAST(NULLIF(:source_issue_id, '') AS uuid),
                      :now, :now)
                 """
             ),
@@ -157,10 +156,22 @@ async def submit_project_v2(
                 "start_at": start_at,
                 "end_at": end_at,
                 "owner": operator_id,
-                "source_issue_id": source_issue_id or "",
                 "now": now,
             },
         )
+
+        # ── 등록 시 선택 의제 연결 (N:M join table, idempotent) ──
+        if source_issue_id:
+            await db.execute(
+                sa.text(
+                    """
+                    INSERT INTO project_issues (project_id, issue_id, linked_by)
+                    VALUES (CAST(:pid AS uuid), CAST(:iid AS uuid), CAST(:actor AS uuid))
+                    ON CONFLICT (project_id, issue_id) DO NOTHING
+                    """
+                ),
+                {"pid": str(project_id), "iid": source_issue_id, "actor": operator_id},
+            )
 
         # project_stage_history INSERT — Sprint 3 Day 4-7 의 lifecycle_service 패턴 선반영
         try:
@@ -276,7 +287,6 @@ async def list_projects_v2(
             summary,
             region::text               AS region,
             COALESCE(stage::text, phase) AS stage,
-            source_issue_id::text      AS source_issue_id,
             start_at, end_at,
             created_at
         FROM livinglab_projects
@@ -323,7 +333,6 @@ async def get_project_v2(
                         description,
                         region::text                AS region,
                         COALESCE(stage::text, phase) AS stage,
-                        source_issue_id::text       AS source_issue_id,
                         start_at, end_at,
                         owner_id::text              AS owner_id,
                         created_at
@@ -347,7 +356,7 @@ async def get_project_v2(
             },
         )
 
-    linked_issue = await get_linked_issue_v2(db, project_id=project_id)
+    linked_issues = await get_linked_issues_v2(db, project_id=project_id)
 
     return {
         "id": str(row.id),
@@ -356,8 +365,7 @@ async def get_project_v2(
         "description": getattr(row, "description", None),
         "region": row.region,
         "stage": row.stage,
-        "source_issue_id": row.source_issue_id,
-        "linked_issue": linked_issue,
+        "linked_issues": linked_issues,
         "start_at": row.start_at.isoformat() if row.start_at else None,
         "end_at": row.end_at.isoformat() if row.end_at else None,
         "owner_id": row.owner_id,
@@ -384,57 +392,12 @@ def _serialize_project_row(r: dict[str, object]) -> dict[str, object]:
         "summary": r.get("summary"),
         "region": r.get("region"),
         "stage": r.get("stage"),
-        "source_issue_id": r.get("source_issue_id"),
         "start_at": start.isoformat() if start and hasattr(start, "isoformat") else (str(start) if start else None),
         "end_at": end.isoformat() if end and hasattr(end, "isoformat") else (str(end) if end else None),
         "created_at": (
             created.isoformat() if hasattr(created, "isoformat") else str(created)
         ),
     }
-
-
-async def _check_source_issue_conflict(
-    db: AsyncSession,
-    source_issue_id: str,
-    *,
-    exclude_project_id: str | None = None,
-) -> None:
-    """M03-06 유의사항: 같은 issue 가 이미 다른 프로젝트에 연결되어 있는지 확인.
-
-    exclude_project_id: 자기 자신(재연결) 은 충돌에서 제외.
-    """
-    clauses = ["source_issue_id = CAST(:sid AS uuid)"]
-    params: dict[str, object] = {"sid": source_issue_id}
-    if exclude_project_id:
-        clauses.append("id <> CAST(:exclude AS uuid)")
-        params["exclude"] = exclude_project_id
-    try:
-        row = await db.execute(
-            sa.text(
-                f"""
-                SELECT id::text AS id, title
-                FROM livinglab_projects
-                WHERE {" AND ".join(clauses)}
-                LIMIT 1
-                """
-            ),
-            params,
-        )
-        existing = row.first()
-    except Exception:  # noqa: BLE001 — source_issue_id 컬럼 미존재 dev 환경
-        return
-
-    if existing is not None:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail={
-                "code": "source_issue_already_linked",
-                "message": (
-                    f"해당 의제는 이미 다른 프로젝트 「{existing.title}」 에 연결되어 있습니다."
-                ),
-                "existing_project_id": str(existing.id),
-            },
-        )
 
 
 # ════════════════════════════════════════════════════════════════
@@ -912,37 +875,42 @@ async def update_deliverable_meta_v2(
 
 
 # ════════════════════════════════════════════════════════════════
-#  M03-14 — 의제↔리빙랩 양방향 연결 (운영자)
+#  M03-14 — 의제↔리빙랩 N:M 연결 (운영자, project_issues join table)
 # ════════════════════════════════════════════════════════════════
 
 
-async def get_linked_issue_v2(
+async def get_linked_issues_v2(
     db: AsyncSession,
     *,
     project_id: str,
-) -> dict[str, object] | None:
-    """프로젝트에 연결된 의제(제보) 요약 {id, title, stage} 반환. 없으면 None."""
+) -> list[dict[str, object]]:
+    """프로젝트에 연결된 의제(제보) 목록 [{id, title, stage}] 반환 (N:M).
+
+    project_issues join table 기준. 없으면 빈 리스트.
+    """
     try:
-        row = (
+        rows = (
             await db.execute(
                 sa.text(
                     """
                     SELECT i.id::text AS id, i.title AS title,
-                           COALESCE(i.stage::text, i.status) AS stage
-                    FROM livinglab_projects p
-                    JOIN issues i ON i.id = p.source_issue_id
-                    WHERE p.id = CAST(:pid AS uuid)
-                    LIMIT 1
+                           COALESCE(i.stage::text, i.status) AS stage,
+                           pi.linked_at AS linked_at
+                    FROM project_issues pi
+                    JOIN issues i ON i.id = pi.issue_id
+                    WHERE pi.project_id = CAST(:pid AS uuid)
+                    ORDER BY pi.linked_at DESC
                     """
                 ),
                 {"pid": project_id},
             )
-        ).first()
-    except Exception:  # noqa: BLE001 — dev fallback
-        return None
-    if row is None:
-        return None
-    return {"id": str(row.id), "title": row.title, "stage": row.stage}
+        ).all()
+    except Exception:  # noqa: BLE001 — project_issues 미존재 dev fallback
+        return []
+    return [
+        {"id": str(r.id), "title": r.title, "stage": r.stage}
+        for r in rows
+    ]
 
 
 async def link_issue_to_project_v2(
@@ -952,13 +920,14 @@ async def link_issue_to_project_v2(
     issue_id: str,
     operator_id: str,
 ) -> dict[str, object]:
-    """M03-14 의제↔리빙랩 양방향 연결 (운영자).
+    """M03-14 의제↔리빙랩 연결 (운영자, N:M).
 
-    livinglab_projects.source_issue_id 와 issues.linked_project_id 를 동시 갱신.
+    project_issues join table 에 (project_id, issue_id) 1행 추가.
+    동일 쌍이 이미 있으면 idempotent (ON CONFLICT DO NOTHING) — 409 없음.
+    동일 의제의 다중 프로젝트 연결 허용 (H01 N:M 결정).
 
     Raises:
         HTTPException 404: project 또는 issue 미존재
-        HTTPException 409: 해당 issue 가 이미 다른 프로젝트에 연결됨
     """
     # 프로젝트 존재 확인
     try:
@@ -994,35 +963,18 @@ async def link_issue_to_project_v2(
             detail={"code": "issue_not_found", "message": "연결할 제보를 찾을 수 없습니다."},
         )
 
-    # 중복 연결 검증 (자기 자신 제외)
-    await _check_source_issue_conflict(db, issue_id, exclude_project_id=project_id)
-
     now = _dt.datetime.now(_dt.UTC)
     try:
         await db.execute(
             sa.text(
                 """
-                UPDATE livinglab_projects
-                SET source_issue_id = CAST(:iid AS uuid), updated_at = :now
-                WHERE id = CAST(:pid AS uuid)
+                INSERT INTO project_issues (project_id, issue_id, linked_by)
+                VALUES (CAST(:pid AS uuid), CAST(:iid AS uuid), CAST(:actor AS uuid))
+                ON CONFLICT (project_id, issue_id) DO NOTHING
                 """
             ),
-            {"iid": issue_id, "pid": project_id, "now": now},
+            {"pid": project_id, "iid": issue_id, "actor": operator_id},
         )
-        # 의제측 역방향 링크 동기화
-        try:
-            await db.execute(
-                sa.text(
-                    """
-                    UPDATE issues
-                    SET linked_project_id = CAST(:pid AS uuid)
-                    WHERE id = CAST(:iid AS uuid)
-                    """
-                ),
-                {"pid": project_id, "iid": issue_id},
-            )
-        except Exception:  # noqa: BLE001 — linked_project_id 미존재 dev fallback
-            pass
 
         try:
             await db.execute(
@@ -1053,9 +1005,11 @@ async def link_issue_to_project_v2(
             detail={"code": "link_failed", "message": "의제 연결 중 오류가 발생했습니다."},
         ) from exc
 
+    linked_issues = await get_linked_issues_v2(db, project_id=project_id)
     return {
         "project_id": project_id,
         "linked_issue": {"id": issue_id, "title": issue.title},
+        "linked_issues": linked_issues,
         "message": "의제를 프로젝트에 연결했습니다.",
     }
 
@@ -1064,49 +1018,59 @@ async def unlink_issue_from_project_v2(
     db: AsyncSession,
     *,
     project_id: str,
+    issue_id: str,
     operator_id: str,
 ) -> dict[str, object]:
-    """M03-14 의제 연결 해제 (운영자). 양방향 모두 NULL 처리."""
-    # 현재 연결된 issue 조회 (역방향 정리용)
-    try:
-        cur = (
-            await db.execute(
-                sa.text(
-                    "SELECT source_issue_id::text AS iid FROM livinglab_projects "
-                    "WHERE id = CAST(:pid AS uuid) LIMIT 1"
-                ),
-                {"pid": project_id},
-            )
-        ).first()
-    except Exception:  # noqa: BLE001
-        cur = None
-    if cur is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={"code": "project_not_found", "message": "프로젝트를 찾을 수 없습니다."},
-        )
+    """M03-14 의제 연결 해제 (운영자, N:M).
 
+    project_issues 에서 (project_id, issue_id) 1행 제거. 다른 연결은 보존.
+
+    Raises:
+        HTTPException 404: 해당 연결이 존재하지 않음
+    """
     now = _dt.datetime.now(_dt.UTC)
     try:
-        await db.execute(
+        result = await db.execute(
             sa.text(
-                "UPDATE livinglab_projects SET source_issue_id = NULL, updated_at = :now "
-                "WHERE id = CAST(:pid AS uuid)"
+                """
+                DELETE FROM project_issues
+                WHERE project_id = CAST(:pid AS uuid)
+                  AND issue_id = CAST(:iid AS uuid)
+                """
             ),
-            {"pid": project_id, "now": now},
+            {"pid": project_id, "iid": issue_id},
         )
-        if cur.iid:
-            try:
-                await db.execute(
-                    sa.text(
-                        "UPDATE issues SET linked_project_id = NULL "
-                        "WHERE id = CAST(:iid AS uuid)"
-                    ),
-                    {"iid": cur.iid},
-                )
-            except Exception:  # noqa: BLE001
-                pass
+        if result.rowcount == 0:
+            await db.rollback()
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail={
+                    "code": "link_not_found",
+                    "message": "해당 의제 연결을 찾을 수 없습니다.",
+                },
+            )
+
+        try:
+            await db.execute(
+                sa.text(
+                    """
+                    INSERT INTO audit_logs
+                        (actor_id, action, target_type, target_id, metadata, created_at)
+                    VALUES
+                        (CAST(:actor AS uuid), CAST('update' AS audit_action),
+                         'project', CAST(:pid AS uuid),
+                         jsonb_build_object('unlinked_issue_id', :iid),
+                         :now)
+                    """
+                ),
+                {"actor": operator_id, "pid": project_id, "iid": issue_id, "now": now},
+            )
+        except Exception:  # noqa: BLE001
+            pass
+
         await db.commit()
+    except HTTPException:
+        raise
     except Exception as exc:  # noqa: BLE001
         await db.rollback()
         logger.exception("unlink_issue_from_project_v2 failed: %s", exc)
@@ -1115,4 +1079,9 @@ async def unlink_issue_from_project_v2(
             detail={"code": "unlink_failed", "message": "연결 해제 중 오류가 발생했습니다."},
         ) from exc
 
-    return {"project_id": project_id, "linked_issue": None, "message": "의제 연결을 해제했습니다."}
+    linked_issues = await get_linked_issues_v2(db, project_id=project_id)
+    return {
+        "project_id": project_id,
+        "linked_issues": linked_issues,
+        "message": "의제 연결을 해제했습니다.",
+    }

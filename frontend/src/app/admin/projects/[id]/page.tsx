@@ -263,7 +263,7 @@ export default function AdminProjectDetailPage() {
         <div className="mt-6">
           <LinkedIssuePanel
             projectId={project.id}
-            linkedIssue={project.linked_issue}
+            linkedIssues={project.linked_issues ?? []}
             onChanged={fetchProject}
           />
         </div>

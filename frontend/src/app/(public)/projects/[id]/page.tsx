@@ -131,18 +131,17 @@ export default function ProjectDetailPage() {
                 {project.start_at ?? '미정'} ~ {project.end_at ?? '미정'}
               </span>
             ) : null}
-            {project.linked_issue || project.source_issue_id ? (
+            {project.linked_issues?.map((issue) => (
               <Link
-                href={`/issues/${project.linked_issue?.id ?? project.source_issue_id}`}
+                key={issue.id}
+                href={`/issues/${issue.id}`}
                 className="inline-flex items-center gap-1 text-primary hover:underline"
                 data-testid="project-detail-source-issue"
               >
                 <LinkIcon className="h-3.5 w-3.5" aria-hidden="true" />
-                {project.linked_issue
-                  ? `연결된 의제: ${project.linked_issue.title}`
-                  : '연결된 의제 보기'}
+                {`연결된 의제: ${issue.title}`}
               </Link>
-            ) : null}
+            ))}
           </div>
         </header>
 

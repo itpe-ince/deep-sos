@@ -150,19 +150,22 @@ export default function IssueDetailPage() {
           </p>
         </article>
 
-        {/* M03-14 양방향 연결 — 이 제보가 발전한 리빙랩 프로젝트 */}
-        {issue.linked_project ? (
-          <Link
-            href={`/projects/${issue.linked_project.id}`}
-            className="mb-8 flex items-center gap-2 rounded-xl border border-secondary/40 bg-secondary-light/40 px-4 py-3 text-sm transition hover:border-secondary"
-            data-testid="issue-linked-project"
-          >
-            <Sprout className="h-4 w-4 text-secondary" aria-hidden="true" />
-            <span className="text-text-secondary">이 제보는 리빙랩으로 발전했습니다 →</span>
-            <span className="font-semibold text-secondary">
-              {issue.linked_project.title}
-            </span>
-          </Link>
+        {/* M03-14 N:M 연결 — 이 제보가 발전한 리빙랩 프로젝트 목록 */}
+        {issue.linked_projects && issue.linked_projects.length > 0 ? (
+          <div className="mb-8 space-y-2" data-testid="issue-linked-projects">
+            {issue.linked_projects.map((proj) => (
+              <Link
+                key={proj.id}
+                href={`/projects/${proj.id}`}
+                className="flex items-center gap-2 rounded-xl border border-secondary/40 bg-secondary-light/40 px-4 py-3 text-sm transition hover:border-secondary"
+                data-testid="issue-linked-project"
+              >
+                <Sprout className="h-4 w-4 text-secondary" aria-hidden="true" />
+                <span className="text-text-secondary">이 제보는 리빙랩으로 발전했습니다 →</span>
+                <span className="font-semibold text-secondary">{proj.title}</span>
+              </Link>
+            ))}
+          </div>
         ) : null}
 
         {issue.location ? (

@@ -268,10 +268,18 @@ frontend/src/
 │      PROJECTS        │    │       MATCHINGS          │
 │ id · region (5)      │←───│ project_id FK            │
 │ stage (단계 ENUM)    │    │ mentor_id FK · team_id FK│
-│ source_issue_id FK?  │    │ matched_at · notified_at │
-│ title · summary      │    │ status (단순 통보형)      │
-│ start_at · end_at    │    └──────────────────────────┘
-└──────┬───────────────┘
+│ title · summary      │    │ matched_at · notified_at │
+│ start_at · end_at    │    │ status (단순 통보형)      │
+└──────┬───────────────┘    └──────────────────────────┘
+       │ N:M (M03-14, H01)
+       ↓
+┌──────────────────────────┐
+│      PROJECT_ISSUES      │  의제↔리빙랩 N:M join table
+│ project_id FK · issue_id │  uniq(project_id, issue_id)
+│ linked_by · linked_at    │  (issues ↔ projects 양방향 다대다)
+└──────────────────────────┘
+       │
+┌──────┴───────────────┐
        │ 1:N
        ├──────────────┬──────────────────┬─────────────────────┐
        ↓              ↓                  ↓                     ↓
@@ -349,7 +357,8 @@ CREATE TYPE audit_action AS ENUM ('login','logout','create','update','delete','v
 | `issues` | reporter_id, region, stage, **track** (NULL OK, 검토중 진입 시 지정), title, body, location(geography) | btree(region,stage), btree(track), gist(location), **trigram_idx(title) + trigram_idx(body)** (M02-20 키워드 검색용 `pg_trgm` 확장 활용) |
 | `issue_stage_history` | issue_id, prev_stage, next_stage, actor_id | btree(issue_id, created_at) |
 | `votes` | user_id, issue_id | uniq(user_id, issue_id) |
-| `projects` | region, stage, source_issue_id | btree(region,stage) |
+| `projects` | region, stage | btree(region,stage) |
+| `project_issues` (M03-14 의제↔리빙랩 **N:M**, H01 결정) | project_id FK, issue_id FK, linked_by, linked_at | uniq(project_id, issue_id), btree(project_id), btree(issue_id) |
 | `deliverables` | project_id, stage, minio_key | btree(project_id, stage) |
 | `matchings` | project_id, mentor_id, team_id | btree(project_id) |
 | `project_posts` | project_id, author_id, title, body, attachment_key, created_at | btree(project_id, created_at desc) |

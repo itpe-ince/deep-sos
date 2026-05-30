@@ -81,8 +81,9 @@ async def create_project(
     422 분기 (detail.code):
       - `invalid_region`, `invalid_title_length`, `invalid_summary_length`
       - `invalid_date_range`
-    409:
-      - `source_issue_already_linked`: 같은 의제가 다른 프로젝트에 이미 연결됨
+
+    의제 연결(source_issue_id, 선택)은 N:M project_issues 에 idempotent 로 1건 추가된다.
+    동일 의제의 다중 프로젝트 연결을 허용하므로 409 충돌은 발생하지 않는다 (H01 N:M).
     """
     _require_operator(current_user)
     result = await submit_project_v2(
@@ -188,7 +189,7 @@ async def transition_project(
 
 
 # ════════════════════════════════════════════════════════════════
-#  M03-14 — 의제↔리빙랩 양방향 연결·해제 (운영자)
+#  M03-14 — 의제↔리빙랩 N:M 연결·해제 (운영자, project_issues)
 # ════════════════════════════════════════════════════════════════
 from app.application.project_service import (  # noqa: E402
     link_issue_to_project_v2,
@@ -202,7 +203,7 @@ class V2LinkIssueRequest(BaseModel):
 
 @router.post(
     "/{project_id}/link-issue",
-    summary="M03-14 의제 연결 (운영자, 양방향 동기화)",
+    summary="M03-14 의제 연결 (운영자, N:M)",
 )
 async def link_issue(
     project_id: str,
@@ -210,7 +211,11 @@ async def link_issue(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> dict[str, object]:
-    """404: project/issue 미존재 / 409: source_issue_already_linked."""
+    """의제를 프로젝트에 연결 (N:M, idempotent).
+
+    404: project/issue 미존재. 동일 쌍 재연결은 무해(중복 무시), 409 없음.
+    응답: {project_id, linked_issue, linked_issues[], message}.
+    """
     _require_operator(current_user)
     return await link_issue_to_project_v2(
         db,
@@ -221,17 +226,23 @@ async def link_issue(
 
 
 @router.delete(
-    "/{project_id}/link-issue",
-    summary="M03-14 의제 연결 해제 (운영자, 양방향 동기화)",
+    "/{project_id}/link-issue/{issue_id}",
+    summary="M03-14 의제 연결 해제 (운영자, N:M — 개별 해제)",
 )
 async def unlink_issue(
     project_id: str,
+    issue_id: str,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> dict[str, object]:
+    """프로젝트-의제 연결 1건 해제. 404: link_not_found.
+
+    응답: {project_id, linked_issues[], message}.
+    """
     _require_operator(current_user)
     return await unlink_issue_from_project_v2(
         db,
         project_id=project_id,
+        issue_id=issue_id,
         operator_id=str(current_user.id),
     )

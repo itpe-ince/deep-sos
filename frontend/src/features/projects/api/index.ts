@@ -8,6 +8,7 @@ import { api } from '@/lib/api';
 import type {
   CreateProjectRequest,
   CreateProjectResponse,
+  LinkIssueResponse,
   ProjectDetail,
   ProjectListResponse,
   ProjectStage,
@@ -213,21 +214,22 @@ export async function updateSuccessCase(
   return api.patch(`/admin/success-cases/${caseId}`, body);
 }
 
-// ── M03-14 의제↔리빙랩 양방향 연결 ──────────────────────────
+// ── M03-14 의제↔리빙랩 N:M 연결 ─────────────────────────────
 
-/** M03-14 운영자 의제 연결 (양방향 동기화). */
+/** M03-14 운영자 의제 연결 (N:M, idempotent). */
 export async function linkIssueToProject(
   projectId: string,
   issueId: string,
-): Promise<{ project_id: string; linked_issue: { id: string; title: string } | null; message: string }> {
+): Promise<LinkIssueResponse> {
   return api.post(`/admin/projects/${projectId}/link-issue`, { issue_id: issueId });
 }
 
-/** M03-14 운영자 의제 연결 해제. */
+/** M03-14 운영자 의제 연결 해제 (N:M, 개별 해제). */
 export async function unlinkIssueFromProject(
   projectId: string,
-): Promise<{ project_id: string; linked_issue: null; message: string }> {
-  return api.delete(`/admin/projects/${projectId}/link-issue`);
+  issueId: string,
+): Promise<LinkIssueResponse> {
+  return api.delete(`/admin/projects/${projectId}/link-issue/${issueId}`);
 }
 
 // ── M03-15~18 멤버 전용 게시판 ───────────────────────────────

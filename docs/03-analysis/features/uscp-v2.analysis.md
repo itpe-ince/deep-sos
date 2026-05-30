@@ -730,7 +730,7 @@ Sprint 3 Day 8-13 작업으로 **M03 18/18 기능 전부 기능 구현 완료**.
 | M03-13 | 상태 변경 (state machine) | ✅ | `admin_router.py` transition (Day 4-7) |
 | **M03-11** | 성공사례 작성 | ✅ Full | `success_story_service.py` — operator·completed-gate·4단계 검증 |
 | **M03-12** | 정책반영 기록 | ✅ Full | `0013_v2_success_policy.py` (policy_name/effective_date) + service |
-| **M03-14** | 의제↔리빙랩 연결 | 🟡 Partial | `project_service.py` 양방향 동기화·409 충돌 — **1:1 한정** (설계 1:N) |
+| **M03-14** | 의제↔리빙랩 연결 | ✅ Full (v6.0) | `project_issues` join table **N:M** (H01 해소 2026-05-30). link idempotent·개별 unlink·양방향 목록 노출. E2E `m03-14-link-issue.spec.ts` 6/6 |
 | **M03-15** | 게시글 CRUD | ✅ Full | `project_post_service.py` soft-delete·author-or-operator |
 | **M03-16** | 목록·상세 | ✅ Full | pinned-first + 페이지네이션 |
 | **M03-17** | 댓글 | ✅ Full | member-gate·soft-delete·ConfirmModal 삭제 |
@@ -739,7 +739,7 @@ Sprint 3 Day 8-13 작업으로 **M03 18/18 기능 전부 기능 구현 완료**.
 ## v5.0 Gap 목록 (6건)
 
 ### 🟠 HIGH
-- **H01 — M03-14 1:1 vs 설계 1:N 모순.** `link_issue_to_project_v2` 가 단일 FK `livinglab_projects.source_issue_id` 를 덮어쓰므로 프로젝트당 의제 1개. feature-spec M03-14·design.md §3.3 은 "1개 또는 여러 개". → join table 신설 또는 설계를 1:1 로 정정. (다음 세션 결정 필요)
+- **H01 — M03-14 cardinality 모순. ✅ RESOLVED (2026-05-30, N:M 확정).** 발주처 운영 시나리오상 의제↔리빙랩은 **N:M** 로 결정. 단일 FK `source_issue_id`/`linked_project_id` 를 폐기하고 `project_issues` join table 신설 (마이그레이션 0014, uniq(project_id, issue_id)). 기존 단일 FK 데이터는 백필 후 컬럼 제거. service(link idempotent·개별 unlink·get_linked_issues)·router(`DELETE /{pid}/link-issue/{iid}`)·issue_service(linked_projects 목록)·FE(LinkedIssuePanel 다중 연결/개별 해제)·E2E(`m03-14-link-issue.spec.ts` 6/6) 전부 반영. design §3.1·§3.3 ERD·feature-spec·feature-list 동기화 완료. 부작용: 동일 의제 중복 연결 차단(409) 제거 — N:M 특성상 의도된 변경.
 
 ### 🟡 MEDIUM
 - **M01 — 첨부 endpoint 경로 deviation (의도적).** 구현 `POST /projects/{id}/posts/attachment/presign` (presign-then-create) ↔ 설계 §4.2 `POST /projects/{id}/posts/{post_id}/attachment`. Frontend 신 경로 사용 중. → design.md 정정 권장.
@@ -751,7 +751,7 @@ Sprint 3 Day 8-13 작업으로 **M03 18/18 기능 전부 기능 구현 완료**.
 - **L03 — 광범위 `except Exception` dev fallback** — 0010/0013 미적용 dev 용이나 prod 오류 은폐 위험. env flag gating 권장.
 
 ## v5.0 권장 조치 Top 3
-1. **M03-14 cardinality 결정 (H01)** — 1:1 확정 시 design/feature-spec 정정, 1:N 시 `project_issues` join table.
+1. ~~**M03-14 cardinality 결정 (H01)**~~ — ✅ **완료 (v6.0)**: N:M 확정 + `project_issues` join table 구현·문서 동기화·E2E 6/6.
 2. **설계↔구현 deviation 2건 동기화 (M01/M02)** — 첨부 경로 정정 + 성공사례 공개 라우터 명시 (M02 SuccessCaseRead 노출은 검증 완료).
 3. **런칭 전 HTML 살균 + 에러 핸들링 강화 (L01/L03)**.
 
@@ -766,4 +766,5 @@ Sprint 3 Day 8-13 작업으로 **M03 18/18 기능 전부 기능 구현 완료**.
 | Version | Date | Changes |
 |---|---|---|
 | 5.0 | 2026-05-30 (Sprint 3 Day 8-13) | **Match Rate 86% (+6pp). M03 리빙랩 18/18 기능 완료 (모듈 Match 87%). Day 8-13 M03-11/12/14/15/16/17/18 코드 검증. Gap 6건 (Critical 0). 최대 이슈: M03-14 1:1↔설계 1:N 모순(H01). 의도적 deviation 2건(첨부 경로·성공사례 V1 재사용) 설계 동기화 필요. Sprint 4 진입 권장.** |
+| 6.0 | 2026-05-30 (H01 해소) | **H01 RESOLVED — 의제↔리빙랩 N:M 확정.** `project_issues` join table 신설(마이그레이션 0014, uniq+백필+단일FK제거). service/router/issue_service/FE/E2E(`m03-14-link-issue.spec.ts` 6/6) 전면 반영. design §3.1·§3.3·feature-spec·feature-list 동기화. M03-14 🟡 Partial → ✅ Full. **잔여 Gap 6 → 5건 (High 1 → 0, Critical 0).** Match Rate 86% → ~88% (M03-14 cardinality 정합). |
 

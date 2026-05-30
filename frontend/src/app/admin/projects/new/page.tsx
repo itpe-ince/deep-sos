@@ -100,9 +100,6 @@ export default function AdminProjectNewPage() {
         case 'invalid_date_range':
           toast.error('종료 예정일은 시작 예정일 이후여야 합니다.');
           return;
-        case 'source_issue_already_linked':
-          toast.warning('해당 의제는 이미 다른 프로젝트에 연결되어 있습니다.');
-          return;
       }
       toast.error(detail?.message ?? err.message);
       return;
