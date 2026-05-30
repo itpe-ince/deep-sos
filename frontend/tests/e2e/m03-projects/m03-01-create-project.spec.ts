@@ -26,14 +26,17 @@ async function fakeOperatorLogin(page: import('@playwright/test').Page) {
     localStorage.setItem('access_token', 'fake-operator-token');
     localStorage.setItem('refresh_token', 'fake-refresh-token');
   });
-  await mockJson(page, '**/api/v1/users/me', 200, {
+  // admin/layout.tsx 의 useAuth 는 /auth/me 를 호출하고 role 'admin' 을 요구한다.
+  const me = {
     id: 'op-id',
     email: testOperator.email,
     name: testOperator.name,
-    role: 'operator',
+    role: 'admin',
     is_active: true,
     email_verified: true,
-  });
+  };
+  await mockJson(page, '**/api/v1/auth/me', 200, me);
+  await mockJson(page, '**/api/v1/users/me', 200, me);
 }
 
 test.describe('M03-01/06 리빙랩 프로젝트 등록', () => {
@@ -132,7 +135,9 @@ test.describe('M03-01/06 리빙랩 프로젝트 등록', () => {
   });
 
   // ── 4. Error C — source_issue 중복 (409) ──────────────────
-  test('source_issue 중복 409 → Toast warning + alert 미호출', async ({
+  // H01(N:M): 의제 중복 연결 409 가드는 폐기됨. 등록 시 의제 1건 선택 연결이
+  // idempotent 로 성공하는지 검증한다.
+  test('등록 시 의제 선택 연결 → 성공 → /projects/{id} 이동', async ({
     page,
   }) => {
     let alertCount = 0;
@@ -142,29 +147,40 @@ test.describe('M03-01/06 리빙랩 프로젝트 등록', () => {
     });
 
     await fakeOperatorLogin(page);
-    await mockProblem(page, '**/api/v1/admin/projects', 409, {
-      type: 'urn:uscp:problem:source_issue_already_linked',
-      title: 'Conflict',
-      detail: {
-        code: 'source_issue_already_linked',
-        message: '해당 의제는 이미 다른 프로젝트에 연결되어 있습니다.',
-        existing_project_id: 'p-existing',
-      } as unknown as string,
+    let body: Record<string, unknown> | null = null;
+    await page.route('**/api/v1/admin/projects', async (route) => {
+      if (route.request().method() === 'POST') {
+        body = route.request().postDataJSON() as Record<string, unknown>;
+        await route.fulfill({
+          status: 201,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            project_id: 'p-new-linked',
+            stage: 'recruiting',
+            region: 'cheonan',
+            title: '의제 연결 테스트',
+            summary: null,
+            created_at: new Date().toISOString(),
+            message: '리빙랩 프로젝트가 등록되었습니다. (모집중 단계)',
+          }),
+        });
+      } else {
+        await route.fallback();
+      }
     });
 
     await page.goto('/admin/projects/new');
     await page.getByTestId('region-cheonan').click();
-    await page.getByTestId('project-title').fill('중복 테스트');
+    await page.getByTestId('project-title').fill('의제 연결 테스트');
     await page
       .getByTestId('project-source-issue')
       .fill('11111111-1111-1111-1111-111111111111');
     await page.getByTestId('project-submit').click();
 
-    const toast = page.locator(
-      '[data-testid="toast-warning"], [data-testid="toast-error"]',
-    );
-    await expect(toast.first()).toBeVisible({ timeout: 5_000 });
-    await expect(toast.first()).toContainText(/이미|다른 프로젝트/);
+    await expect(page).toHaveURL(/\/projects\/p-new-linked/, { timeout: 5_000 });
+    expect(body).toMatchObject({
+      source_issue_id: '11111111-1111-1111-1111-111111111111',
+    });
     expect(alertCount).toBe(0);
   });
 

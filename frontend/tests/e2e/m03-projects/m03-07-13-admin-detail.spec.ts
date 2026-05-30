@@ -21,7 +21,7 @@ const PROJECT = {
   description: '상세 설명',
   region: 'daejeon',
   stage: 'recruiting',
-  source_issue_id: null,
+  linked_issues: [],
   start_at: '2026-06-01',
   end_at: '2026-12-31',
   owner_id: 'op-id',
@@ -33,14 +33,17 @@ async function fakeOperator(page: import('@playwright/test').Page) {
     localStorage.setItem('access_token', 'op-token');
     localStorage.setItem('refresh_token', 'op-refresh');
   });
-  await mockJson(page, '**/api/v1/users/me', 200, {
+  // admin/layout.tsx 의 useAuth 는 /auth/me 를 호출하고 role 'admin' 을 요구한다.
+  const me = {
     id: 'op-id',
     email: testOperator.email,
     name: testOperator.name,
-    role: 'operator',
+    role: 'admin',
     is_active: true,
     email_verified: true,
-  });
+  };
+  await mockJson(page, '**/api/v1/auth/me', 200, me);
+  await mockJson(page, '**/api/v1/users/me', 200, me);
 }
 
 test.describe('M03-07/08/09/13 관리자 리빙랩 상세', () => {

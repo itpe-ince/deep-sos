@@ -233,7 +233,8 @@ export default function AdminProjectNewPage() {
               data-testid="project-source-issue"
             />
             <span className="mt-1 block text-xs text-text-muted">
-              비워두면 의제 없이 등록됩니다. (M03-14 의제↔리빙랩 연결)
+              비워두면 의제 없이 등록됩니다. 여러 제보 연결은 등록 후 상세 화면에서 추가할 수
+              있습니다. (M03-14 의제↔리빙랩 N:M 연결)
             </span>
           </label>
 

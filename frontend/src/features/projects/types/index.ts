@@ -64,6 +64,7 @@ export interface CreateProjectRequest {
   title: string;
   summary?: string | null;
   region: RegionCode;
+  /** M03-14: 등록 시 의제 1건 선택 연결 (N:M join table 에 1행 추가). */
   source_issue_id?: string | null;
   /** ISO date YYYY-MM-DD */
   start_at?: string | null;
@@ -76,7 +77,6 @@ export interface CreateProjectResponse {
   region: RegionCode;
   title: string;
   summary: string | null;
-  source_issue_id: string | null;
   created_at: string;
   message: string;
 }

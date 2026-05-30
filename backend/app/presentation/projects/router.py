@@ -34,7 +34,6 @@ class V2ProjectItem(BaseModel):
     summary: str | None = None
     region: str | None = None
     stage: str | None = None
-    source_issue_id: str | None = None
     start_at: str | None = None
     end_at: str | None = None
     created_at: str
@@ -48,8 +47,8 @@ class V2ProjectListResponse(BaseModel):
 class V2ProjectDetail(V2ProjectItem):
     description: str | None = None
     owner_id: str | None = None
-    # M03-14 연결된 의제 {id, title, stage}
-    linked_issue: dict | None = None
+    # M03-14 연결된 의제 목록 [{id, title, stage}] (N:M, H01)
+    linked_issues: list[dict] = []
 
 
 @router.get(

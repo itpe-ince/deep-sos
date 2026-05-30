@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-05-30T12:31:47.837Z",
+  "lastUpdated": "2026-05-30T20:50:52.216Z",
   "activeFeatures": [
     "uscp-v1",
     "sos-lab",
@@ -479,9 +479,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T11:24:57.398Z",
-        "lastUpdated": "2026-05-30T12:31:47.837Z"
+        "lastUpdated": "2026-05-30T20:47:55.428Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/features/projects/components/LinkedIssuePanel.tsx"
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/features/projects/types/index.ts"
     },
     "success-cases": {
       "phase": "do",
@@ -531,7 +531,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T12:59:29.498Z",
-        "lastUpdated": "2026-05-30T11:59:51.134Z"
+        "lastUpdated": "2026-05-30T20:48:10.495Z"
       },
       "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/admin/projects/new/page.tsx"
     },
@@ -921,9 +921,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-05-30T01:28:20.719Z",
-        "lastUpdated": "2026-05-30T12:22:43.058Z"
+        "lastUpdated": "2026-05-30T20:50:52.216Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/tests/e2e/m03-projects/m03-14-link-issue.spec.ts"
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/tests/e2e/m03-projects/m03-07-13-admin-detail.spec.ts"
     },
     "application": {
       "phase": "do",
@@ -1038,7 +1038,7 @@
   "session": {
     "startedAt": "2026-04-07T07:44:19.225Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-05-30T12:31:47.837Z"
+    "lastActivity": "2026-05-30T20:50:52.216Z"
   },
   "history": [
     {
@@ -4980,6 +4980,60 @@
     {
       "timestamp": "2026-05-30T12:31:47.837Z",
       "feature": "projects",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-30T20:46:26.127Z",
+      "feature": "projects",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-30T20:47:55.428Z",
+      "feature": "projects",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-30T20:48:10.495Z",
+      "feature": "new",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-30T20:49:36.027Z",
+      "feature": "m03-projects",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-30T20:49:51.992Z",
+      "feature": "m03-projects",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-30T20:50:27.804Z",
+      "feature": "m03-projects",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-30T20:50:39.083Z",
+      "feature": "m03-projects",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-30T20:50:43.541Z",
+      "feature": "m03-projects",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-30T20:50:52.216Z",
+      "feature": "m03-projects",
       "phase": "do",
       "action": "updated"
     }
