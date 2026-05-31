@@ -96,7 +96,7 @@ function OAuthCallbackInner() {
           </p>
           <Link
             href="/login"
-            className="rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-primary-hover"
+            className="rounded-md bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-primary-hover hover:text-white"
           >
             로그인으로 돌아가기
           </Link>

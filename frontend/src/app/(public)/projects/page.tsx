@@ -107,7 +107,7 @@ export default function ProjectsPage() {
         {isOperator ? (
           <Link
             href="/admin/projects/new"
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hover"
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-hover hover:text-white"
             data-testid="projects-new-cta"
           >
             <Plus className="h-4 w-4" aria-hidden="true" />

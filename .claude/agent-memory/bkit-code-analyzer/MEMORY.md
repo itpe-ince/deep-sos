@@ -1,0 +1,1 @@
+- [globals.css `a` base rule specificity trap](finding_globals-anchor-hover.md) — `a { hover:text-primary-hover }` overrides utility text colors on Link/a when no `hover:text-*` set

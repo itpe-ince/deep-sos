@@ -56,7 +56,7 @@ export default function PasswordForgotPage() {
             </div>
             <Link
               href="/login"
-              className="block rounded-md bg-primary px-6 py-3 text-center text-sm font-semibold text-white hover:bg-primary-hover"
+              className="block rounded-md bg-primary px-6 py-3 text-center text-sm font-semibold text-white hover:bg-primary-hover hover:text-white"
             >
               로그인 페이지로
             </Link>

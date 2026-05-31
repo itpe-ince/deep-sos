@@ -128,7 +128,7 @@ export default function UserDashboardPage() {
           </Link>
           <Link
             href="/issues/new"
-            className="flex items-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-semibold text-white hover:bg-primary-hover"
+            className="flex items-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-semibold text-white hover:bg-primary-hover hover:text-white"
           >
             <Plus className="h-4 w-4" /> 문제 제안
           </Link>
