@@ -510,15 +510,22 @@ CREATE TYPE audit_action AS ENUM ('login','logout','create','update','delete','v
 
 #### M06. 성과자료 (`/api/v1/performance`, `/api/v1/admin/kpi`)
 
+> 경로 정정 (Sprint 6 구현 정합, v13.0): CSV는 운영자 전용(`/admin/kpi/export.csv`), 자동집계는 별도 엔드포인트 없이 `transition_issue_v2`의 resolved 분기에서 `kpi_service.auto_count_resolved_issue_v2` 자동 호출(중복방지). 대시보드·자료실 추가. 아래는 구현 SOT.
+
 | Method | Path | 권한 |
 |---|---|---|
-| GET | `/performance` | public (대시보드) |
-| GET | `/performance/export.csv` | public |
-| GET | `/contents` | public (공지·이벤트 통합 게시판 — `?category=notice|event|all`) |
-| GET | `/contents/{id}` | public (공지·이벤트 상세) |
-| POST | `/admin/kpi/indicators` | operator |
-| POST | `/admin/kpi/records` | operator |
-| GET | `/admin/kpi/auto-counts` | operator (해결완료 자동 집계) |
+| GET | `/performance` | public (M06-02 지표 목록 + 달성률) |
+| GET | `/performance/dashboard` | public (M06-05 12개월 추이) |
+| GET | `/contents` | public (M06-07 공지·이벤트 — `?category=notice|event`) |
+| GET | `/contents/{id}` | public (M06-07 상세) |
+| GET | `/resources` | public (M06-08 자료실 목록 — `?category=guide|template|toolkit|etc`) |
+| GET | `/resources/{id}/download` | public (M06-08 다운로드 + count atomic +1) |
+| POST | `/admin/kpi/indicators` | operator (M06-01 지표 등록) |
+| PATCH | `/admin/kpi/indicators/{id}` | operator (M06-01 수정) |
+| POST | `/admin/kpi/records` | operator (M06-03 실적 입력 upsert) |
+| GET | `/admin/kpi/export.csv` | operator (M06-06 CSV, UTF-8 BOM) |
+| DELETE | `/admin/resources/{id}` | operator (M06-08 자료 삭제) |
+| — | (M06-04 자동 집계) | system — `transition_issue_v2` resolved 분기 자동 호출 (별도 endpoint 없음) |
 
 #### M07. 콘텐츠 관리 (`/api/v1/admin/cms`)
 

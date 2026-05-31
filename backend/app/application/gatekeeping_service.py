@@ -339,25 +339,12 @@ async def transition_issue_v2(
         except Exception:  # noqa: BLE001 — audit_logs 미적용 dev 환경 fallback
             pass
 
-        # 4. M06-04 KPI auto-count (resolved 진입 시 +1)
+        # 4. M06-04 KPI auto-count (resolved 진입 시 +1, 의제별 중복 방지)
+        #    kpi_service 로 위임 — (period, auto_count_source_id=issue_id) uniq 로 재집계 무시.
         if to_stage == "resolved":
-            try:
-                await db.execute(
-                    sa.text(
-                        """
-                        UPDATE performance_records
-                        SET value = value + 1, updated_at = :now
-                        WHERE kpi_id = (
-                            SELECT id FROM kpi_indicators
-                            WHERE auto_count_source = 'resolved_issue'
-                            LIMIT 1
-                        )
-                        """
-                    ),
-                    {"now": now},
-                )
-            except Exception:  # noqa: BLE001
-                pass
+            from app.application.kpi_service import auto_count_resolved_issue_v2
+
+            await auto_count_resolved_issue_v2(db, issue_id=issue_id, when=now)
 
         await db.commit()
     except HTTPException:

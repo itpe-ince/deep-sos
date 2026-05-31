@@ -27,6 +27,8 @@ from app.presentation.mentors import router as v2_matching_activity_router
 from app.presentation.network import admin_router as v2_network_admin_router
 from app.presentation.network import community_router as v2_community_router
 from app.presentation.network import router as v2_network_router
+from app.presentation.performance import admin_router as v2_performance_admin_router
+from app.presentation.performance import router as v2_performance_router
 from app.presentation.projects import admin_router as v2_admin_projects_router
 from app.presentation.projects import posts_router as v2_posts_router_module
 from app.presentation.projects import router as v2_projects_router
@@ -93,6 +95,20 @@ api_router.include_router(
 # V2 M05 협력 네트워크 admin 라우터 (M05-01/03/04/06/07/08/09) — /admin/{organizations,mous,programs,community}.
 api_router.include_router(
     v2_network_admin_router.router, prefix="/admin", tags=["network-admin-v2"]
+)
+# V2 M06 성과자료 공개 라우터 (M06-02/05/07/08) — /performance, /contents, /resources.
+api_router.include_router(
+    v2_performance_router.router, prefix="/performance", tags=["performance-v2"]
+)
+api_router.include_router(
+    v2_performance_router.contents_router, prefix="/contents", tags=["performance-v2"]
+)
+api_router.include_router(
+    v2_performance_router.resources_router, prefix="/resources", tags=["performance-v2"]
+)
+# V2 M06 성과자료 admin 라우터 (M06-01/03/06/08) — /admin/kpi/{indicators,records,export.csv}, /admin/resources.
+api_router.include_router(
+    v2_performance_admin_router.router, prefix="/admin", tags=["performance-admin-v2"]
 )
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(oauth.router, prefix="/auth", tags=["oauth"])
