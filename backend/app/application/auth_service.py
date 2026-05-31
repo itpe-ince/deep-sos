@@ -183,22 +183,14 @@ async def signup_v2(
             ),
             {"id": str(user_id)},
         )
-        # M07-13 약관 동의 이력 원장 기록 (가입 시 자동). user_term_agreements 미적용 dev 는 무시.
-        if latest_terms_id:
-            try:
-                await db.execute(
-                    sa.text(
-                        """
-                        INSERT INTO user_term_agreements (user_id, terms_version_id, agreed_at)
-                        VALUES (CAST(:uid AS uuid), CAST(:tid AS uuid), :now)
-                        ON CONFLICT (user_id, terms_version_id) DO NOTHING
-                        """
-                    ),
-                    {"uid": str(user_id), "tid": str(latest_terms_id), "now": now},
-                )
-            except Exception:  # noqa: BLE001 — user_term_agreements 미적용 dev fallback
-                pass
         await db.commit()
+        # M07-13 약관 동의 이력 원장 기록 — terms_service.record_agreement_v2 재사용 (DRY)
+        # 자체 commit + 에러 silent (user_term_agreements 미적용 dev fallback 포함)
+        if latest_terms_id:
+            from app.application.terms_service import record_agreement_v2
+            await record_agreement_v2(
+                db, user_id=str(user_id), terms_version_id=str(latest_terms_id)
+            )
     except Exception as exc:  # noqa: BLE001
         await db.rollback()
         # user_status 컬럼이 아직 0008 미적용인 dev 환경 fallback

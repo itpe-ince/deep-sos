@@ -340,11 +340,25 @@
           "dbApplied": true,
           "alembicStamp": "unchanged (0006) — direct SQL applied for dev DB",
           "notes": "down_revision=0015 chain 유지, dev 는 IF NOT EXISTS 멱등 직접 SQL. terms_kind ENUM + terms_versions + user_term_agreements + users.terms_version_id FK 모두 생성 완료. API endpoint 정상 404 (terms_not_found) 반환"
+        },
+        "step2_6_backend": {
+          "status": "completed",
+          "changes": [
+            "terms_service.py: TERMS_BODY_MIN_LENGTH=100, sanitize_terms_html_v2, get_reconsent_impact_v2, publish 시 sanitize 적용",
+            "admin_router.py: GET /admin/cms/terms/{kind}/impact, POST /admin/cms/terms/preview",
+            "audit.py: AUDIT_RULES 에 /admin/cms/terms = (create, terms_version) 추가",
+            "auth_service.py: signup 의 직접 INSERT 를 record_agreement_v2 호출로 리팩토링 (DRY)"
+          ],
+          "smokeTest": {
+            "/admin/cms/terms/service/impact": "401 (auth required)",
+            "/admin/cms/terms/preview": "401 (auth required)",
+            "/terms/service/current": "404 (terms_not_found — 발행 전 정상)"
+          }
         }
       }
     }
   },
   "lastSubFeature": "terms-admin-editor",
   "lastSubFeaturePhase": "do",
-  "lastUpdated": "2026-06-01T01:30:00.000Z"
+  "lastUpdated": "2026-06-01T02:00:00.000Z"
 }

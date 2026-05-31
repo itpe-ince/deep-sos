@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import datetime as _dt
 import logging
+import re
 from typing import Final
 
 import sqlalchemy as sa
@@ -27,6 +28,62 @@ logger = logging.getLogger(__name__)
 
 VALID_KINDS: Final[frozenset[str]] = frozenset({"service", "privacy"})
 _KIND_LABELS = {"service": "이용약관", "privacy": "개인정보처리방침"}
+
+# design.md §12 Q1 결정: 본문 최소 100자 (HTML 태그 제외 텍스트 길이).
+TERMS_BODY_MIN_LENGTH: Final[int] = 100
+
+# design.md §6.2 BE 1차 정화 — bleach 미설치 환경에서 최소 차단.
+# FE 의 sanitizeRichText (DOMPurify) 가 1차/렌더 직전 2차 정화를 담당하고,
+# 본 백엔드 정화는 최후 방어선이다 (저장된 XSS — script/이벤트/javascript: 차단).
+_DANGEROUS_TAG_PATTERN = re.compile(
+    r"<\s*(script|style|iframe|object|embed|form|input|button)\b[^>]*>.*?<\s*/\s*\1\s*>",
+    re.IGNORECASE | re.DOTALL,
+)
+_SELF_CLOSING_DANGEROUS = re.compile(
+    r"<\s*(script|style|iframe|object|embed|form|input|button|meta|link)\b[^>]*/?>",
+    re.IGNORECASE,
+)
+_EVENT_HANDLER_PATTERN = re.compile(r"\son[a-z]+\s*=\s*(\"[^\"]*\"|'[^']*'|[^\s>]+)", re.IGNORECASE)
+_JS_URI_PATTERN = re.compile(r"(href|src)\s*=\s*([\"']?)\s*javascript:", re.IGNORECASE)
+_HTML_TAG_PATTERN = re.compile(r"<[^>]+>")
+
+
+def _strip_html_for_length(html: str) -> str:
+    """HTML 태그를 제거한 순수 텍스트 길이 측정용 (`body_too_short` 검증)."""
+    return _HTML_TAG_PATTERN.sub("", html).strip()
+
+
+def sanitize_terms_html_v2(html: str) -> tuple[str, list[str]]:
+    """BE 최후 정화 — 위험 태그/이벤트 핸들러/javascript URI 제거.
+
+    Returns: (sanitized_html, removed_items)
+    """
+    removed: list[str] = []
+    out = html or ""
+
+    # 1) 위험 태그 (paired) 제거
+    matches = _DANGEROUS_TAG_PATTERN.findall(out)
+    if matches:
+        removed.extend(f"<{m}>...</{m}>" for m in matches)
+        out = _DANGEROUS_TAG_PATTERN.sub("", out)
+
+    # 2) 위험 self-closing 태그
+    matches_sc = _SELF_CLOSING_DANGEROUS.findall(out)
+    if matches_sc:
+        removed.extend(f"<{m}/>" for m in matches_sc)
+        out = _SELF_CLOSING_DANGEROUS.sub("", out)
+
+    # 3) on* 이벤트 핸들러
+    if _EVENT_HANDLER_PATTERN.search(out):
+        removed.append("on*= event handlers")
+        out = _EVENT_HANDLER_PATTERN.sub("", out)
+
+    # 4) javascript: URI
+    if _JS_URI_PATTERN.search(out):
+        removed.append("javascript: URIs")
+        out = _JS_URI_PATTERN.sub(r'\1=\2', out)
+
+    return out, removed
 
 
 def _next_version(latest: str | None) -> str:
@@ -65,14 +122,28 @@ async def publish_terms_v2(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail={"code": "invalid_kind", "message": "약관 종류는 service 또는 privacy 여야 합니다."},
         )
-    if not (body or "").strip():
+    body_str = (body or "").strip()
+    if not body_str:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail={"code": "body_required", "message": "약관 본문을 입력해 주세요."},
         )
+    # design.md Q1: 본문 최소 100자 (스팸/실수 방지).
+    # HTML 태그 제외 텍스트 길이로 측정해 빈 태그만으로 회피 방지.
+    text_only = _strip_html_for_length(body_str)
+    if len(text_only) < TERMS_BODY_MIN_LENGTH:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={
+                "code": "body_too_short",
+                "message": f"약관 본문이 너무 짧습니다 (최소 {TERMS_BODY_MIN_LENGTH}자, 현재 {len(text_only)}자).",
+            },
+        )
 
     now = _dt.datetime.now(_dt.UTC)
     eff = effective_at or now
+    # design.md §6.2 BE 최후 정화 — FE 가 1차 정화하지만 위험 태그/이벤트 핸들러는 BE 에서도 차단
+    sanitized_body, _removed = sanitize_terms_html_v2(body_str)
     try:
         latest = (
             await db.execute(
@@ -100,7 +171,7 @@ async def publish_terms_v2(
                 {
                     "k": k,
                     "version": version,
-                    "body": body,
+                    "body": sanitized_body,
                     "eff": eff,
                     "reconsent": require_reconsent,
                     "now": now,
@@ -341,3 +412,97 @@ async def submit_reconsent_v2(
             detail={"code": "reconsent_failed", "message": "재동의 처리 중 오류가 발생했습니다."},
         ) from exc
     return {"accepted": True, "force_logout": False, "message": "재동의가 완료되었습니다."}
+
+
+# ════════════════════════════════════════════════════════════════
+#  M07-14 발행 영향 회원수 사전 계산 (운영자 발행 직전 표시)
+#  design.md §4.2.1 + Q3 결정 (토글 ON 즉시 호출)
+# ════════════════════════════════════════════════════════════════
+
+
+async def get_reconsent_impact_v2(
+    db: AsyncSession, *, kind: str
+) -> dict[str, object]:
+    """약관 신 버전 발행 시 영향 받는 활성 회원수 사전 계산.
+
+    - total_active_users : 현재 활성 회원 총원
+    - affected_users     : 현재 latest 버전(of given kind) 에 미동의 회원 (= 발행 후 재동의 대상)
+    - unaffected_users   : total - affected
+    """
+    k = (kind or "").lower().strip()
+    if k not in VALID_KINDS:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={"code": "invalid_kind", "message": "약관 종류가 올바르지 않습니다."},
+        )
+
+    total = 0
+    affected = 0
+    try:
+        # 활성 회원 총원 — V2 user_status 우선, V1 is_active fallback
+        total = int(
+            (
+                await db.execute(
+                    sa.text(
+                        """
+                        SELECT COUNT(*) FROM users
+                        WHERE COALESCE(user_status::text,
+                                       CASE WHEN is_active THEN 'active' ELSE 'inactive' END
+                              ) = 'active'
+                        """
+                    )
+                )
+            ).scalar()
+            or 0
+        )
+        # 해당 kind 의 최신 발행본 ID
+        latest = (
+            await db.execute(
+                sa.text(
+                    """
+                    SELECT id::text AS id FROM terms_versions
+                    WHERE kind = CAST(:k AS terms_kind) AND published_at IS NOT NULL
+                    ORDER BY created_at DESC LIMIT 1
+                    """
+                ),
+                {"k": k},
+            )
+        ).first()
+        latest_id = latest.id if latest else None
+
+        if latest_id is None:
+            # 첫 발행 예정 — 모든 활성 회원이 affected (이전 동의 이력 자체 없음)
+            affected = total
+        else:
+            # users.terms_version_id != latest_id 인 활성 회원 = affected
+            affected = int(
+                (
+                    await db.execute(
+                        sa.text(
+                            """
+                            SELECT COUNT(*) FROM users u
+                            WHERE COALESCE(u.user_status::text,
+                                           CASE WHEN u.is_active THEN 'active' ELSE 'inactive' END
+                                  ) = 'active'
+                              AND (u.terms_version_id IS NULL
+                                   OR u.terms_version_id != CAST(:tid AS uuid))
+                            """
+                        ),
+                        {"tid": latest_id},
+                    )
+                ).scalar()
+                or 0
+            )
+    except Exception as exc:  # noqa: BLE001 — DB 마이그레이션 미적용 dev fallback
+        try:
+            await db.rollback()
+        except Exception:  # noqa: BLE001
+            pass
+        logger.warning("get_reconsent_impact_v2 fallback: %s", exc)
+
+    return {
+        "kind": k,
+        "total_active_users": total,
+        "affected_users": affected,
+        "unaffected_users": max(total - affected, 0),
+    }

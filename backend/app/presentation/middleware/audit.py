@@ -33,6 +33,8 @@ AUDIT_RULES: tuple[tuple[re.Pattern[str], str, str], ...] = (
     (re.compile(r"^/api/v1/admin/issues/.+/reject$"), "stage_change", "issue"),
     (re.compile(r"^/api/v1/admin/issues/.+/resolve-by-comment$"), "stage_change", "issue"),
     (re.compile(r"^/api/v1/admin/users/.+$"), "view_pii", "user"),
+    # M07-10/11/12 약관 발행 — design.md §6.3 audit 보강
+    (re.compile(r"^/api/v1/admin/cms/terms$"), "create", "terms_version"),
 )
 
 DEFAULT_WRITE_METHODS = frozenset({"POST", "PATCH", "PUT", "DELETE"})

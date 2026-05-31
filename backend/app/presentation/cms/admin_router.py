@@ -33,8 +33,10 @@ from app.application.content_service import (
     update_content_v2,
 )
 from app.application.terms_service import (
+    get_reconsent_impact_v2,
     list_terms_versions_v2,
     publish_terms_v2,
+    sanitize_terms_html_v2,
 )
 from app.core.database import get_db
 from app.models.user import User
@@ -283,7 +285,7 @@ async def publish_terms(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> dict:
-    """422: invalid_kind, body_required."""
+    """422: invalid_kind, body_required, body_too_short (100자 미만)."""
     _require_operator(current_user)
     return await publish_terms_v2(
         db,
@@ -293,3 +295,51 @@ async def publish_terms(
         effective_at=body.effective_at,
         require_reconsent=body.require_reconsent,
     )
+
+
+# ── M07-14 발행 영향 회원수 사전 계산 (design.md Q3 — 토글 ON 즉시 호출) ─
+
+
+@router.get(
+    "/terms/{kind}/impact",
+    summary="M07-14 약관 발행 영향 회원수 (재동의 토글 ON 시 표시)",
+)
+async def admin_terms_impact(
+    kind: str,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> dict:
+    """`require_reconsent=true` 발행 시 영향 받는 활성 회원 수.
+
+    Returns: { kind, total_active_users, affected_users, unaffected_users }
+    """
+    _require_operator(current_user)
+    return await get_reconsent_impact_v2(db, kind=kind)
+
+
+# ── 발행 전 본문 미리보기 — BE 정화 결과 + 제거된 위험 요소 노출 ────
+
+
+class PreviewTermsRequest(BaseModel):
+    body: str = Field(..., min_length=1, description="정화할 HTML 본문")
+
+
+@router.post(
+    "/terms/preview",
+    summary="M07-10/11 약관 본문 미리보기 (BE sanitize 결과 반환)",
+)
+async def admin_terms_preview(
+    body: PreviewTermsRequest,
+    current_user: User = Depends(get_current_user),
+) -> dict:
+    """Tiptap → DOMPurify 통과 본문을 BE 가 다시 정화한 결과를 반환.
+
+    FE 가 발행 직전 ConfirmModal 에서 본 응답으로 final preview 표시 + 차단된 요소 경고.
+    """
+    _require_operator(current_user)
+    sanitized, removed = sanitize_terms_html_v2(body.body)
+    return {
+        "html": sanitized,
+        "sanitized": True,
+        "removed_items": removed,
+    }
