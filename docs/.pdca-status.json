@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-05-31T02:01:50.903Z",
+  "lastUpdated": "2026-05-31T03:17:59.006Z",
   "activeFeatures": [
     "uscp-v1",
     "sos-lab",
@@ -69,7 +69,10 @@
     "issue-new",
     "gatekeeping",
     "mentors",
-    "m04-mentors"
+    "m04-mentors",
+    "network",
+    "organizations",
+    "m05-network"
   ],
   "primaryFeature": "uscp-v1",
   "features": {
@@ -208,9 +211,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-09T05:17:50.472Z",
-        "lastUpdated": "2026-05-31T02:01:50.903Z"
+        "lastUpdated": "2026-05-31T03:04:49.775Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/backend/scripts/smoke_routes.py"
+      "lastFile": "/Users/sangincha/dev/deep-sos/backend/scripts/smoke_m05.py"
     },
     "tmp": {
       "phase": "do",
@@ -273,9 +276,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T09:56:56.340Z",
-        "lastUpdated": "2026-05-30T11:42:43.178Z"
+        "lastUpdated": "2026-05-31T02:48:27.993Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/backend/alembic/versions/0014_v2_project_issues.py"
+      "lastFile": "/Users/sangincha/dev/deep-sos/backend/alembic/versions/0015_v2_community.py"
     },
     "schemas": {
       "phase": "do",
@@ -312,7 +315,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T09:57:26.987Z",
-        "lastUpdated": "2026-05-31T01:25:03.120Z"
+        "lastUpdated": "2026-05-31T02:55:00.457Z"
       },
       "lastFile": "/Users/sangincha/dev/deep-sos/backend/app/api/v1/__init__.py"
     },
@@ -624,7 +627,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T13:28:53.704Z",
-        "lastUpdated": "2026-05-31T01:29:53.745Z"
+        "lastUpdated": "2026-05-31T03:11:00.956Z"
       },
       "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/admin/layout.tsx"
     },
@@ -936,9 +939,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-05-30T01:36:40.116Z",
-        "lastUpdated": "2026-05-30T21:14:38.985Z"
+        "lastUpdated": "2026-05-31T02:52:24.673Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/backend/app/application/matching_service.py"
+      "lastFile": "/Users/sangincha/dev/deep-sos/backend/app/application/community_service.py"
     },
     "infrastructure": {
       "phase": "do",
@@ -1056,6 +1059,45 @@
         "lastUpdated": "2026-05-31T01:31:43.421Z"
       },
       "lastFile": "/Users/sangincha/dev/deep-sos/frontend/tests/e2e/m04-mentors/m04-01-mentors-admin.spec.ts"
+    },
+    "network": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-31T02:52:50.594Z",
+        "lastUpdated": "2026-05-31T03:10:09.771Z"
+      },
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/(public)/network/page.tsx"
+    },
+    "organizations": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-31T03:10:46.265Z",
+        "lastUpdated": "2026-05-31T03:10:46.265Z"
+      },
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/admin/organizations/page.tsx"
+    },
+    "m05-network": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-31T03:17:59.006Z",
+        "lastUpdated": "2026-05-31T03:17:59.006Z"
+      },
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/tests/e2e/m05-network/m05-01-network.spec.ts"
     }
   },
   "pipeline": {
@@ -1066,7 +1108,7 @@
   "session": {
     "startedAt": "2026-04-07T07:44:19.225Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-05-31T02:01:50.903Z"
+    "lastActivity": "2026-05-31T03:17:59.006Z"
   },
   "history": [
     {
@@ -5200,6 +5242,126 @@
     {
       "timestamp": "2026-05-31T02:01:50.903Z",
       "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T02:48:27.993Z",
+      "feature": "versions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T02:49:42.343Z",
+      "feature": "application",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T02:50:46.739Z",
+      "feature": "application",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T02:51:24.278Z",
+      "feature": "application",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T02:52:24.673Z",
+      "feature": "application",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T02:52:50.594Z",
+      "feature": "network",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T02:53:10.424Z",
+      "feature": "network",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T02:54:01.015Z",
+      "feature": "network",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T02:54:19.013Z",
+      "feature": "network",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T02:54:38.433Z",
+      "feature": "v1",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T02:55:00.457Z",
+      "feature": "v1",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T03:04:49.775Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T03:08:12.946Z",
+      "feature": "network",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T03:08:35.653Z",
+      "feature": "network",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T03:08:44.993Z",
+      "feature": "network",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T03:10:09.771Z",
+      "feature": "network",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T03:10:46.265Z",
+      "feature": "organizations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T03:10:54.628Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T03:11:00.956Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T03:17:59.006Z",
+      "feature": "m05-network",
       "phase": "do",
       "action": "updated"
     }

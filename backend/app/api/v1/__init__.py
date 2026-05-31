@@ -24,6 +24,9 @@ from app.presentation.issues import admin_router as v2_admin_issues_router
 from app.presentation.issues import router as v2_issues_router
 from app.presentation.mentors import admin_router as v2_mentors_admin_router
 from app.presentation.mentors import router as v2_matching_activity_router
+from app.presentation.network import admin_router as v2_network_admin_router
+from app.presentation.network import community_router as v2_community_router
+from app.presentation.network import router as v2_network_router
 from app.presentation.projects import admin_router as v2_admin_projects_router
 from app.presentation.projects import posts_router as v2_posts_router_module
 from app.presentation.projects import router as v2_projects_router
@@ -78,6 +81,18 @@ api_router.include_router(
     v2_matching_activity_router.admin_history_router,
     prefix="/admin/mentors",
     tags=["mentors-admin-v2"],
+)
+# V2 M05 협력 네트워크 공개 라우터 — /network/{organizations,mous,community} (M05-02/05/07).
+api_router.include_router(
+    v2_network_router.router, prefix="/network", tags=["network-v2"]
+)
+# V2 M05-08 커뮤니티 댓글 (로그인 시민) — /network/community/{id}/comments.
+api_router.include_router(
+    v2_community_router.router, prefix="/network", tags=["network-v2"]
+)
+# V2 M05 협력 네트워크 admin 라우터 (M05-01/03/04/06/07/08/09) — /admin/{organizations,mous,programs,community}.
+api_router.include_router(
+    v2_network_admin_router.router, prefix="/admin", tags=["network-admin-v2"]
 )
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(oauth.router, prefix="/auth", tags=["oauth"])

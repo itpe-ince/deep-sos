@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import {
   BarChart3,
+  Building2,
   FileText,
   Image as ImageIcon,
   LayoutDashboard,
@@ -17,6 +18,7 @@ import { useAuth } from '@/lib/use-auth';
 const NAV = [
   { href: '/admin', label: '대시보드', icon: LayoutDashboard },
   { href: '/admin/mentors', label: '멘토·학생팀', icon: Users },
+  { href: '/admin/organizations', label: '협력기관', icon: Building2 },
   { href: '/admin/kpi', label: 'KPI', icon: BarChart3 },
   { href: '/admin/cms/pages', label: 'CMS 페이지', icon: FileText },
   { href: '/admin/cms/banners', label: 'CMS 배너', icon: ImageIcon },
