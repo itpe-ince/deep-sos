@@ -529,18 +529,21 @@ CREATE TYPE audit_action AS ENUM ('login','logout','create','update','delete','v
 
 #### M07. 콘텐츠 관리 (`/api/v1/admin/cms`)
 
+> 경로 정정 (Sprint 7 구현 정합, v14.0): 공지·이벤트는 `category`로 구분되는 `/admin/cms/contents` 단일 엔드포인트로 통합(notices/events 분리 대신). 자료실 업로드는 presign-then-create 2단계. 약관 버전 이력 추가. 자료실 공개 조회(`/resources`)는 M06-08에서 이미 구현. 아래는 구현 SOT.
+
 | Method | Path | 권한 |
 |---|---|---|
-| GET, POST, PATCH, DELETE | `/admin/cms/notices` | operator |
-| GET, POST, PATCH, DELETE | `/admin/cms/events` | operator |
-| GET, POST, DELETE | `/admin/cms/resources` | operator (자료실 파일 — presigned, **카테고리 ENUM(guide/template/toolkit/etc) 필드**, **download_count 컬럼**) |
-| GET | `/resources` | public (자료실 목록 — `?category=guide|template|toolkit|etc|all` 필터, M07-15 매핑) |
-| GET | `/resources/{id}/download` | public (다운로드 — download_count 증감 atomic UPDATE, M07-16 매핑) |
-| GET, POST, PATCH | `/admin/cms/banners` | operator |
-| GET, POST | `/admin/cms/terms` | operator (버전 자동 부여, body에 `require_reconsent: bool` 필드) |
-| GET | `/terms/{kind}/current` | public |
-| GET | `/auth/reconsent/required` | citizen+ (현재 약관 버전과 본인 마지막 동의 버전 비교, `require_reconsent=true` 신 버전 있으면 변경 내용 반환) |
-| POST | `/auth/reconsent` | citizen+ (변경된 약관에 재동의, 거부 시 force-logout 응답) |
+| GET, POST, PATCH, DELETE | `/admin/cms/contents` | operator (M07-01~04 공지·이벤트, `category=notice|event`, publish 토글) |
+| POST | `/admin/cms/resources/presign` | operator (M07-05 업로드 presigned PUT URL) |
+| POST | `/admin/cms/resources` | operator (M07-05 메타 등록 — category ENUM·download_count) |
+| GET | `/resources`, `/resources/{id}/download` | public (M07-06/15/16 = M06-08 구현 재사용) |
+| GET, POST, PATCH | `/admin/cms/banners` | operator (M07-07/08/09 — link_url protocol whitelist: http/https/mailto//, javascript: 차단) |
+| GET | `/banners` | public (M07-08 활성 배너, order asc) |
+| GET | `/admin/cms/terms/versions` | operator (M07-12 버전 이력) |
+| POST | `/admin/cms/terms` | operator (M07-10/11/12 발행 — 버전 자동, `require_reconsent: bool`) |
+| GET | `/terms/{kind}/current` | public (kind: service|privacy) |
+| GET | `/auth/reconsent/required` | citizen+ (M07-14 재동의 필요 여부) |
+| POST | `/auth/reconsent` | citizen+ (M07-14 재동의, 거부 시 `force_logout=true`) |
 
 #### M08. 권한·감사 (`/api/v1/admin/users`, `/api/v1/admin/audit`)
 

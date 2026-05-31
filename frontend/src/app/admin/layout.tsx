@@ -10,6 +10,7 @@ import {
   FileText,
   Image as ImageIcon,
   LayoutDashboard,
+  Megaphone,
   Shield,
   Users,
 } from 'lucide-react';
@@ -20,6 +21,7 @@ const NAV = [
   { href: '/admin/mentors', label: '멘토·학생팀', icon: Users },
   { href: '/admin/organizations', label: '협력기관', icon: Building2 },
   { href: '/admin/kpi', label: 'KPI', icon: BarChart3 },
+  { href: '/admin/cms/contents', label: '공지·이벤트', icon: Megaphone },
   { href: '/admin/cms/pages', label: 'CMS 페이지', icon: FileText },
   { href: '/admin/cms/banners', label: 'CMS 배너', icon: ImageIcon },
 ];

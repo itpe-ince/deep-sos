@@ -195,3 +195,121 @@ async def delete_attachment_v2(
             detail={"code": "attachment_delete_failed", "message": "자료 삭제 중 오류가 발생했습니다."},
         ) from exc
     return {"attachment_id": attachment_id, "deleted": True, "message": "자료를 삭제했습니다."}
+
+
+# ════════════════════════════════════════════════════════════════
+#  M07-05 자료실 파일 업로드 (운영자)
+# ════════════════════════════════════════════════════════════════
+
+_TITLE_MAX = 200
+
+
+async def create_attachment_v2(
+    db: AsyncSession,
+    *,
+    operator_id: str,
+    title: str,
+    category: str,
+    minio_key: str,
+    tags: list[str] | None = None,
+    file_size: int | None = None,
+    content_type: str | None = None,
+) -> dict[str, object]:
+    """M07-05 자료실 메타데이터 등록 (운영자).
+
+    파일 바이너리는 프론트가 presigned PUT 으로 MinIO 에 직접 업로드한 뒤,
+    minio_key 와 메타데이터를 본 함수로 등록(presign-then-create 패턴).
+
+    Raises:
+        HTTPException 422: 제목 길이·카테고리 부정·minio_key 누락
+    """
+    title_norm = (title or "").strip()
+    if not (1 <= len(title_norm) <= _TITLE_MAX):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={"code": "invalid_title", "message": f"제목은 1~{_TITLE_MAX}자로 입력해 주세요."},
+        )
+    cat = (category or "").lower().strip()
+    if cat not in VALID_CATEGORIES:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={
+                "code": "invalid_category",
+                "message": "카테고리는 가이드(guide)·양식(template)·툴킷(toolkit)·기타(etc) 중 하나여야 합니다.",
+                "valid": sorted(VALID_CATEGORIES),
+            },
+        )
+    if not (minio_key or "").strip():
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={"code": "minio_key_required", "message": "업로드된 파일 키가 필요합니다."},
+        )
+
+    now = _dt.datetime.now(_dt.UTC)
+    try:
+        row = (
+            await db.execute(
+                sa.text(
+                    """
+                    INSERT INTO attachments
+                        (title, category, tags, minio_key, file_size, content_type,
+                         download_count, uploaded_by, created_at, updated_at)
+                    VALUES
+                        (:title, CAST(:cat AS resource_category), :tags, :key,
+                         :size, :ctype, 0, CAST(:uploader AS uuid), :now, :now)
+                    RETURNING id::text AS id
+                    """
+                ),
+                {
+                    "title": title_norm,
+                    "cat": cat,
+                    "tags": tags,
+                    "key": minio_key,
+                    "size": file_size,
+                    "ctype": content_type,
+                    "uploader": operator_id,
+                    "now": now,
+                },
+            )
+        ).first()
+        await db.commit()
+    except HTTPException:
+        raise
+    except Exception as exc:  # noqa: BLE001
+        await db.rollback()
+        logger.exception("create_attachment_v2 failed: %s", exc)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={"code": "attachment_create_failed", "message": "자료 등록 중 오류가 발생했습니다."},
+        ) from exc
+    return {"attachment_id": row.id if row else None, "title": title_norm, "category": cat, "message": "자료를 등록했습니다."}
+
+
+async def presign_attachment_upload_v2(
+    *,
+    filename: str,
+    content_type: str | None = None,
+) -> dict[str, object]:
+    """M07-05 자료실 업로드용 presigned PUT URL 발급.
+
+    프론트가 이 URL 로 MinIO 에 직접 PUT 후 minio_key 로 create_attachment_v2 호출.
+    MinIO 미연결 dev 환경에서는 stub URL 반환.
+    """
+    import uuid as _uuid
+    from datetime import timedelta
+
+    safe_name = (filename or "file").replace("/", "_").strip() or "file"
+    minio_key = f"resources/{_uuid.uuid4().hex}/{safe_name}"
+    upload_url: str | None = None
+    try:
+        from app.core.storage import get_minio_client
+        from app.core.config import settings
+
+        client = get_minio_client()
+        upload_url = client.presigned_put_object(
+            settings.minio_bucket, minio_key, expires=timedelta(minutes=10)
+        )
+    except Exception as exc:  # noqa: BLE001 — dev fallback
+        logger.warning("attachment presign upload failed: %s", exc)
+        upload_url = f"https://stub-minio/{minio_key}?stub=1"
+    return {"upload_url": upload_url, "minio_key": minio_key, "expires_in_seconds": 600}

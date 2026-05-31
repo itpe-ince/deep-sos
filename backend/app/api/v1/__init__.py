@@ -29,6 +29,8 @@ from app.presentation.network import community_router as v2_community_router
 from app.presentation.network import router as v2_network_router
 from app.presentation.performance import admin_router as v2_performance_admin_router
 from app.presentation.performance import router as v2_performance_router
+from app.presentation.cms import admin_router as v2_cms_admin_router
+from app.presentation.cms import router as v2_cms_router
 from app.presentation.projects import admin_router as v2_admin_projects_router
 from app.presentation.projects import posts_router as v2_posts_router_module
 from app.presentation.projects import router as v2_projects_router
@@ -109,6 +111,14 @@ api_router.include_router(
 # V2 M06 성과자료 admin 라우터 (M06-01/03/06/08) — /admin/kpi/{indicators,records,export.csv}, /admin/resources.
 api_router.include_router(
     v2_performance_admin_router.router, prefix="/admin", tags=["performance-admin-v2"]
+)
+# V2 M07 콘텐츠 공개 라우터 — /banners, /terms/{kind}/current, /auth/reconsent*.
+api_router.include_router(v2_cms_router.banners_router, prefix="/banners", tags=["cms-v2"])
+api_router.include_router(v2_cms_router.terms_router, prefix="/terms", tags=["cms-v2"])
+api_router.include_router(v2_cms_router.reconsent_router, prefix="/auth", tags=["cms-v2"])
+# V2 M07 콘텐츠 admin 라우터 (M07-01~12) — /admin/cms/{contents,resources,banners,terms}.
+api_router.include_router(
+    v2_cms_admin_router.router, prefix="/admin/cms", tags=["cms-admin-v2"]
 )
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(oauth.router, prefix="/auth", tags=["oauth"])
