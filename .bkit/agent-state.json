@@ -1,14 +1,25 @@
 {
   "version": "1.0",
-  "enabled": false,
+  "enabled": true,
   "teamName": "",
   "feature": "uscp-v1",
   "pdcaPhase": "do",
   "orchestrationPattern": "leader",
   "ctoAgent": "opus",
-  "startedAt": "2026-05-31T03:35:24.265Z",
-  "lastUpdated": "2026-05-31T03:39:41.237Z",
-  "teammates": [],
+  "startedAt": "2026-05-31T04:31:52.476Z",
+  "lastUpdated": "2026-05-31T04:34:17.187Z",
+  "teammates": [
+    {
+      "name": "a9d90dd540f77c379",
+      "role": "bkit:gap-detector",
+      "model": "sonnet",
+      "status": "completed",
+      "currentTask": null,
+      "taskId": null,
+      "startedAt": "2026-05-31T04:31:52.477Z",
+      "lastActivityAt": "2026-05-31T04:34:17.186Z"
+    }
+  ],
   "progress": {
     "totalTasks": 0,
     "completedTasks": 0,

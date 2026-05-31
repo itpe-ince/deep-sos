@@ -321,7 +321,13 @@ async def auto_count_resolved_issue_v2(
             )
         ).first()
         if kpi is None:
-            return False  # 자동 집계 대상 지표 미정의 — skip
+            # 자동 집계 대상 지표(auto_count_source='resolved_issue') 미정의 — skip.
+            # 정상 동작이나 운영자가 지표를 만들기 전 resolved 의제는 집계 누락되므로
+            # 가시성을 위해 info 로깅(G12). 사후 백필은 미구현(G11) — 지표 생성 후 수동 실적 입력 권장.
+            logger.info(
+                "auto_count skipped: no 'resolved_issue' KPI defined (issue_id=%s)", issue_id
+            )
+            return False
         result = await db.execute(
             sa.text(
                 """
