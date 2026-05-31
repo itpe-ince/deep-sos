@@ -23,19 +23,58 @@ export function Footer() {
       <div className="mx-auto max-w-layout">
         <div className="mb-8 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-1">
-            <div className="mb-4">
-              <Image
-                src="/logo.png"
-                alt="국립공주대학교"
-                width={180}
-                height={36}
-                className="brightness-0 invert"
+            {/* Brand: 공주대(외부) | divider | USCP(내부) — mockup .footer__brand-* */}
+            <div className="mb-4 flex items-center gap-3 text-white">
+              <a
+                href="https://www.kongju.ac.kr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2.5 transition-opacity hover:opacity-85"
+                title="국립공주대학교 홈페이지 (새 창)"
+                aria-label="국립공주대학교 홈페이지 (새 창에서 열림)"
+              >
+                <Image
+                  src="/icon.svg"
+                  alt=""
+                  width={38}
+                  height={38}
+                  className="block h-[38px] w-[38px] flex-shrink-0"
+                  aria-hidden="true"
+                />
+                <span className="flex flex-col leading-[1.2]">
+                  <span className="text-[10px] font-semibold tracking-wide text-white/60">
+                    국립공주대학교
+                  </span>
+                  <span className="text-sm font-extrabold tracking-tight text-white">
+                    지역사회특화센터
+                  </span>
+                </span>
+              </a>
+              <span
+                className="h-7 w-px bg-white/[0.18]"
+                aria-hidden="true"
               />
+              <Link
+                href="/"
+                className="flex flex-col leading-[1.2] transition-opacity hover:opacity-85"
+                title="USCP 홈으로 이동"
+                aria-label="USCP 홈"
+              >
+                <span className="flex items-baseline gap-1.5">
+                  <span className="bg-gradient-to-br from-primary to-secondary bg-clip-text text-lg font-black leading-none tracking-tight text-transparent">
+                    USCP
+                  </span>
+                  <span className="text-[10px] font-semibold tracking-wide text-white/60">
+                    온라인 사회공헌 플랫폼
+                  </span>
+                </span>
+              </Link>
             </div>
             <p className="max-w-[400px] text-sm leading-relaxed">
-              대학-지자체-시민이 함께 만드는 온라인 사회공헌 플랫폼.
+              글로컬사업단 지역사회특화센터 · 2025 글로컬대학 본지정 사업 (추진과제 4-3-1)
               <br />
-              지역의 문제를 함께 발견하고, 해결하고, 성과를 나눕니다.
+              5개 지역(대전·공주·예산·천안·세종) 시민·대학·지자체·기업이 함께하는
+              온라인 사회공헌 플랫폼
             </p>
           </div>
 

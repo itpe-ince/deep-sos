@@ -54,23 +54,57 @@ export function Header() {
         data-testid="header-gnb"
       >
         <div className="mx-auto flex h-full max-w-layout items-center justify-between gap-6 px-4 lg:px-6">
-          <Link href="/" className="flex items-center gap-3" aria-label="USCP 홈">
-            <Image
-              src="/logo.png"
-              alt="국립공주대학교"
-              width={160}
-              height={32}
-              priority
+          {/* Brand: (1) 공주대+지역사회특화센터 외부 링크 → (2) divider → (3) USCP 내부 링크
+              mockup/scripts/app.js COMMON_HEADER_PUBLIC + mockup/styles/components/layout.css .gnb__brand-* */}
+          <div className="flex items-center gap-3">
+            <a
+              href="https://www.kongju.ac.kr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2.5 py-1 transition-opacity hover:opacity-80 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+              title="국립공주대학교 홈페이지 (새 창)"
+              aria-label="국립공주대학교 홈페이지 (새 창에서 열림)"
+              data-testid="header-brand-center"
+            >
+              <Image
+                src="/icon.svg"
+                alt=""
+                width={40}
+                height={40}
+                className="block h-10 w-10 flex-shrink-0"
+                aria-hidden="true"
+                priority
+              />
+              <span className="hidden flex-col leading-[1.2] sm:flex">
+                <span className="text-[11px] font-semibold tracking-wide text-text-secondary">
+                  국립공주대학교
+                </span>
+                <span className="text-sm font-extrabold tracking-tight text-text">
+                  지역사회특화센터
+                </span>
+              </span>
+            </a>
+            <span
+              className="hidden h-8 w-px bg-border sm:block"
+              aria-hidden="true"
             />
-            <div className="hidden flex-col leading-tight sm:flex">
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-xl font-black tracking-tight text-transparent">
-                USCP
+            <Link
+              href="/"
+              className="flex flex-col py-1 leading-tight transition-opacity hover:opacity-85 focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+              title="USCP 홈으로 이동"
+              aria-label="USCP 홈"
+              data-testid="header-brand-platform"
+            >
+              <span className="flex items-baseline gap-2">
+                <span className="bg-gradient-to-br from-primary to-secondary bg-clip-text text-[22px] font-black leading-none tracking-tight text-transparent">
+                  USCP
+                </span>
+                <span className="hidden text-[11px] font-semibold tracking-wide text-text-secondary sm:inline">
+                  온라인 사회공헌 플랫폼
+                </span>
               </span>
-              <span className="text-xs font-semibold tracking-wider text-text-secondary">
-                온라인 사회공헌 플랫폼
-              </span>
-            </div>
-          </Link>
+            </Link>
+          </div>
 
           {/* 데스크탑 메뉴 — lg 이상 */}
           <nav

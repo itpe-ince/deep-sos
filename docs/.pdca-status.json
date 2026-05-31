@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-05-31T10:05:08.958Z",
+  "lastUpdated": "2026-05-31T11:31:50.353Z",
   "activeFeatures": [
     "uscp-v1",
     "sos-lab",
@@ -373,9 +373,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T09:59:57.240Z",
-        "lastUpdated": "2026-05-31T07:24:12.807Z"
+        "lastUpdated": "2026-05-31T11:02:55.094Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/layout.tsx"
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/lib/sanitize.ts"
     },
     "layout": {
       "phase": "do",
@@ -386,9 +386,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T10:01:33.749Z",
-        "lastUpdated": "2026-05-30T04:40:21.198Z"
+        "lastUpdated": "2026-05-31T11:31:50.353Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/components/layout/DeprecatedNotice.tsx"
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/components/layout/Footer.tsx"
     },
     "(public)": {
       "phase": "do",
@@ -412,7 +412,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T11:05:50.894Z",
-        "lastUpdated": "2026-04-13T02:01:12.788Z"
+        "lastUpdated": "2026-05-31T11:02:39.604Z"
       },
       "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/(public)/about/page.tsx"
     },
@@ -477,9 +477,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T11:24:41.388Z",
-        "lastUpdated": "2026-05-30T11:59:39.826Z"
+        "lastUpdated": "2026-05-31T11:02:30.124Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/(public)/issues/[id]/page.tsx"
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/(public)/success-cases/[id]/page.tsx"
     },
     "projects": {
       "phase": "do",
@@ -1192,7 +1192,7 @@
   "session": {
     "startedAt": "2026-04-07T07:44:19.225Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-05-31T10:05:08.958Z"
+    "lastActivity": "2026-05-31T11:31:50.353Z"
   },
   "history": [
     {
@@ -5800,6 +5800,60 @@
     {
       "timestamp": "2026-05-31T10:05:08.958Z",
       "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T11:02:08.634Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T11:02:18.308Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T11:02:24.890Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T11:02:30.124Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T11:02:34.897Z",
+      "feature": "about",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T11:02:39.604Z",
+      "feature": "about",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T11:02:55.094Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T11:25:26.239Z",
+      "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T11:31:50.353Z",
+      "feature": "layout",
       "phase": "do",
       "action": "updated"
     }
