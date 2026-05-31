@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { ArrowLeft, FileCheck, CalendarCheck } from 'lucide-react';
 
 import { serverFetch, type SuccessCaseItem } from '@/lib/server-api';
+import { sanitizeRichText } from '@/lib/sanitize';
 
 /**
  * M03-11/12 — 성공사례 상세 (공개).
@@ -13,7 +14,7 @@ import { serverFetch, type SuccessCaseItem } from '@/lib/server-api';
  *  - feature-spec §M03-12 (정책 반영 기록 노출)
  *
  * 본문(problem/process/result/policy_detail)은 운영자가 TipTap 으로 작성한
- * HTML. prose 로 렌더링. (XSS 정화는 Phase 7 SEO·보안에서 sanitize 보강 예정.)
+ * HTML. prose 로 렌더링하며, sanitizeRichText 로 정화 후 출력 (G-M07-3/4 stored XSS 방어).
  */
 
 async function fetchCase(id: string): Promise<SuccessCaseItem | null> {
@@ -55,7 +56,7 @@ function Stage({
       </h2>
       <div
         className="prose prose-sm max-w-none text-text-secondary"
-        dangerouslySetInnerHTML={{ __html: html }}
+        dangerouslySetInnerHTML={{ __html: sanitizeRichText(html) }}
       />
     </section>
   );
@@ -118,7 +119,7 @@ export default async function SuccessCaseDetailPage({
           {c.policy_detail ? (
             <div
               className="prose prose-sm max-w-none text-text-secondary"
-              dangerouslySetInnerHTML={{ __html: c.policy_detail }}
+              dangerouslySetInnerHTML={{ __html: sanitizeRichText(c.policy_detail) }}
             />
           ) : null}
         </section>

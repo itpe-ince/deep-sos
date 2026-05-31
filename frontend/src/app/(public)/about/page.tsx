@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { fetchCmsPage } from '@/lib/server-api';
+import { sanitizeRichText } from '@/lib/sanitize';
 
 export const metadata: Metadata = {
   title: 'USCP란?',
@@ -22,7 +23,7 @@ export default async function AboutPage() {
             <div className="mb-2 text-xs font-semibold text-primary">CMS 편집 가능</div>
             <div
               className="prose prose-sm max-w-none"
-              dangerouslySetInnerHTML={{ __html: cms.content_html }}
+              dangerouslySetInnerHTML={{ __html: sanitizeRichText(cms.content_html) }}
             />
           </div>
         </section>
