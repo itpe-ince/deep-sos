@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-05-31T03:17:59.006Z",
+  "lastUpdated": "2026-05-31T10:05:08.958Z",
   "activeFeatures": [
     "uscp-v1",
     "sos-lab",
@@ -72,7 +72,13 @@
     "m04-mentors",
     "network",
     "organizations",
-    "m05-network"
+    "m05-network",
+    "performance",
+    "m06-performance",
+    "contents",
+    "m07-cms",
+    "users",
+    "audit"
   ],
   "primaryFeature": "uscp-v1",
   "features": {
@@ -211,9 +217,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-09T05:17:50.472Z",
-        "lastUpdated": "2026-05-31T03:04:49.775Z"
+        "lastUpdated": "2026-05-31T04:54:32.935Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/backend/scripts/smoke_m05.py"
+      "lastFile": "/Users/sangincha/dev/deep-sos/backend/scripts/smoke_m07.py"
     },
     "tmp": {
       "phase": "do",
@@ -237,9 +243,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T09:54:13.797Z",
-        "lastUpdated": "2026-05-30T12:08:30.591Z"
+        "lastUpdated": "2026-05-31T07:22:44.460Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/backend/app/models/issue.py"
+      "lastFile": "/Users/sangincha/dev/deep-sos/backend/app/main.py"
     },
     "core": {
       "phase": "do",
@@ -250,7 +256,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T09:54:20.319Z",
-        "lastUpdated": "2026-04-12T11:12:37.846Z"
+        "lastUpdated": "2026-05-31T07:22:33.568Z"
       },
       "lastFile": "/Users/sangincha/dev/deep-sos/backend/app/core/config.py"
     },
@@ -276,9 +282,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T09:56:56.340Z",
-        "lastUpdated": "2026-05-31T02:48:27.993Z"
+        "lastUpdated": "2026-05-31T07:30:14.872Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/backend/alembic/versions/0015_v2_community.py"
+      "lastFile": "/Users/sangincha/dev/deep-sos/backend/alembic/versions/0013_v2_success_policy.py"
     },
     "schemas": {
       "phase": "do",
@@ -315,7 +321,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T09:57:26.987Z",
-        "lastUpdated": "2026-05-31T02:55:00.457Z"
+        "lastUpdated": "2026-05-31T07:18:57.225Z"
       },
       "lastFile": "/Users/sangincha/dev/deep-sos/backend/app/api/v1/__init__.py"
     },
@@ -367,9 +373,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T09:59:57.240Z",
-        "lastUpdated": "2026-05-30T10:22:39.850Z"
+        "lastUpdated": "2026-05-31T07:24:12.807Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/lib/server-api.ts"
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/layout.tsx"
     },
     "layout": {
       "phase": "do",
@@ -549,7 +555,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T12:59:35.668Z",
-        "lastUpdated": "2026-04-12T09:02:57.901Z"
+        "lastUpdated": "2026-05-31T05:06:51.301Z"
       },
       "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/user/layout.tsx"
     },
@@ -627,7 +633,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T13:28:53.704Z",
-        "lastUpdated": "2026-05-31T03:11:00.956Z"
+        "lastUpdated": "2026-05-31T10:05:08.957Z"
       },
       "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/admin/layout.tsx"
     },
@@ -640,9 +646,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T13:29:52.098Z",
-        "lastUpdated": "2026-04-11T13:29:52.098Z"
+        "lastUpdated": "2026-05-31T05:06:41.472Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/admin/cms/pages/page.tsx"
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/features/cms/index.ts"
     },
     "banners": {
       "phase": "do",
@@ -887,7 +893,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-05-29T20:05:54.287Z",
-        "lastUpdated": "2026-05-30T02:55:39.648Z"
+        "lastUpdated": "2026-05-31T07:33:17.265Z"
       },
       "lastFile": "/Users/sangincha/dev/deep-sos/backend/app/presentation/common/router.py"
     },
@@ -939,9 +945,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-05-30T01:36:40.116Z",
-        "lastUpdated": "2026-05-31T02:52:24.673Z"
+        "lastUpdated": "2026-05-31T07:17:50.917Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/backend/app/application/community_service.py"
+      "lastFile": "/Users/sangincha/dev/deep-sos/backend/app/application/audit_query_service.py"
     },
     "infrastructure": {
       "phase": "do",
@@ -1098,6 +1104,84 @@
         "lastUpdated": "2026-05-31T03:17:59.006Z"
       },
       "lastFile": "/Users/sangincha/dev/deep-sos/frontend/tests/e2e/m05-network/m05-01-network.spec.ts"
+    },
+    "performance": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-31T03:59:47.765Z",
+        "lastUpdated": "2026-05-31T04:04:49.556Z"
+      },
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/(public)/performance/page.tsx"
+    },
+    "m06-performance": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-31T04:12:13.101Z",
+        "lastUpdated": "2026-05-31T04:12:13.101Z"
+      },
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/tests/e2e/m06-performance/m06-01-performance.spec.ts"
+    },
+    "contents": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-31T04:57:07.984Z",
+        "lastUpdated": "2026-05-31T04:57:07.984Z"
+      },
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/admin/cms/contents/page.tsx"
+    },
+    "m07-cms": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-31T04:58:13.030Z",
+        "lastUpdated": "2026-05-31T04:58:13.030Z"
+      },
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/tests/e2e/m07-cms/m07-01-cms.spec.ts"
+    },
+    "users": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-31T07:22:17.788Z",
+        "lastUpdated": "2026-05-31T07:22:17.788Z"
+      },
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/admin/users/page.tsx"
+    },
+    "audit": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-31T07:22:54.098Z",
+        "lastUpdated": "2026-05-31T07:22:54.098Z"
+      },
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/admin/audit/page.tsx"
     }
   },
   "pipeline": {
@@ -1108,7 +1192,7 @@
   "session": {
     "startedAt": "2026-04-07T07:44:19.225Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-05-31T03:17:59.006Z"
+    "lastActivity": "2026-05-31T10:05:08.958Z"
   },
   "history": [
     {
@@ -5362,6 +5446,360 @@
     {
       "timestamp": "2026-05-31T03:17:59.006Z",
       "feature": "m05-network",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T03:55:36.479Z",
+      "feature": "application",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T03:55:49.756Z",
+      "feature": "application",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T03:57:32.320Z",
+      "feature": "application",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T03:59:25.827Z",
+      "feature": "application",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T03:59:47.765Z",
+      "feature": "performance",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:00:04.260Z",
+      "feature": "performance",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:00:27.482Z",
+      "feature": "performance",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:00:43.602Z",
+      "feature": "v1",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:00:56.462Z",
+      "feature": "v1",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:03:15.751Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:03:53.503Z",
+      "feature": "performance",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:04:09.545Z",
+      "feature": "performance",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:04:17.386Z",
+      "feature": "performance",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:04:49.556Z",
+      "feature": "performance",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:12:13.101Z",
+      "feature": "m06-performance",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:34:40.003Z",
+      "feature": "application",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:49:25.946Z",
+      "feature": "application",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:51:04.495Z",
+      "feature": "application",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:52:16.599Z",
+      "feature": "application",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:52:56.200Z",
+      "feature": "cms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:53:32.572Z",
+      "feature": "cms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:53:51.374Z",
+      "feature": "v1",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:54:04.295Z",
+      "feature": "v1",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:54:32.935Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:55:13.626Z",
+      "feature": "cms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:55:32.695Z",
+      "feature": "cms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:55:41.527Z",
+      "feature": "cms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:56:04.625Z",
+      "feature": "cms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:56:25.574Z",
+      "feature": "cms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:57:07.984Z",
+      "feature": "contents",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:57:26.479Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:57:33.866Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T04:58:13.030Z",
+      "feature": "m07-cms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T05:06:08.410Z",
+      "feature": "application",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T05:06:33.944Z",
+      "feature": "cms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T05:06:41.472Z",
+      "feature": "cms",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T05:06:51.301Z",
+      "feature": "user",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:17:17.698Z",
+      "feature": "application",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:17:50.917Z",
+      "feature": "application",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:18:21.882Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:18:39.471Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:18:49.795Z",
+      "feature": "v1",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:18:57.225Z",
+      "feature": "v1",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:21:04.350Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:21:18.750Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:21:25.212Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:22:17.788Z",
+      "feature": "users",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:22:33.568Z",
+      "feature": "core",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:22:44.460Z",
+      "feature": "backend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:22:54.098Z",
+      "feature": "audit",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:22:59.874Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:23:05.330Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:24:12.807Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:27:06.156Z",
+      "feature": "presentation",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:27:32.583Z",
+      "feature": "presentation",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:30:14.872Z",
+      "feature": "versions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:33:05.092Z",
+      "feature": "presentation",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T07:33:17.265Z",
+      "feature": "presentation",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T10:05:08.958Z",
+      "feature": "admin",
       "phase": "do",
       "action": "updated"
     }

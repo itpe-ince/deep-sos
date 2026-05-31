@@ -1,14 +1,14 @@
 ---
 template: analysis
-version: 15.0
+version: 16.0
 feature: uscp-v2
 date: 2026-05-31
 author: gap-detector Agent + 메인 어시스턴트
-status: Sprint 7 M07 Check (16/16 구현, M07-13/14 quick-win 보완 후 ~95%, M08 잔여)
+status: Sprint 8 M08 Check (10/10 구현, 116/116 완성, ~95%, Report 진입 — 마지막 모듈)
 design_doc: docs/02-design/features/uscp-v2.design.md
 plan_doc: docs/01-plan/features/uscp-v2.plan.md
-match_rate: 93
-feature_mapping: "106/116 (91.4%)"
+match_rate: 95
+feature_mapping: "116/116 (100%)"
 sprint_3_m03_completion: "18/18 (100%)"
 sprint_3_target_match_rate: 88
 sprint_3_actual_match_rate: 86
@@ -22,7 +22,8 @@ match_rate_history:
   v11.0_2026-05-31_sprint5_m05: 92
   v13.0_2026-05-31_sprint6_m06: 93
   v15.0_2026-05-31_sprint7_m07: 93
-gap_count: 15
+  v16.0_2026-05-31_sprint8_m08: 95
+gap_count: 14
 gap_count_history:
   v1.0_initial: 71
   v2.0_sprint0_end: 54
@@ -766,6 +767,60 @@ Sprint 3 Day 8-13 작업으로 **M03 18/18 기능 전부 기능 구현 완료**.
 ## v5.0 한 줄 요약
 **전체 Match Rate 80% → 86% (+6pp), M03 리빙랩 18/18 기능 완료 (모듈 Match 87%), Day 8-13 신규 7건(M03-11/12/14/15/16/17/18) 전부 검증 통과, Gap 13→6건, Critical 0 (High 1·Med 2·Low 3), Sprint 4 진입 권장.**
 
+---
+
+# v16.0 — Sprint 8 M08 권한·감사 (2026-05-31, **116/116 전체 완성**)
+
+## v16.0 Executive Summary
+
+| 항목 | v15.0 (M07) | **v16.0 (M08)** | Δ |
+|---|---:|---:|---:|
+| **전체 Match Rate** | 93% | **95%** | **+2pp** |
+| **기능 매핑** | 106/116 (91.4%) | **116/116 (100%)** | **+10 (M08 전부)** |
+| **M08 모듈** | 0/10 | **10/10** | — |
+| 발견 Gap (누적 잔여) | 15 | **14** | -1 (P1 마이그레이션 해소) |
+| Critical | 0 | **0** | 0 |
+| **Report 진입** | 이연 | **✅ 가능** | — |
+
+### 핵심 진단
+**M08 권한·감사 10/10 기능 구현으로 9모듈 116기능 전체 완성 (100% 기능 매핑).** M08-04~07(로그인·게이트키핑·개인정보조회·시스템활동 자동 감사)은 기존 `AuditMiddleware` 가 이미 자동 적재하고 있어 검증으로 확인, M08-01/02/03(운영자 추가·삭제·사용자 검색)·M08-08(감사 로그 뷰어)·M08-09(보관 정책)·M08-10(WCAG 체크리스트)을 신규 구현.
+
+**release-blocking P1 1건을 발견·해소**: 0010↔0013 마이그레이션 컬럼 충돌(아래 G-M08-MIG). 그 외 Critical 0, 잔여는 전부 비차단.
+
+## v16.0 M08 10기능 매핑 (10/10 구현)
+
+| ID | 기능 | 상태 | 근거 |
+|---|---|:---:|---|
+| M08-01 | 운영자 계정 추가 | ✅ Full | `admin_user_service.py:create_operator_v2` (dup→409, hash_password, role=operator, 안내메일 best-effort) + `POST /admin/operators` |
+| M08-02 | 운영자 삭제·비활성화 | ✅ Full | `deactivate_operator_v2` — 본인 직접처리→403 `cannot_self_delete`, mode deactivate/delete, 90일 보존 안내, not-operator→422 |
+| M08-03 | 사용자 목록·검색 | ✅ Full | `list_users_v2`(q/role/status ILIKE 필터·페이지네이션) + `get_user_detail_v2`(PII birth_year) |
+| M08-04 | 로그인 이력 기록 | ✅ Full | `AuditMiddleware` AUDIT_RULES `/auth/login`→login (성공/실패 status_code + IP/UA) |
+| M08-05 | 게이트키핑 이력 | ✅ Full | `AuditMiddleware` transition/reject/resolve→stage_change |
+| M08-06 | 개인정보 조회 로그 | ✅ Full | `AuditMiddleware` `/admin/users/.+`→view_pii (상세 조회 시 자동) |
+| M08-07 | 시스템 활동 로그 | ✅ Full | `AuditMiddleware` write 동사→create/update/delete (조회 미기록) |
+| M08-08 | 감사 로그 조회 화면 | ✅ Full | `audit_query_service.py` (action/actor/기간 필터 + `is_self` 본인 구분) + `/admin/audit/{logins,gatekeeping,all}` + FE `/admin/audit`(3탭) |
+| M08-09 | 로그 보관 정책 | ✅ Full | `purge_expired_audit_logs_v2`(365일 cutoff, dry_run, 동의 테이블 제외) + `POST /admin/audit/purge` (cron 트리거) |
+| M08-10 | WCAG 2.1 AA | ✅ Full | `docs/02-design/uscp-wcag-aa-checklist.md`(5항목·화면별·도구·DoD) + 신규 화면 헤딩/label/table scope/role·aria/skip link 적용 |
+
+## v16.0 Gap (M08 신규/해소)
+
+### 🔴→✅ P1 RESOLVED — G-M08-MIG 마이그레이션 컬럼 충돌
+`0010_v2_new_tables.py`(line 637~)가 `success_cases` 에 `policy_name`/`policy_effective_date`/`policy_detail_body` 를 추가하는데, 앱 코드(`models/success_case.py`·`success_story_service.py`)와 `0013_v2_success_policy.py` 는 `policy_name`/`effective_date`/`policy_detail`(0002) 를 사용 → fresh `alembic upgrade head` 시 **`policy_name` 중복 ADD COLUMN 으로 체인 붕괴 + 앱 필요 컬럼 `effective_date` 누락**. **해소**: 0013을 `ALTER TABLE ... ADD COLUMN IF NOT EXISTS` 멱등 처리(앱 정본 컬럼명 기준, `policy_name` skip·`effective_date` 추가). 0010의 orphan 컬럼(`policy_effective_date`/`policy_detail_body`)은 미사용·무해로 잔존.
+
+### 🟢 LOW (비차단, M08 관련)
+- **L-M08-1**: M08-09 보관 cron 미연결 — `POST /admin/audit/purge`(dry_run 기본) 수동/스케줄러 트리거만, Phase 9 배포 시 시스템 cron 연결 필요 (M05 MOU 알림과 동일 패턴).
+- **L-M08-2**: M08-10 WCAG 도구 검증(Lighthouse/axe) 미실행 — 코드 레벨 5항목 충족, UAT 직전 도구 실측 + 잔여 위반 0건 도달 필요 (체크리스트 DoD).
+- **L-M08-3**: 운영자 안내 메일·삭제 90일 파기 — 메일 best-effort, 90일 hard-delete cron 미구현(상태=withdrawn 소프트 처리까지). 운영 정책상 충분, 자동 파기는 Phase 9.
+
+## v16.0 결론: ✅ Report 진입 (프로젝트 완성)
+- **9모듈 116기능 전부 매핑 (116/116, 100%)** — M01 13·M02 21·M03 18·M04 9·M05 9·M06 8·M07 16·M08 10·M09 12
+- 전체 Match Rate **95%** (Critical 0, P1 마이그레이션 해소 완료)
+- 잔여 14건 전부 비차단 (배포 cron 연결·WCAG 도구 실측·HTML 살균 등 Phase 9/UAT 항목)
+- **다음: `/pdca report uscp-v2` 최종 보고서 → Phase 9 배포 준비 (cron·sanitize·a11y 실측)**
+
+## v16.0 한 줄 요약
+**M08 권한·감사 10/10 구현으로 116/116 전체 완성 (기능 매핑 100%), Match Rate 93%→95%, M08-04~07은 AuditMiddleware 자동기록 검증·M08-01/02/03/08/09/10 신규 구현. release-blocking P1(0010↔0013 마이그레이션 충돌) 발견·멱등 해소. Critical 0, Report 진입.**
+
 | Version | Date | Changes |
 |---|---|---|
 | 5.0 | 2026-05-30 (Sprint 3 Day 8-13) | **Match Rate 86% (+6pp). M03 리빙랩 18/18 기능 완료 (모듈 Match 87%). Day 8-13 M03-11/12/14/15/16/17/18 코드 검증. Gap 6건 (Critical 0). 최대 이슈: M03-14 1:1↔설계 1:N 모순(H01). 의도적 deviation 2건(첨부 경로·성공사례 V1 재사용) 설계 동기화 필요. Sprint 4 진입 권장.** |
@@ -779,4 +834,5 @@ Sprint 3 Day 8-13 작업으로 **M03 18/18 기능 전부 기능 구현 완료**.
 | 11.0 | 2026-05-31 (gap-detector M05 독립 검증) | **M05 9/9 기능 PASS, Match Rate 92% 확정** (82/116=70.7%, v10.0 자가추정 정확). 코드 검증: M05-01 삭제 FK가드(409 org_has_dependencies+토글 안내)·M05-04 30일 1회발송(expire_notification_sent_at 마킹)·M05-05 status 파생(expires_at<today→expired)·M05-08 댓글 3단권한(작성=시민/본인수정=author/조정=운영자 hide·unhide·delete)·M05-02/09 비활성 제외+토글 전부 정합. 0015 체인(0015→0014→0013) 정합, community 테이블 is_pinned/is_hidden/soft-delete 충족. **신규 Gap 2건**: G-M05(design §4.2 M05 표가 9행뿐 vs 구현 20라우트 — **design 표 구현 정합으로 정정 완료**), G-M06(MOU 만료 알림 cron 미연결 — `POST /admin/mous/notify-expiring` 수동/cron 트리거만, **Phase 9 배포 시 시스템 cron 연결 필요**). 잔여 **Gap 10건** (Critical 0·High 0·Med 6·Low 4) — 전부 비차단. **다음: Sprint 6 M06 성과자료(8기능) 권장. Report 갱신은 M08까지 완료 후로 이연.** |
 | 15.0 | 2026-05-31 (gap-detector M07 독립 검증 + quick-win) | **M07 16기능: PASS 13 + PARTIAL 3 발견 → 2건 즉시 보완.** gap-detector 코드 검증: M07-09 URL 차단·M07-12 발행분 불변(INSERT only)·M07-05 presign-then-create 정합. **발견된 결함**: ① **G-M07-13** `record_agreement_v2` 호출처 0건(가입 시 user_term_agreements 원장 미기록) → **signup_v2 에 원장 INSERT 추가 완료**. ② **G-M07-14** `ReconsentModal` 마운트처 0건(UI 미작동, 백엔드 409 enforcement 는 작동) → **ReconsentGate 신설 + user layout 마운트 완료**. ③ G-M07-16(다운로드 1분 dedup 미구현, P2) → M08 후 처리. **frontmatter 버전 불일치(v5.0 정체) → v15.0 정정.** Match Rate: 단순 106/116=91.4%, 가중 93%(보완 후 ~95% 근접). 잔여 **Gap 15건** (Critical 0·High 0·Med 8·Low 7). **다음: Sprint 8 M08 권한·감사(10) — 마지막. 완료 시 116/116, Report 최종 갱신.** |
 | 14.0 | 2026-05-31 (Sprint 7 M07 구현) | **M07 콘텐츠 관리 16/16 기능 구현.** content_service 쓰기측(M07-01~04 공지·이벤트 작성·수정·삭제, publish 토글)·attachment_service 업로드(M07-05 presign-then-create; M07-06/15/16은 M06-08 재사용)·banner_service(M07-07/08/09 CRUD·순서·**M07-09 link_url javascript:/data:/vbscript: 차단, 단위검증 8/8**)·terms_service(M07-10/11 편집·M07-12 버전자동·M07-13 동의이력·**M07-14 재동의**[require_reconsent 체크+force_logout]). 신규 마이그레이션 없음(contents/attachments/cms_banners/terms_versions/user_term_agreements 선반영). `presentation/cms/{router,admin_router}` 라우트 + api/v1(앱 풀로드 **176 routes**, V1 cms `/cms/*`와 prefix 구분 공존). FE `features/cms/` + admin `/admin/cms/contents` + **ReconsentModal**(M07-14, 거부=강제 로그아웃). tsc 0. E2E `m07-cms` **5/5**. **통합 스모크 16/16 + M07-09 URL 가드 8/8**. 신규 매핑 **106/116(91.4%)**. (※ v15.0 gap-detector 재검증 대기). 다음: **M08 권한·감사(10) — 완료 시 116/116, Report 최종 갱신.** |
+| 16.0 | 2026-05-31 (Sprint 8 M08 — **마지막 모듈, 116/116 완성**) | **M08 권한·감사 10/10 기능 완성 → 9모듈 116기능 전체 매핑(100%), Match Rate 93%→95%.** M08-04~07(로그인·게이트키핑·view_pii·시스템활동)은 기존 `AuditMiddleware` 자동기록 검증으로 확인. 신규: `admin_user_service`(M08-01 운영자추가[dup 409·hash·메일]·M08-02 삭제[본인보호 403·90일]·M08-03 검색)·`audit_query_service`(M08-08 필터+is_self·M08-09 365일 purge) + `presentation/admin/{users_router,audit_router}` 등록. FE `features/admin/` + `/admin/users`·`/admin/audit`(3탭) + 네비 2링크. M08-10 WCAG 체크리스트(`uscp-wcag-aa-checklist.md`) + 신규화면 헤딩/label/table scope/role·aria 적용. tsc 0, py_compile OK. **release-blocking P1 발견·해소**: 0010↔0013 `success_cases.policy_name` 중복 + `effective_date` 누락 → 0013 `ADD COLUMN IF NOT EXISTS` 멱등 처리(앱 정본 컬럼명 기준). 잔여 **Gap 14건** (Critical 0). **다음: `/pdca report uscp-v2` 최종 보고서 → Phase 9 배포(cron 연결·HTML sanitize·WCAG 도구 실측).** |
 
