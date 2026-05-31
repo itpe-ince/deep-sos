@@ -17,6 +17,17 @@ export const metadata: Metadata = {
     locale: 'ko_KR',
     type: 'website',
   },
+  // mockup/images/center-logo.svg → src/app/icon.svg + apple-icon.svg + public/favicon.svg
+  // Next.js App Router 의 file convention 으로 자동 <link rel="icon"> 주입되지만,
+  // /favicon.ico (root 요청) 도 404 가 나지 않도록 metadata.icons 에 명시.
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+    apple: { url: '/apple-icon.svg', type: 'image/svg+xml' },
+    shortcut: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({

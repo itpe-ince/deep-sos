@@ -12,6 +12,7 @@ V1 → V2 데이터 전환 호환성:
 """
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 from fastapi import APIRouter, Depends
@@ -19,6 +20,8 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -126,54 +129,76 @@ async def get_regions_map(db: AsyncSession = Depends(get_db)) -> dict[str, Any]:
       - center : 지도 기본 중심 좌표 (5개 지역 중심)
 
     KakaoMap 컴포넌트에서 핀 표시 + 클릭 시 /issues?region={code} 이동.
-    """
-    # V2 region 컬럼 우선, 없으면 빈 결과
-    rows = (
-        await db.execute(
-            text(
-                """
-                SELECT
-                    region::text AS region_code,
-                    COUNT(*) FILTER (
-                        WHERE COALESCE(stage::text, status) IN ('reviewing', 'published', 'mentor_assigned', 'in_progress')
-                    ) AS active_issues,
-                    COUNT(*) FILTER (
-                        WHERE COALESCE(stage::text, status) = 'resolved'
-                    ) AS resolved_issues
-                FROM issues
-                WHERE region IS NOT NULL
-                GROUP BY region
-                """
-            )
-        )
-    ).all()
-    counts_by_region: dict[str, dict[str, int]] = {
-        r.region_code: {
-            "active_issues": int(r.active_issues or 0),
-            "resolved_issues": int(r.resolved_issues or 0),
-        }
-        for r in rows
-    }
 
-    # 리빙랩 카운트도 region 별로 (V2 projects.region 우선)
-    project_rows = (
-        await db.execute(
-            text(
-                """
-                SELECT
-                    region::text AS region_code,
-                    COUNT(*) AS active_projects
-                FROM livinglab_projects
-                WHERE region IS NOT NULL
-                  AND COALESCE(stage::text, phase) IN ('in_progress', 'execute', 'develop', 'verify', 'recruiting')
-                GROUP BY region
-                """
+    V1 ↔ V2 schema 전환 중 region/stage 컬럼이 부분 적용된 dev 환경에서도
+    빈 결과 fallback 으로 200 응답을 보장.
+    """
+    counts_by_region: dict[str, dict[str, int]] = {}
+    projects_by_region: dict[str, int] = {}
+
+    # ── 1. issues 지역별 카운트 ──────────────────────────────
+    # V2 region/stage 모두 ENUM 캐스팅이라 컬럼 부재 시 SQL 자체가 parse 실패
+    # → COALESCE 만으로 부족. 명시적 try/except + rollback 으로 격리.
+    try:
+        rows = (
+            await db.execute(
+                text(
+                    """
+                    SELECT
+                        region::text AS region_code,
+                        COUNT(*) FILTER (
+                            WHERE COALESCE(stage::text, status) IN ('reviewing', 'published', 'mentor_assigned', 'in_progress')
+                        ) AS active_issues,
+                        COUNT(*) FILTER (
+                            WHERE COALESCE(stage::text, status) = 'resolved'
+                        ) AS resolved_issues
+                    FROM issues
+                    WHERE region IS NOT NULL
+                    GROUP BY region
+                    """
+                )
             )
-        )
-    ).all()
-    projects_by_region: dict[str, int] = {
-        r.region_code: int(r.active_projects or 0) for r in project_rows
-    }
+        ).all()
+        counts_by_region = {
+            r.region_code: {
+                "active_issues": int(r.active_issues or 0),
+                "resolved_issues": int(r.resolved_issues or 0),
+            }
+            for r in rows
+        }
+    except Exception as exc:  # noqa: BLE001 — region/stage 컬럼 미적용 dev 환경
+        try:
+            await db.rollback()
+        except Exception:  # noqa: BLE001
+            pass
+        logger.warning("regions/map issues query failed: %s", exc)
+
+    # ── 2. 리빙랩 지역별 카운트 ──────────────────────────────
+    try:
+        project_rows = (
+            await db.execute(
+                text(
+                    """
+                    SELECT
+                        region::text AS region_code,
+                        COUNT(*) AS active_projects
+                    FROM livinglab_projects
+                    WHERE region IS NOT NULL
+                      AND COALESCE(stage::text, phase) IN ('in_progress', 'execute', 'develop', 'verify', 'recruiting')
+                    GROUP BY region
+                    """
+                )
+            )
+        ).all()
+        projects_by_region = {
+            r.region_code: int(r.active_projects or 0) for r in project_rows
+        }
+    except Exception as exc:  # noqa: BLE001
+        try:
+            await db.rollback()
+        except Exception:  # noqa: BLE001
+            pass
+        logger.warning("regions/map projects query failed: %s", exc)
 
     regions = []
     for meta in REGION_META:
@@ -209,11 +234,19 @@ async def common_health() -> dict[str, str]:
 
 
 async def _scalar(db: AsyncSession, stmt: Any) -> int:
-    """SELECT COUNT 스칼라 결과 반환. 테이블/컬럼 미존재 시 0 fallback."""
+    """SELECT COUNT 스칼라 결과 반환. 테이블/컬럼 미존재 시 0 fallback.
+
+    PostgreSQL 은 트랜잭션 내 한 쿼리가 실패하면 세션이 aborted 상태가 되어
+    후속 쿼리까지 모두 실패한다. 컬럼/테이블 미적용 dev 환경에서도 다른 쿼리는
+    정상 동작하도록 실패 시 명시적으로 rollback 처리.
+    """
     try:
         result = await db.execute(stmt)
         value = result.scalar()
         return int(value or 0)
     except Exception:  # noqa: BLE001
-        # V1 ↔ V2 schema 전환 중 컬럼 미존재 등 안전 처리
+        try:
+            await db.rollback()
+        except Exception:  # noqa: BLE001
+            pass
         return 0

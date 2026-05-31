@@ -11,7 +11,9 @@ import {
   Image as ImageIcon,
   LayoutDashboard,
   Megaphone,
+  ScrollText,
   Shield,
+  UserCog,
   Users,
 } from 'lucide-react';
 import { useAuth } from '@/lib/use-auth';
@@ -24,6 +26,8 @@ const NAV = [
   { href: '/admin/cms/contents', label: '공지·이벤트', icon: Megaphone },
   { href: '/admin/cms/pages', label: 'CMS 페이지', icon: FileText },
   { href: '/admin/cms/banners', label: 'CMS 배너', icon: ImageIcon },
+  { href: '/admin/users', label: '사용자·권한', icon: UserCog },
+  { href: '/admin/audit', label: '감사 로그', icon: ScrollText },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -31,18 +35,22 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const { user, loading } = useAuth();
 
+  // V2 역할 모델: 관리자 = operator (마이그레이션 0008 admin→operator 변환).
+  // 'admin' 은 마이그레이션 미적용 환경 호환을 위해 함께 허용.
+  const isOperator = user?.role === 'operator' || user?.role === 'admin';
+
   useEffect(() => {
     if (loading) return;
     if (!user) {
       router.replace('/login?next=' + encodeURIComponent(pathname));
       return;
     }
-    if (user.role !== 'admin') {
+    if (!isOperator) {
       router.replace('/?error=admin_required');
     }
-  }, [loading, user, router, pathname]);
+  }, [loading, user, isOperator, router, pathname]);
 
-  if (loading || !user || user.role !== 'admin') {
+  if (loading || !user || !isOperator) {
     return (
       <div className="flex min-h-screen items-center justify-center text-text-secondary">
         권한 확인 중...

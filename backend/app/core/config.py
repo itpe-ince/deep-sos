@@ -24,8 +24,20 @@ class Settings(BaseSettings):
     app_name: str = "USCP API"
     api_v1_prefix: str = "/api/v1"
     cors_origins: list[str] = Field(
-        default_factory=lambda: ["http://localhost:3000", "http://localhost:3800", "http://localhost"],
+        default_factory=lambda: [
+            "http://localhost:3000",
+            "http://localhost:3800",
+            "http://127.0.0.1:3000",
+            "http://127.0.0.1:3800",
+            "http://localhost",
+        ],
         alias="CORS_ORIGINS",
+    )
+    # Dev 편의 — localhost/127.0.0.1 의 임의 포트도 허용. prod 에서는 빈 문자열로
+    # override 하여 정확한 origin 화이트리스트만 적용 (CORS_ORIGIN_REGEX="").
+    cors_origin_regex: str = Field(
+        default=r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$",
+        alias="CORS_ORIGIN_REGEX",
     )
 
     # ── Database ────────────────────────────────────────

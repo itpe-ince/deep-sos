@@ -77,9 +77,18 @@ def create_app() -> FastAPI:
     app.add_middleware(                              # 1. CORS (최외곽)
         CORSMiddleware,
         allow_origins=settings.cors_origins,
+        allow_origin_regex=(settings.cors_origin_regex or None),
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+        expose_headers=[
+            "Retry-After",
+            "X-RateLimit-Limit",
+            "X-RateLimit-Remaining",
+            "X-RateLimit-Window",
+            "X-Request-Id",
+        ],
+        max_age=600,
     )
 
     register_problem_handlers(app)

@@ -27,27 +27,24 @@ depends_on = None
 
 
 def upgrade() -> None:
-    """M03-12 정책반영 메타 컬럼 추가 (성과지표 보고 활용)."""
-    op.add_column(
-        "success_cases",
-        sa.Column(
-            "policy_name",
-            sa.String(200),
-            nullable=True,
-            comment="M03-12: 반영된 정책 이름 (글로컬대학 성과지표 보고용)",
-        ),
+    """M03-12 정책반영 메타 컬럼 추가 (성과지표 보고 활용).
+
+    멱등(idempotent) 처리: 0010_v2_new_tables 가 `policy_name` 을 이미 추가하므로
+    중복 ADD COLUMN 충돌을 피하려 `IF NOT EXISTS` 가드를 사용한다.
+    앱 코드(`models/success_case.py`, `application/success_story_service.py`)가
+    정본 컬럼명이며, 표준 컬럼은 `policy_name` + `effective_date` 다.
+    (0010 이 별도로 만든 `policy_effective_date`/`policy_detail_body` 는 앱 미사용 orphan.)
+    """
+    op.execute(
+        "ALTER TABLE success_cases "
+        "ADD COLUMN IF NOT EXISTS policy_name VARCHAR(200)"
     )
-    op.add_column(
-        "success_cases",
-        sa.Column(
-            "effective_date",
-            sa.Date,
-            nullable=True,
-            comment="M03-12: 정책 시행일",
-        ),
+    op.execute(
+        "ALTER TABLE success_cases "
+        "ADD COLUMN IF NOT EXISTS effective_date DATE"
     )
 
 
 def downgrade() -> None:
-    op.drop_column("success_cases", "effective_date")
-    op.drop_column("success_cases", "policy_name")
+    op.execute("ALTER TABLE success_cases DROP COLUMN IF EXISTS effective_date")
+    op.execute("ALTER TABLE success_cases DROP COLUMN IF EXISTS policy_name")

@@ -35,6 +35,8 @@ from app.presentation.projects import admin_router as v2_admin_projects_router
 from app.presentation.projects import posts_router as v2_posts_router_module
 from app.presentation.projects import router as v2_projects_router
 from app.presentation.projects import success_admin_router as v2_success_admin_router
+from app.presentation.admin import audit_router as v2_admin_audit_router
+from app.presentation.admin import users_router as v2_admin_users_router
 
 api_router = APIRouter()
 api_router.include_router(health.router, tags=["health"])
@@ -60,6 +62,16 @@ api_router.include_router(
 # V2 M03-11/12 성공사례·정책반영 admin 라우터 — /admin/success-cases (운영자 전용).
 api_router.include_router(
     v2_success_admin_router.router, prefix="/admin/success-cases", tags=["admin-success-v2"]
+)
+# V2 M08 권한·감사 — /admin/users, /admin/operators, /admin/audit (운영자 전용).
+api_router.include_router(
+    v2_admin_users_router.users_router, prefix="/admin/users", tags=["admin-users-v2"]
+)
+api_router.include_router(
+    v2_admin_users_router.operators_router, prefix="/admin/operators", tags=["admin-users-v2"]
+)
+api_router.include_router(
+    v2_admin_audit_router.router, prefix="/admin/audit", tags=["admin-audit-v2"]
 )
 # V2 M03-15~18 프로젝트 게시판 (멤버 전용) — /projects/{id}/posts, /comments/project-posts.
 api_router.include_router(
