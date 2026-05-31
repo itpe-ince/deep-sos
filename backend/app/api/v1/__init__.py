@@ -22,6 +22,8 @@ from app.presentation.auth import router as v2_auth_router
 from app.presentation.common import router as common_router
 from app.presentation.issues import admin_router as v2_admin_issues_router
 from app.presentation.issues import router as v2_issues_router
+from app.presentation.mentors import admin_router as v2_mentors_admin_router
+from app.presentation.mentors import router as v2_matching_activity_router
 from app.presentation.projects import admin_router as v2_admin_projects_router
 from app.presentation.projects import posts_router as v2_posts_router_module
 from app.presentation.projects import router as v2_projects_router
@@ -50,7 +52,7 @@ api_router.include_router(
 )
 # V2 M03-11/12 성공사례·정책반영 admin 라우터 — /admin/success-cases (운영자 전용).
 api_router.include_router(
-    v2_success_admin_router, prefix="/admin/success-cases", tags=["admin-success-v2"]
+    v2_success_admin_router.router, prefix="/admin/success-cases", tags=["admin-success-v2"]
 )
 # V2 M03-15~18 프로젝트 게시판 (멤버 전용) — /projects/{id}/posts, /comments/project-posts.
 api_router.include_router(
@@ -58,6 +60,24 @@ api_router.include_router(
 )
 api_router.include_router(
     v2_posts_router_module.comments_router, prefix="/comments", tags=["project-board-v2"]
+)
+# V2 M04 멘토·학생팀 매칭 admin 라우터 (M04-01~07) — /admin/mentors, /admin/teams, /admin/matchings.
+api_router.include_router(
+    v2_mentors_admin_router.router, prefix="/admin", tags=["mentors-admin-v2"]
+)
+# V2 M04-08 멘토단 활동 기록 — /projects/{id}/matching-activities (매칭 멘토 본인 + 운영자).
+api_router.include_router(
+    v2_matching_activity_router.activity_router, prefix="/projects", tags=["matching-activity-v2"]
+)
+# V2 M04-09 본인 매칭·활동 이력 — /me/matching-history (마이페이지).
+api_router.include_router(
+    v2_matching_activity_router.history_router, prefix="/me", tags=["matching-activity-v2"]
+)
+# V2 M04-09 운영자: 특정 멘토 이력 — /admin/mentors/{user_id}/matching-history.
+api_router.include_router(
+    v2_matching_activity_router.admin_history_router,
+    prefix="/admin/mentors",
+    tags=["mentors-admin-v2"],
 )
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(oauth.router, prefix="/auth", tags=["oauth"])

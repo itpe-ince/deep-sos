@@ -460,18 +460,26 @@ CREATE TYPE audit_action AS ENUM ('login','logout','create','update','delete','v
 
 #### M04. 멘토·학생팀 매칭 (`/api/v1/admin/mentors`)
 
+> 경로 정정 (Sprint 4 구현 정합, v9.0): 학생팀은 `/admin/teams`, 매칭은 리소스 중심 `/admin/matchings`(body.project_id), 본인 이력은 `/me/matching-history` 로 구현됨. 아래 표는 구현 SOT 기준.
+
 | Method | Path | 권한 |
 |---|---|---|
 | GET | `/admin/mentors` | operator |
-| POST | `/admin/mentors/grant` | operator (자격 부여) |
-| POST | `/admin/mentors/revoke` | operator |
-| GET | `/admin/student-teams` | operator |
-| POST | `/admin/student-teams` | operator |
-| PATCH | `/admin/student-teams/{id}` | operator |
-| POST | `/admin/projects/{id}/match` | operator (수동 매칭 + 이메일 통보) |
+| POST | `/admin/mentors/grant` | operator (자격 부여, idempotent) |
+| POST | `/admin/mentors/{mentor_id}/revoke` | operator (soft, 진행중 매칭 경고) |
+| GET | `/admin/teams` | operator |
+| POST | `/admin/teams` | operator |
+| PATCH | `/admin/teams/{id}` | operator |
+| DELETE | `/admin/teams/{id}` | operator (해체, soft) |
+| POST | `/admin/matchings` | operator (수동 매칭 + 이메일 통보, body: project_id·mentor_ids·team_id) |
+| DELETE | `/admin/matchings/{id}` | operator (매칭 해제) |
+| GET | `/admin/matchings/project/{project_id}` | operator (프로젝트 활성 매칭 목록) |
+| GET | `/projects/{id}/matching-activities` | 로그인 사용자 (M04-08 목록) |
 | POST | `/projects/{id}/matching-activities` | **매칭된 멘토 본인 + operator** (M04-08, 회의·자문·검토 기록) |
 | PATCH | `/projects/{id}/matching-activities/{activity_id}` | **author(멘토) or operator** |
-| GET | `/users/me/mentor-activities` | citizen+ (본인 활동 이력) |
+| DELETE | `/projects/{id}/matching-activities/{activity_id}` | **author(멘토) or operator** |
+| GET | `/me/matching-history` | citizen+ (M04-09 본인 매칭·활동 이력) |
+| GET | `/admin/mentors/{user_id}/matching-history` | operator (M04-09 특정 멘토 이력) |
 
 #### M05. 협력 네트워크 (`/api/v1/network`, `/api/v1/admin/organizations`)
 

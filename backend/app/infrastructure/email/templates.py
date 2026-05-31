@@ -41,6 +41,9 @@ TemplateId = Literal[
     "notify_in_progress",      # in_progress → 제보자 + 매칭 멘토단
     "notify_resolved",         # resolved → 제보자 + 매칭 멘토단
     "notify_rejected",         # rejected → 제보자
+    # 멘토·학생팀 (M04) — 전용 .html 없이 fallback 렌더 사용 (제목·본문 context 주입)
+    "notify_mentor_granted",   # M04-01 멘토 자격 부여 → 본인
+    "notify_team_assigned",    # M04-04 학생팀 배정 → 팀원
     # MOU 만료 (M05-04)
     "mou_expiring",
     # 약관 개정 (M07-12)

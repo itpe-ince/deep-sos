@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from typing import Literal, Optional
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -59,7 +59,7 @@ class V2ProjectDetail(V2ProjectItem):
 async def list_projects(
     region: Optional[RegionCode] = None,
     stage: Optional[ProjectStage] = None,
-    limit: int = Field(default=20, ge=1, le=50),
+    limit: int = Query(default=20, ge=1, le=50),
     cursor: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
 ) -> V2ProjectListResponse:

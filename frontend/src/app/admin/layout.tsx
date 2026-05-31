@@ -10,11 +10,13 @@ import {
   Image as ImageIcon,
   LayoutDashboard,
   Shield,
+  Users,
 } from 'lucide-react';
 import { useAuth } from '@/lib/use-auth';
 
 const NAV = [
   { href: '/admin', label: '대시보드', icon: LayoutDashboard },
+  { href: '/admin/mentors', label: '멘토·학생팀', icon: Users },
   { href: '/admin/kpi', label: 'KPI', icon: BarChart3 },
   { href: '/admin/cms/pages', label: 'CMS 페이지', icon: FileText },
   { href: '/admin/cms/banners', label: 'CMS 배너', icon: ImageIcon },
