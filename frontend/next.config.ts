@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   output: 'standalone',
+  // Next 15 + Turbopack: jsdom 의 .css/.html 자산을 번들링하지 않고 Node 에서 require 하도록 externalize.
+  // isomorphic-dompurify 는 서버에서 jsdom 을 동적 로드한다 — 번들에 포함되면 default-stylesheet.css ENOENT 발생.
+  serverExternalPackages: ['isomorphic-dompurify', 'jsdom'],
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [

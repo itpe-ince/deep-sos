@@ -204,7 +204,7 @@ export function Header() {
                 <Link
                   href="/login"
                   onClick={() => setMobileOpen(false)}
-                  className="block rounded-md bg-primary px-4 py-3 text-center text-base font-semibold text-white hover:bg-primary-hover"
+                  className="block rounded-md bg-primary px-4 py-3 text-center text-base font-semibold text-white hover:bg-primary-hover hover:text-white"
                 >
                   로그인 / 회원가입
                 </Link>
@@ -294,7 +294,7 @@ function GuestMenu() {
       </Link>
       <Link
         href="/login?tab=signup"
-        className="hidden rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white hover:bg-primary-hover sm:inline-flex"
+        className="hidden rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white hover:bg-primary-hover hover:text-white sm:inline-flex"
         data-testid="header-signup"
       >
         회원가입
