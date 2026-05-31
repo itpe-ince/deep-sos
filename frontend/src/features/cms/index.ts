@@ -34,3 +34,4 @@ export {
 } from './types';
 
 export { ReconsentModal } from './components/ReconsentModal';
+export { ReconsentGate } from './components/ReconsentGate';

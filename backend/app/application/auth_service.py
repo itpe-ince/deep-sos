@@ -183,6 +183,21 @@ async def signup_v2(
             ),
             {"id": str(user_id)},
         )
+        # M07-13 약관 동의 이력 원장 기록 (가입 시 자동). user_term_agreements 미적용 dev 는 무시.
+        if latest_terms_id:
+            try:
+                await db.execute(
+                    sa.text(
+                        """
+                        INSERT INTO user_term_agreements (user_id, terms_version_id, agreed_at)
+                        VALUES (CAST(:uid AS uuid), CAST(:tid AS uuid), :now)
+                        ON CONFLICT (user_id, terms_version_id) DO NOTHING
+                        """
+                    ),
+                    {"uid": str(user_id), "tid": str(latest_terms_id), "now": now},
+                )
+            except Exception:  # noqa: BLE001 — user_term_agreements 미적용 dev fallback
+                pass
         await db.commit()
     except Exception as exc:  # noqa: BLE001
         await db.rollback()
