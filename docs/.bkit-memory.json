@@ -309,5 +309,42 @@
     "다단계 권한 매트릭스",
     "비로그인 자유 제보·CAPTCHA",
     "SMS·카카오 알림톡·푸시·실시간 채팅"
-  ]
+  ],
+  "subFeatures": {
+    "terms-admin-editor": {
+      "parent": "uscp-v2",
+      "phase": "do",
+      "planDocument": "docs/01-plan/features/terms-admin-editor.plan.md",
+      "planCreatedAt": "2026-06-01T00:00:00.000Z",
+      "priority": "P0",
+      "scope": "M07-10/11/12 admin TermsEditor + 마이그레이션 회수",
+      "targetReleaseDate": "2026-08-13",
+      "parentMatchRate": 96,
+      "designDocument": "docs/02-design/features/terms-admin-editor.design.md",
+      "designCreatedAt": "2026-06-01T00:30:00.000Z",
+      "designVersion": "0.2",
+      "wysiwygEditor": "Tiptap v2.11 (재사용 — components/admin/TipTapEditor.tsx)",
+      "resolvedDecisions": {
+        "Q1_body_min_length": "100자",
+        "Q2_future_effective_visible": true,
+        "Q3_impact_fetch_timing": "토글 ON 즉시",
+        "Q4_localStorage_draft": "미사용",
+        "Q5_other_migrations": "본 PDCA 불포함"
+      },
+      "readyForDo": true,
+      "doStartedAt": "2026-06-01T01:30:00.000Z",
+      "doProgress": {
+        "step1_migration_0016": {
+          "status": "completed",
+          "file": "backend/alembic/versions/0016_terms_hotfix.py",
+          "dbApplied": true,
+          "alembicStamp": "unchanged (0006) — direct SQL applied for dev DB",
+          "notes": "down_revision=0015 chain 유지, dev 는 IF NOT EXISTS 멱등 직접 SQL. terms_kind ENUM + terms_versions + user_term_agreements + users.terms_version_id FK 모두 생성 완료. API endpoint 정상 404 (terms_not_found) 반환"
+        }
+      }
+    }
+  },
+  "lastSubFeature": "terms-admin-editor",
+  "lastSubFeaturePhase": "do",
+  "lastUpdated": "2026-06-01T01:30:00.000Z"
 }
