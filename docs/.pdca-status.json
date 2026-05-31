@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-05-31T12:32:02.209Z",
+  "lastUpdated": "2026-05-31T19:36:57.141Z",
   "activeFeatures": [
     "uscp-v1",
     "sos-lab",
@@ -80,7 +80,9 @@
     "users",
     "audit",
     "forbidden",
-    "unauthorized"
+    "unauthorized",
+    "content",
+    "[kind]"
   ],
   "primaryFeature": "uscp-v1",
   "features": {
@@ -310,9 +312,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T09:57:19.764Z",
-        "lastUpdated": "2026-04-11T12:18:20.010Z"
+        "lastUpdated": "2026-05-31T19:35:31.838Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/backend/app/api/deps.py"
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/lib/api/terms.ts"
     },
     "v1": {
       "phase": "do",
@@ -1210,6 +1212,32 @@
         "lastUpdated": "2026-05-31T12:31:23.895Z"
       },
       "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/(public)/unauthorized/page.tsx"
+    },
+    "content": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-31T19:35:04.262Z",
+        "lastUpdated": "2026-05-31T19:35:04.262Z"
+      },
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/lib/content/static-terms.ts"
+    },
+    "[kind]": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-31T19:36:57.141Z",
+        "lastUpdated": "2026-05-31T19:36:57.141Z"
+      },
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/(public)/terms/[kind]/page.tsx"
     }
   },
   "pipeline": {
@@ -1220,7 +1248,7 @@
   "session": {
     "startedAt": "2026-04-07T07:44:19.225Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-05-31T12:32:02.209Z"
+    "lastActivity": "2026-05-31T19:36:57.141Z"
   },
   "history": [
     {
@@ -5948,6 +5976,24 @@
     {
       "timestamp": "2026-05-31T12:32:02.209Z",
       "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T19:35:04.262Z",
+      "feature": "content",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T19:35:31.838Z",
+      "feature": "api",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T19:36:57.141Z",
+      "feature": "[kind]",
       "phase": "do",
       "action": "updated"
     }
