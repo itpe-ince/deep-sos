@@ -483,17 +483,30 @@ CREATE TYPE audit_action AS ENUM ('login','logout','create','update','delete','v
 
 #### M05. 협력 네트워크 (`/api/v1/network`, `/api/v1/admin/organizations`)
 
+> 경로 정정 (Sprint 5 구현 정합, v11.0): 공개 커뮤니티 상세·댓글, 프로그램·게시글 CRUD, 댓글 조정·만료 알림 발송 엔드포인트 반영(총 20라우트). 아래 표는 구현 SOT 기준.
+
 | Method | Path | 권한 |
 |---|---|---|
-| GET | `/network/organizations` | public |
-| GET | `/network/mous` | public |
-| GET | `/network/community` | public |
-| POST | `/admin/organizations` | operator |
-| PATCH | `/admin/organizations/{id}` | operator (수정) |
-| DELETE | `/admin/organizations/{id}` | operator (**삭제 — FK 무결성 검증, 연관 MOU·프로그램 없는 경우만**, M05-01 보강) |
-| PATCH | `/admin/organizations/{id}/active` | operator (**활성·비활성 토글 — 삭제 대안**, M05-09 매핑) |
-| POST | `/admin/organizations/{id}/mou` | operator |
-| GET | `/admin/mous/expiring` | operator (만료 임박 알림용) |
+| GET | `/network/organizations` | public (M05-02, 활성만) |
+| GET | `/network/mous` | public (M05-05, status 파생) |
+| GET | `/network/community` | public (M05-07 목록) |
+| GET | `/network/community/{post_id}` | public (M05-07 상세+댓글) |
+| POST | `/network/community/{post_id}/comments` | citizen+ (M05-08 댓글 작성) |
+| PATCH | `/network/community/comments/{comment_id}` | author only (M05-08 본인 댓글 수정) |
+| POST | `/admin/organizations` | operator (M05-01 등록) |
+| PATCH | `/admin/organizations/{id}` | operator (M05-01 수정) |
+| DELETE | `/admin/organizations/{id}` | operator (**M05-01 삭제 — 연관 MOU·프로그램 시 409**) |
+| PATCH | `/admin/organizations/{id}/active` | operator (**M05-09 활성·비활성 토글**) |
+| POST | `/admin/organizations/{id}/mou` | operator (M05-03 MOU 등록) |
+| GET | `/admin/mous/expiring` | operator (M05-04 만료 임박 목록) |
+| POST | `/admin/mous/notify-expiring` | operator/cron (M05-04 알림 발송, 1회 마킹) |
+| GET | `/admin/programs` | operator (M05-06 목록) |
+| POST | `/admin/programs` | operator (M05-06 등록) |
+| DELETE | `/admin/programs/{id}` | operator (M05-06 삭제) |
+| POST | `/admin/community` | operator (M05-07 게시글 작성) |
+| PATCH | `/admin/community/{post_id}` | operator (M05-07 수정) |
+| DELETE | `/admin/community/{post_id}` | operator (M05-07 삭제) |
+| POST | `/admin/community/comments/{comment_id}/moderate` | operator (M05-08 댓글 조정 hide/unhide/delete) |
 
 #### M06. 성과자료 (`/api/v1/performance`, `/api/v1/admin/kpi`)
 
