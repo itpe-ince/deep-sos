@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-05-31T12:24:22.674Z",
+  "lastUpdated": "2026-05-31T12:32:02.209Z",
   "activeFeatures": [
     "uscp-v1",
     "sos-lab",
@@ -78,7 +78,9 @@
     "contents",
     "m07-cms",
     "users",
-    "audit"
+    "audit",
+    "forbidden",
+    "unauthorized"
   ],
   "primaryFeature": "uscp-v1",
   "features": {
@@ -373,9 +375,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T09:59:57.240Z",
-        "lastUpdated": "2026-05-31T12:18:50.959Z"
+        "lastUpdated": "2026-05-31T12:32:02.209Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/next.config.ts"
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/global-error.tsx"
     },
     "layout": {
       "phase": "do",
@@ -386,9 +388,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T10:01:33.749Z",
-        "lastUpdated": "2026-05-31T12:24:22.674Z"
+        "lastUpdated": "2026-05-31T12:29:36.510Z"
       },
-      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/components/layout/Header.tsx"
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/components/layout/ErrorPage.tsx"
     },
     "(public)": {
       "phase": "do",
@@ -1182,6 +1184,32 @@
         "lastUpdated": "2026-05-31T07:22:54.098Z"
       },
       "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/admin/audit/page.tsx"
+    },
+    "forbidden": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-31T12:31:13.064Z",
+        "lastUpdated": "2026-05-31T12:31:13.064Z"
+      },
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/(public)/forbidden/page.tsx"
+    },
+    "unauthorized": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-31T12:31:23.895Z",
+        "lastUpdated": "2026-05-31T12:31:23.895Z"
+      },
+      "lastFile": "/Users/sangincha/dev/deep-sos/frontend/src/app/(public)/unauthorized/page.tsx"
     }
   },
   "pipeline": {
@@ -1192,7 +1220,7 @@
   "session": {
     "startedAt": "2026-04-07T07:44:19.225Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-05-31T12:24:22.674Z"
+    "lastActivity": "2026-05-31T12:32:02.209Z"
   },
   "history": [
     {
@@ -5872,6 +5900,54 @@
     {
       "timestamp": "2026-05-31T12:24:22.674Z",
       "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T12:29:36.510Z",
+      "feature": "layout",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T12:30:00.689Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T12:30:20.410Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T12:30:40.166Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T12:31:13.064Z",
+      "feature": "forbidden",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T12:31:23.895Z",
+      "feature": "unauthorized",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T12:31:45.820Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-31T12:32:02.209Z",
+      "feature": "frontend",
       "phase": "do",
       "action": "updated"
     }
